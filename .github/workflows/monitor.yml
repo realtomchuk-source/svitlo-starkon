@@ -2,8 +2,32 @@ name: SSSK Monitor
 
 on:
   schedule:
-    - cron: '*/30 * * * *'  # Кожні 30 хвилин
-  workflow_dispatch:      # Можливість запустити вручну
+    # Вечірній пік (19:00 - 24:00 EEST / 17:00 - 22:00 UTC): кожні 5 хвилин
+    - cron: '*/5 17-21 * * *'
+    # Нічний режим (00:00 - 09:00 EEST / 22:00 - 07:00 UTC): кожні 3 години
+    - cron: '0 22,1,4,7 * * *'
+    # Денний режим (09:00 - 19:00 EEST / 07:00 - 17:00 UTC): кожну годину
+    - cron: '0 8-16 * * *'
+  
+  workflow_dispatch:
+    inputs:
+      source:
+        description: 'Джерело парсингу'
+        required: true
+        default: 'both'
+        type: choice
+        options:
+          - both
+          - site
+          - telegram
+      override_interval:
+        description: 'Форсований інтервал (хвилини, 0 - вимкнено)'
+        required: false
+        default: '0'
+      override_duration:
+        description: 'Тривалість форсованого режиму (години)'
+        required: false
+        default: '1'
 
 permissions:
   contents: write
@@ -14,6 +38,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr libtesseract-dev
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -22,17 +53,21 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install Pillow requests
+          pip install Pillow requests pytz beautifulsoup4 lxml pytesseract
 
       - name: Run parser
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          # Передаємо інпути в скрипт через змінні середовища
+          OVERRIDE_SOURCE: ${{ github.event.inputs.source }}
+          OVERRIDE_INTERVAL: ${{ github.event.inputs.override_interval }}
+          OVERRIDE_DURATION: ${{ github.event.inputs.override_duration }}
         run: python scripts/parse_schedule.py
 
       - name: Commit and push changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/*.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Update schedule data" && git push)
+          git add data/*.json data/raw_site/*.png data/raw_telegram/*.png data/logs/*.txt
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Parser: Update data and state" && git push)

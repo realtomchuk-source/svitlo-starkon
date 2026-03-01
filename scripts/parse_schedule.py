@@ -1,124 +1,124 @@
 import os
+import sys
 import json
-import hashlib
-import requests
-from PIL import Image
+from datetime import datetime, timedelta
+from modules.utils import load_json, save_json, get_now, should_run, send_telegram_alert, cleanup_old_files, STATE_FILE, UNIFIED_DB
+from modules.site_parser import run_site_parser
+from modules.telegram_parser import run_telegram_parser
+from modules.ocr_helper import extract_text_from_image
 
-# URL сайту Хмельницькобленерго
-SOURCE_URL = "https://hoe.com.ua/page/pogodinni-vidkljuchennja"
-
-# Telegram конфігурація (буде братися з GitHub Secrets)
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
-
-def send_telegram(message):
-    """Надсилає повідомлення в Telegram бот"""
-    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
-        print(f"Skipping Telegram: {message}")
-        return
+def main():
+    state = load_json(STATE_FILE, default={
+        "last_run": None,
+        "last_success_site": None,
+        "last_success_telegram": None,
+        "last_site_hash": None,
+        "last_telegram_hash": None,
+        "current_source": "both",
+        "override_until": None,
+        "override_interval_minutes": None
+    })
     
-    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
-    try:
-        requests.post(url, json={
-            "chat_id": TELEGRAM_CHAT_ID,
-            "text": message,
-            "parse_mode": "HTML"
-        })
-    except Exception as e:
-        print(f"Помилка Telegram: {e}")
-
-# Константи калібровки (на основі ваших замірів в Paint)
-GRID = {
-    'origin_x': 189,
-    'origin_y': 350,
-    'cell_w': 60,
-    'cell_h': 54,
-}
-
-# Назви підчерг (12 рядків)
-SUBGROUPS = [
-    "1.1", "1.2", "2.1", "2.2", "3.1", "3.2", 
-    "4.1", "4.2", "5.1", "5.2", "6.1", "6.2"
-]
-
-def get_image_hash(image_path):
-    """Рахує SHA256 хеш файлу"""
-    hasher = hashlib.sha256()
-    with open(image_path, 'rb') as f:
-        for chunk in iter(lambda: f.read(4096), b""):
-            hasher.update(chunk)
-    return hasher.hexdigest()
-
-def is_off(pixel):
-    """
-    Визначає, чи є піксель кольором 'ВІДКЛЮЧЕНО'.
-    Для Хмельницькобленерго це зазвичай відтінки синього/фіолетового.
-    """
-    r, g, b = pixel
-    # Зазвичай у файлах відключення мають низький рівень Green та високий Blue
-    return r < 150 and b > 100 
-
-def sample_zone(img, cx, cy, size=3):
-    """Зонне семплювання 3х3 для точного визначення кольору"""
-    pixels = []
-    for dx in range(-size, size + 1):
-        for dy in range(-size, size + 1):
-            pixels.append(img.getpixel((cx + dx, cy + dy)))
+    # 1. Обробка ручних налаштувань (Override) та конфігурації
+    override_source = os.getenv("OVERRIDE_SOURCE")
+    if override_source and override_source != "both":
+        state["current_source"] = override_source
     
-    off_count = sum(1 for p in pixels if is_off(p))
-    return off_count > len(pixels) // 2
-
-def parse_image(image_path):
-    img = Image.open(image_path).convert('RGB')
-    print(f"Розмір зображення: {img.size}")
-
-    result = {}
-    for i, subgroup_name in enumerate(SUBGROUPS):
-        off_hours = []
-        for hour in range(24):
-            # Розрахунок центру клітинки
-            cx = GRID['origin_x'] + hour * GRID['cell_w']
-            cy = GRID['origin_y'] + i * GRID['cell_h']
-            
-            if sample_zone(img, cx, cy):
-                off_hours.append(hour)
-        
-        result[subgroup_name] = off_hours
+    override_interval = os.getenv("OVERRIDE_INTERVAL", "0")
+    if int(override_interval) > 0:
+        now = get_now()
+        duration_h = int(os.getenv("OVERRIDE_DURATION", "1"))
+        state["override_until"] = (now + timedelta(hours=duration_h)).isoformat()
+        state["override_interval_minutes"] = int(override_interval)
+        print(f"Override activated: {override_interval}m until {state['override_until']}")
     
-    return result
-
-def run_pipeline():
-    # 1. Спробуємо знайти або завантажити картинку (поки використовуємо локальну для тестування структури)
-    sample_path = "sample.png"
-    
-    if not os.path.exists(sample_path):
-        print(f"❌ Помилка: Файл {sample_path} не знайдено.")
+    # 2. Перевірка розкладу
+    if not should_run(state):
+        print("Skipping run (schedule policy).")
+        # Але ми все одно робимо коміт логів/стану, якщо це був workflow_dispatch
         return
 
-    # 2. Хешування (щоб знати, чи змінився графік)
-    current_hash = get_image_hash(sample_path)
-    print(f"SHA256: {current_hash}")
+    print(f"Starting parser run at {get_now().isoformat()} mode: {state['current_source']}")
+    
+    site_res = None
+    tele_res = None
+    
+    # 3. Запуск підмодулів
+    if state["current_source"] in ["both", "site"]:
+        site_res = run_site_parser(state)
+        if site_res and site_res.get("hash"):
+            state["last_site_hash"] = site_res["hash"]
+            if not site_res.get("changed"): state["last_success_site"] = get_now().isoformat()
 
-    # 3. Парсинг
-    print(f"Парсинг {sample_path}...")
-    try:
-        data = parse_image(sample_path)
+    if state["current_source"] in ["both", "telegram"]:
+        tele_res = run_telegram_parser(state)
+        if tele_res and tele_res.get("hash"):
+            state["last_telegram_hash"] = tele_res["hash"]
+            if not tele_res.get("changed"): state["last_success_telegram"] = get_now().isoformat()
+
+    # 4. Аналіз та Пріоритезація
+    final_data = None
+    source_used = None
+    is_updated = False
+    
+    # ТРІГЕР: Telegram має пріоритет у Dual Mode
+    if tele_res and tele_res.get("changed"):
+        final_data = tele_res
+        source_used = "telegram"
+        is_updated = True
+    elif site_res and site_res.get("changed"):
+        final_data = site_res
+        source_used = "site"
+        is_updated = True
         
-        # 4. Формування результату (JSON)
-        output = {
-            "last_updated": current_hash,
-            "schedule": data
+    # 5. Якщо виявлено зміни - обробляємо OCR та зберігаємо в БД
+    if final_data and is_updated:
+        raw_text = extract_text_from_image(final_data["img_bytes"])
+        caption = final_data.get("caption", "").lower()
+        
+        # Перевірка ключового слова "ОНОВЛЕНО" (також шукаємо "оновлено")
+        is_emergency = "оновлено" in caption or "оновлен" in caption or "термінов" in caption
+        
+        # Спроба знайти дату в тексті (спрощений варіант)
+        # У майбутньому тут буде складніший регулярний вираз
+        date_found = None
+        if "на" in raw_text:
+             # Наприклад, "на 03.03"
+             import re
+             matches = re.findall(r"\d{2}\.\d{2}", raw_text)
+             if matches: date_found = matches[0]
+
+        entry = {
+            "timestamp": get_now().isoformat(),
+            "target_date": date_found,
+            "source": source_used,
+            "raw_path": final_data["raw_path"],
+            "is_update": is_emergency or (state["last_run"] is None), # Перший запуск = True
+            "processed": False,
+            "raw_text_summary": raw_text[:500]
         }
         
-        # 5. Збереження
-        os.makedirs("data", exist_ok=True)
-        with open("data/current.json", "w", encoding="utf-8") as f:
-            json.dump(output, f, indent=2, ensure_ascii=False)
+        db = load_json(UNIFIED_DB, default=[])
+        db.append(entry)
+        save_json(UNIFIED_DB, db)
         
-        print(f"\n✅ Результат успішно збережено в data/current.json")
+        # Оновлюємо мітки успіху
+        if source_used == "site": state["last_success_site"] = get_now().isoformat()
+        else: state["last_success_telegram"] = get_now().isoformat()
         
-    except Exception as e:
-        print(f"❌ Помилка під час парсингу: {e}")
+        print(f"!!! NEW SCHEDULE DETECTED via {source_used} !!!")
+        if is_emergency:
+            send_telegram_alert(f"🚨 ВИЯВЛЕНО ОНОВЛЕНИЙ ГРАФІК ({source_used})! Перевірте систему.")
+
+    # 6. Очищення старих даних (Data Lake rotation)
+    cleanup_old_files("data/raw_site", days=7)
+    cleanup_old_files("data/raw_telegram", days=7)
+    cleanup_old_files("data/logs", days=30)
+    
+    # 7. Завершення
+    state["last_run"] = get_now().isoformat()
+    save_json(STATE_FILE, state)
+    print("Run completed.")
 
 if __name__ == "__main__":
-    run_pipeline()
+    main()

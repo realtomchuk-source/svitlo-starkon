@@ -1,0 +1,13 @@
+{
+  "last_run": null,
+  "last_success_site": null,
+  "last_success_telegram": null,
+  "current_source": "site",
+  "override_until": null,
+  "override_interval_minutes": null,
+  "daily_schedule": {
+    "19:00-23:59": 5,
+    "00:00-08:59": 300,
+    "09:00-18:59": 60
+  }
+}
