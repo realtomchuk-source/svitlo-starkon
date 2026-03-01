@@ -1,0 +1,28 @@
+{
+  "project": "Svitlo Starkon",
+  "data_structures": {
+    "current.json": {
+      "last_updated": "2026-03-01T21:45:00Z",
+      "sha256": "hash_of_png",
+      "schedule_date": "2026-03-02",
+      "schedule": {
+        "1.1": [0, 1, 6, 7, 12, 13, 18, 19],
+        "1.2": [2, 3, 8, 9, 14, 15, 20, 21]
+      }
+    },
+    "history/YYYY-MM-DD.json": {
+      "date": "2026-03-02",
+      "versions_count": 3,
+      "final_schedule": { "..." : "..." },
+      "instability_index": 4.5
+    },
+    "summaries/YYYY-MM-DD-summary.json": {
+      "date": "2026-03-02",
+      "metrics": {
+          "total_off_time_percent": 33.3,
+          "most_unstable_group": "3.1",
+          "amplitude": 2
+      }
+    }
+  }
+}
