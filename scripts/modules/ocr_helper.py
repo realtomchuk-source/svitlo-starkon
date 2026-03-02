@@ -1,6 +1,11 @@
 import pytesseract
 from PIL import Image
 import io
+import os
+
+# Шлях до Tesseract для Windows (локальне налаштування)
+if os.name == 'nt':
+    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 def extract_text_from_image(img_bytes):
     try:

@@ -23,9 +23,22 @@ def run_site_parser(state):
 
     soup = BeautifulSoup(response.text, 'html.parser')
     
-    # Пошук картинки графіка (XPath/Selector залежить від реального сайту)
-    # Приклад: шукаємо img у div з певним класом або за назвою файлу
-    img_tag = soup.find("img", src=lambda s: s and ("grafik" in s.lower() or "vidkljuchen" in s.lower()))
+    # Пошук картинки графіка
+    # На hoe.com.ua зазвичай це перша картинка в блоці .page-content або перша велика картинка
+    img_tag = None
+    
+    # Спробуємо знайти в основному контейнері
+    content = soup.find('div', class_='page-content') or soup.find('article') or soup.find('main')
+    if content:
+        img_tag = content.find('img')
+    
+    # Резервний пошук: перша картинка, що не є логотипом
+    if not img_tag:
+        for img in soup.find_all('img'):
+            src = img.get('src', '').lower()
+            if 'logo' not in src and 'icon' not in src:
+                img_tag = img
+                break
     
     if not img_tag:
         print("Schedule image not found on site.")
