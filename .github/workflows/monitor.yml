@@ -44,7 +44,7 @@ jobs:
       - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y tesseract-ocr libtesseract-dev
+          sudo apt-get install -y tesseract-ocr libtesseract-dev tesseract-ocr-ukr
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -69,5 +69,9 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/*.json data/raw_site/*.png data/raw_telegram/*.png data/logs/*.txt
+          # Додаємо лише існуючі файли, щоб уникнути помилок pathspec
+          git add data/*.json 2>/dev/null || true
+          git add data/raw_site/*.png 2>/dev/null || true
+          git add data/raw_telegram/*.png 2>/dev/null || true
+          git add data/logs/*.txt 2>/dev/null || true
           git diff --quiet && git diff --staged --quiet || (git commit -m "Parser: Update data and state" && git push)
