@@ -81,6 +81,10 @@ def should_run(state):
     if 0 <= curr_hour < 9:
         return (now - last_run).total_seconds() / 3600 >= 5
 
+    # 09:00 - 19:00 (День)
+    if 9 <= curr_hour < 19:
+        return (now - last_run).total_seconds() / 3600 >= 1
+
 def cleanup_old_files(directory, days=7):
     if not os.path.exists(directory): return
     now = time.time()
