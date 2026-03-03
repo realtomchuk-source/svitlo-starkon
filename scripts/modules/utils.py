@@ -66,28 +66,40 @@ def should_run(state):
     if not last_run_str: return True
     last_run = datetime.fromisoformat(last_run_str)
     
-    # Логіка згідно ТЗ:
-    # 19:00 - 24:00 (Пік)
-    if curr_hour >= 19:
-        # Якщо вже є успішний запуск сьогодні ввечері, переходимо на 1 год
-        last_success = state.get("last_success_site") or state.get("last_success_telegram")
-        if last_success:
-            ls_dt = datetime.fromisoformat(last_success)
-            if ls_dt.date() == now.date() and ls_dt.hour >= 19:
-                # Вуже отримали графік, чекаємо годину для перевірки змін
-                return (now - last_run).total_seconds() / 60 >= 60
-        return True # Кожні 5 хв (якщо GitHub Actions так налаштований)
+    # ============================================================
+    # ТИМЧАСОВИЙ РЕЖИМ (відсутність відключень)
+    # Повернути стандартний режим — розкоментувати блок нижче
+    # та видалити/закоментувати тимчасовий блок
+    # ============================================================
+    
+    # 19:00 - 23:00 (Пік): кожні 15 хв
+    if 19 <= curr_hour < 23:
+        return (now - last_run).total_seconds() / 60 >= 15
+    
+    # Решта доби: кожні 5 годин
+    return (now - last_run).total_seconds() / 3600 >= 5
 
-    # 00:00 - 09:00 (Ніч)
-    if 0 <= curr_hour < 9:
-        return (now - last_run).total_seconds() / 3600 >= 5
-
-    # 09:00 - 19:00 (День)
-    if 9 <= curr_hour < 19:
-        return (now - last_run).total_seconds() / 3600 >= 3
-
-    # Fallback — завжди дозволити запуск
-    return True
+    # ============================================================
+    # СТАНДАРТНИЙ РЕЖИМ (при активних відключеннях)
+    # ============================================================
+    # # 19:00 - 24:00 (Пік)
+    # if curr_hour >= 19:
+    #     last_success = state.get("last_success_site") or state.get("last_success_telegram")
+    #     if last_success:
+    #         ls_dt = datetime.fromisoformat(last_success)
+    #         if ls_dt.date() == now.date() and ls_dt.hour >= 19:
+    #             return (now - last_run).total_seconds() / 60 >= 60
+    #     return True
+    #
+    # # 00:00 - 09:00 (Ніч)
+    # if 0 <= curr_hour < 9:
+    #     return (now - last_run).total_seconds() / 3600 >= 5
+    #
+    # # 09:00 - 19:00 (День)
+    # if 9 <= curr_hour < 19:
+    #     return (now - last_run).total_seconds() / 3600 >= 3
+    #
+    # return True
 
 def cleanup_old_files(directory, days=7):
     if not os.path.exists(directory): return
