@@ -85,7 +85,7 @@ def main():
         date_found = None
         if "на" in raw_text:
              # Наприклад, "на 03.03"
-              matches = re.findall(r"\d{2}\.\d{2}", raw_text)
+             matches = re.findall(r"\d{2}\.\d{2}", raw_text)
              if matches: date_found = matches[0]
 
         entry = {
