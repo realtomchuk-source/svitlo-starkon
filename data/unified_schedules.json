@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "timestamp": "2026-03-03T20:57:02.890503+02:00",
+    "target_date": null,
+    "source": "site",
+    "raw_path": "data/raw_site/20260303_205702.png",
+    "is_update": true,
+    "processed": false,
+    "raw_text_summary": ""
+  }
+]

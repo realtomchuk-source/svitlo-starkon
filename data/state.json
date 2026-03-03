@@ -1,8 +1,8 @@
 {
-  "last_run": null,
-  "last_success_site": null,
+  "last_run": "2026-03-03T20:57:02.890877+02:00",
+  "last_success_site": "2026-03-03T20:57:02.890769+02:00",
   "last_success_telegram": null,
-  "last_site_hash": null,
+  "last_site_hash": "a45c8aa9837088df4f1dcf5674ad9e3a",
   "last_telegram_hash": null,
   "current_source": "site",
   "override_until": null,
