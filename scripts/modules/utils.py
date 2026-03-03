@@ -1,5 +1,6 @@
 import json
 import os
+import time
 import requests
 from datetime import datetime, timedelta
 import pytz
@@ -85,6 +86,9 @@ def should_run(state):
     if 9 <= curr_hour < 19:
         return (now - last_run).total_seconds() / 3600 >= 3
 
+    # Fallback — завжди дозволити запуск
+    return True
+
 def cleanup_old_files(directory, days=7):
     if not os.path.exists(directory): return
     now = time.time()
@@ -94,5 +98,3 @@ def cleanup_old_files(directory, days=7):
             if os.path.isfile(f_path):
                 os.remove(f_path)
                 print(f"Removed old file: {f}")
-
-import time

@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 import json
 from datetime import datetime, timedelta
 from modules.utils import load_json, save_json, get_now, should_run, send_telegram_alert, cleanup_old_files, STATE_FILE, UNIFIED_DB
@@ -21,7 +22,7 @@ def main():
     
     # 1. Обробка ручних налаштувань (Override) та конфігурації
     override_source = os.getenv("OVERRIDE_SOURCE")
-    if override_source and override_source != "both":
+    if override_source:
         state["current_source"] = override_source
     
     override_interval = os.getenv("OVERRIDE_INTERVAL", "0")
@@ -48,13 +49,13 @@ def main():
         site_res = run_site_parser(state)
         if site_res and site_res.get("hash"):
             state["last_site_hash"] = site_res["hash"]
-            if not site_res.get("changed"): state["last_success_site"] = get_now().isoformat()
+            state["last_success_site"] = get_now().isoformat()
 
     if state["current_source"] in ["both", "telegram"]:
         tele_res = run_telegram_parser(state)
         if tele_res and tele_res.get("hash"):
             state["last_telegram_hash"] = tele_res["hash"]
-            if not tele_res.get("changed"): state["last_success_telegram"] = get_now().isoformat()
+            state["last_success_telegram"] = get_now().isoformat()
 
     # 4. Аналіз та Пріоритезація
     final_data = None
@@ -84,8 +85,7 @@ def main():
         date_found = None
         if "на" in raw_text:
              # Наприклад, "на 03.03"
-             import re
-             matches = re.findall(r"\d{2}\.\d{2}", raw_text)
+              matches = re.findall(r"\d{2}\.\d{2}", raw_text)
              if matches: date_found = matches[0]
 
         entry = {

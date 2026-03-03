@@ -76,8 +76,12 @@ def run_telegram_parser(state):
     new_hash = hashlib.md5(img_bytes).hexdigest()
     last_hash = state.get("last_telegram_hash")
     
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    from modules.utils import get_now
+    timestamp = get_now().strftime("%Y%m%d_%H%M%S")
     raw_path = f"data/raw_telegram/{timestamp}.jpg"
+    
+    # Створюємо папку, якщо її немає
+    os.makedirs("data/raw_telegram", exist_ok=True)
     
     with open(raw_path, "wb") as f:
         f.write(img_bytes)

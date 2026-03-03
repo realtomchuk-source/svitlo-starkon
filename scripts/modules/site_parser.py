@@ -8,6 +8,7 @@ import io
 
 # URL сторінки з графіками
 OBL_URL = "https://hoe.com.ua/page/pogodinni-vidkljuchennja"
+HEADERS = {"User-Agent": "SSSK-Monitor/1.0"}
 
 def get_image_hash(image_bytes):
     return hashlib.md5(image_bytes).hexdigest()
@@ -15,7 +16,7 @@ def get_image_hash(image_bytes):
 def run_site_parser(state):
     print("Parsing site...")
     try:
-        response = requests.get(OBL_URL, timeout=30)
+        response = requests.get(OBL_URL, timeout=30, headers=HEADERS)
         response.raise_for_status()
     except Exception as e:
         print(f"Site access error: {e}")
@@ -49,7 +50,7 @@ def run_site_parser(state):
         img_url = "https://hoe.com.ua" + img_url
 
     try:
-        img_resp = requests.get(img_url, timeout=30)
+        img_resp = requests.get(img_url, timeout=30, headers=HEADERS)
         img_resp.raise_for_status()
         img_bytes = img_resp.content
     except Exception as e:
@@ -59,16 +60,16 @@ def run_site_parser(state):
     new_hash = get_image_hash(img_bytes)
     last_hash = state.get("last_site_hash")
 
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    from modules.utils import get_now
+    timestamp = get_now().strftime("%Y%m%d_%H%M%S")
     raw_path = f"data/raw_site/{timestamp}.png"
+    
+    # Створюємо папку, якщо її немає
+    os.makedirs("data/raw_site", exist_ok=True)
     
     # Зберігаємо завжди для Data Lake
     with open(raw_path, "wb") as f:
         f.write(img_bytes)
-        
-    # Зберігаємо HTML для Data Lake
-    with open(f"data/raw_site/{timestamp}.html", "w", encoding="utf-8") as f:
-        f.write(response.text)
 
     if new_hash == last_hash:
         print("Image hash match. No changes on site.")
