@@ -25,10 +25,10 @@ def main():
     if override_source:
         state["current_source"] = override_source
     
-    override_interval = os.getenv("OVERRIDE_INTERVAL", "0")
+    override_interval = os.getenv("OVERRIDE_INTERVAL") or "0"
     if int(override_interval) > 0:
         now = get_now()
-        duration_h = int(os.getenv("OVERRIDE_DURATION", "1"))
+        duration_h = int(os.getenv("OVERRIDE_DURATION") or "1")
         state["override_until"] = (now + timedelta(hours=duration_h)).isoformat()
         state["override_interval_minutes"] = int(override_interval)
         print(f"Override activated: {override_interval}m until {state['override_until']}")
