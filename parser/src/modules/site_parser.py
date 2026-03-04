@@ -62,10 +62,10 @@ def run_site_parser(state):
 
     from modules.utils import get_now
     timestamp = get_now().strftime("%Y%m%d_%H%M%S")
-    raw_path = f"data/raw_site/{timestamp}.png"
+    raw_path = f"parser/data/raw_site/{timestamp}.png"
     
     # Створюємо папку, якщо її немає
-    os.makedirs("data/raw_site", exist_ok=True)
+    os.makedirs("parser/data/raw_site", exist_ok=True)
     
     # Зберігаємо завжди для Data Lake
     with open(raw_path, "wb") as f:

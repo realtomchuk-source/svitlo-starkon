@@ -111,9 +111,9 @@ def main():
             send_telegram_alert(f"🚨 ВИЯВЛЕНО ОНОВЛЕНИЙ ГРАФІК ({source_used})! Перевірте систему.")
 
     # 6. Очищення старих даних (Data Lake rotation)
-    cleanup_old_files("data/raw_site", days=7)
-    cleanup_old_files("data/raw_telegram", days=7)
-    cleanup_old_files("data/logs", days=30)
+    cleanup_old_files("parser/data/raw_site", days=7)
+    cleanup_old_files("parser/data/raw_telegram", days=7)
+    cleanup_old_files("parser/data/logs", days=30)
     
     # 7. Завершення
     state["last_run"] = get_now().isoformat()

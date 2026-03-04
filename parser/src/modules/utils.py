@@ -5,8 +5,8 @@ import requests
 from datetime import datetime, timedelta
 import pytz
 
-STATE_FILE = "data/state.json"
-UNIFIED_DB = "data/unified_schedules.json"
+STATE_FILE = "parser/data/state.json"
+UNIFIED_DB = "parser/data/unified_schedules.json"
 TZ = pytz.timezone("Europe/Kiev")
 
 def load_json(path, default=None):

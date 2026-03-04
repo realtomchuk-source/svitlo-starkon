@@ -74,15 +74,15 @@ jobs:
           OVERRIDE_SOURCE: ${{ github.event.inputs.source }}
           OVERRIDE_INTERVAL: ${{ github.event.inputs.override_interval }}
           OVERRIDE_DURATION: ${{ github.event.inputs.override_duration }}
-        run: python scripts/parse_schedule.py
+        run: python parser/src/parse_schedule.py
 
       - name: Commit and push changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           # Додаємо лише існуючі файли, щоб уникнути помилок pathspec
-          git add data/*.json 2>/dev/null || true
-          git add data/raw_site/*.png 2>/dev/null || true
-          git add data/raw_telegram/*.png 2>/dev/null || true
-          git add data/logs/*.txt 2>/dev/null || true
+          git add parser/data/*.json 2>/dev/null || true
+          git add parser/data/raw_site/*.png 2>/dev/null || true
+          git add parser/data/raw_telegram/*.png 2>/dev/null || true
+          git add parser/data/logs/*.txt 2>/dev/null || true
           git diff --quiet && git diff --staged --quiet || (git commit -m "Parser: Update data and state" && git push)
