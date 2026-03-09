@@ -17,11 +17,12 @@
 - **Google Account:** Основний спосіб для збереження налаштувань.
 - **Telegram Auth:** Допоміжний спосіб для прив'язки сповіщень бота.
 
-## 🛠 Технології
+## 🛠 Технології та Дизайн
+- **Дизайн:** [🎨 SSSK Design System](./design_system.md) — Apple-style Glassmorphism.
 - **Фреймворк:** Vanilla JS / Vite (планується).
-- **Стилі:** CSS3 (Glassmorphism design).
-- **БД Користувачів:** Supabase (PostgreSQL) — зберігання підписок та налаштувань черг.
-- **Хостинг:** GitHub Pages.
+- **Стилі:** CSS3 (Liquid Glass effect).
+- **БД Користувачів:** Supabase (PostgreSQL).
+- **Хостинг:** GitHub Pages / Netlify.
 
 ---
 *Частина проекту Svitlo Starkon.*

@@ -1,8 +1,13 @@
 {
+<<<<<<< HEAD:parser/data/state.json
   "last_run": "2026-03-04T19:23:05.845607+02:00",
   "last_success_site": "2026-03-04T19:23:05.845513+02:00",
+=======
+  "last_run": "2026-03-09T21:28:49.007093+02:00",
+  "last_success_site": "2026-03-09T21:28:49.006855+02:00",
+>>>>>>> 4119e9f827bbb78db352e0b72035aaada0bdc496:data/state.json
   "last_success_telegram": null,
-  "last_site_hash": "a45c8aa9837088df4f1dcf5674ad9e3a",
+  "last_site_hash": "0e49e256585e6a0994cb67415ca65609",
   "last_telegram_hash": null,
   "current_source": "site",
   "override_until": null,
