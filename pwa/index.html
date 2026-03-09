@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Світло-Старкон | Коли буде світло?</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <header class="glass-header">
+            <h1 class="headline-hero">Світло-Старкон</h1>
+        </header>
+
+        <main class="content">
+            <div id="status-card" class="glass-card fade-in">
+                <p class="body-neutral">Завантаження даних...</p>
+            </div>
+
+            <div id="schedule-container" class="glass-card fade-in" style="animation-delay: 0.1s;">
+                <h2 class="subheadline">Графік на сьогодні</h2>
+                <div id="timeline" class="timeline-wrapper">
+                    <p class="body-neutral">Оберіть чергу в налаштуваннях</p>
+                </div>
+            </div>
+        </main>
+
+        <nav class="glass-nav">
+            <button class="nav-item active" id="btn-home">
+                <span class="icon">🏠</span>
+            </button>
+            <button class="nav-item" id="btn-stats">
+                <span class="icon">📊</span>
+            </button>
+            <button class="nav-item" id="btn-settings">
+                <span class="icon">⚙️</span>
+            </button>
+        </nav>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
