@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Світло-Старкон | Завтра</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app">
+        <div class="glass-header">
+            <h1 class="headline-hero">Графік на завтра</h1>
+        </div>
+
+        <main class="content-area">
+            <!-- Home Section -->
+            <section id="home-section">
+                <div id="group-carousel" class="group-carousel fade-in">
+                    <!-- Dynamic pills will be injected here -->
+                </div>
+
+                <!-- Smart Hero Section -->
+                <div id="smart-hero" class="hero-section glass-card tomorrow-accent fade-in" style="margin-top:60px;margin-bottom:40px;padding:24px 16px 16px;border-radius:24px;margin-left:20px;margin-right:20px;">
+
+                    <!-- Current Date -->
+                    <div style="text-align:center;margin-bottom:20px;">
+                        <span id="current-date-display" style="display:inline-block;padding:6px 16px;border-radius:20px;background:rgba(128,128,128,0.1);border:1px solid rgba(128,128,128,0.15);font-size:12px;font-weight:700;color:var(--system-text-neutral);text-transform:uppercase;letter-spacing:1px;backdrop-filter:blur(5px);"></span>
+                    </div>
+
+                    <!-- Radar Wrapper — внутрішній розмір 400px, скейлується до ширини екрану -->
+                    <div id="radar-scale-container" style="
+                        width: 100%;
+                        max-width: 400px;
+                        margin: 0 auto 12px;
+                        overflow: visible;
+                    ">
+                        <!-- Внутрішній врапер 400×400 скейлується CSS aspect-ratio -->
+                        <div id="radar-wrapper" style="
+                            position: relative;
+                            width: 400px;
+                            height: 400px;
+                            transform-origin: top center;
+                        ">
+
+                            <!-- Центральна стрілка-індикатор (пряма бірюзова лінія в найнижчому шарі композиції) -->
+                            <div id="radar-indicator" style="
+                                position:absolute;top:0;left:0;
+                                width:400px;height:400px;
+                                z-index:0;
+                                pointer-events:none;
+                                transition:transform 0.1s linear;
+                                transform:rotate(0deg); /* 00:00 is top */
+                            ">
+                                <!-- Сама стрілка (іде від центру 200px вгору до країв) -->
+                                <div id="radar-indicator-line" style="
+                                    position:absolute;top:20px;left:50%;
+                                    width:2px;height:180px;
+                                    background:#00F0FF;
+                                    transform:translateX(-50%);
+                                    transform-origin: bottom center;
+                                    box-shadow:0 0 10px #00F0FF, 0 0 20px #00F0FF;
+                                    border-radius:2px;
+                                    transition:all 0.3s ease;
+                                "></div>
+                            </div>
+
+                            <!-- Outer Time Scale SVG -->
+                            <svg id="radar-outer-scale" width="400" height="400"
+                                 style="position:absolute;top:0;left:0;z-index:1;overflow:visible;pointer-events:none;"></svg>
+
+                            <!-- Outer Label Divs -->
+                            <div id="radar-labels-container" style="position:absolute;top:0;left:0;width:400px;height:400px;z-index:2;pointer-events:none;overflow:visible;"></div>
+
+                            <!-- Radar ring (300×300, зміщений на 40px) -->
+                            <div id="radar-container" style="position:absolute;top:40px;left:40px;width:300px;height:300px;z-index:3;">
+
+                            <!-- Кольорове ядро -->
+                            <div id="radar-core" style="
+                                position:absolute;top:50px;left:50px;
+                                width:200px;height:200px;
+                                border-radius:50%;
+                                z-index:2;
+                                background:#FF9500;
+                                border:1.5px solid rgba(255,149,0,0.8);
+                                display:flex;align-items:center;justify-content:center;
+                                flex-direction:column;
+                                transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+                                box-shadow:0 0 30px rgba(255,149,0,0.4), inset 0 2px 10px rgba(255,255,255,0.3);
+                            ">
+                                <div style="font-size:14px;font-weight:800;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:3px;margin-bottom:6px;">Черга</div>
+                                <div id="hero-group-title" style="font-size:52px;font-weight:900;color:#FFF;letter-spacing:-2px;line-height:1;transition:color 0.3s;">1.1</div>
+                            </div>
+
+                            <!-- Radar SVG ring -->
+                            <svg id="radar-svg" width="300" height="300"
+                                 style="position:absolute;top:0;left:0;transform:rotate(-90deg);overflow:visible;"></svg>
+
+                            <!-- Fallback (немає даних) -->
+                            <div id="hero-fallback" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;display:none;width:100%;">
+                                <p style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.5);">Очікуємо<br>графік</p>
+                            </div>
+                        </div> <!-- /radar-container -->
+                        </div> <!-- /radar-wrapper -->
+                    </div> <!-- /radar-scale-container -->
+
+
+                    <div class="swipe-hint">— свайп для зміни черги —</div>
+                </div>
+
+
+                <div class="section-container" style="padding: 0 20px; margin-top: 48px;">
+                    <div id="schedule-container" class="glass-card fade-in" style="animation-delay: 0.1s; padding: 16px; position: relative;">
+                        
+                        <!-- Hidden date title for app.js if needed, matching index.html structure -->
+                        <div style="display: none; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                            <h2 class="subheadline" id="schedule-date-title" style="margin-bottom: 0;"></h2>
+                        </div>
+
+                        <!-- Top Controls: Stats Bubbles + Preview -->
+                        <div style="display:flex;align-items:flex-end;gap:8px;margin-bottom:24px;flex-wrap:wrap;">
+
+                            <!-- Scrubber Preview (існуюча кулька) -->
+                            <div id="scrubber-preview" class="scrubber-preview fade-in preview-off" style="margin:0;flex-shrink:0;">
+                                <div class="preview-status-icon"><!-- SVG injected --></div>
+                                <div class="preview-details">
+                                    <div class="preview-time" id="preview-time">--:--</div>
+                                    <div class="preview-msg" id="preview-msg">Заванта</div>
+                                </div>
+                            </div>
+
+                            <!-- Stat Bubble: Світло (помаранчевий акцент) -->
+                            <div id="stat-light" style="
+                                display:flex;flex-direction:row;align-items:center;
+                                gap:14px;
+                                padding:14px 20px;
+                                border-radius:24px;
+                                background:rgba(28,28,30,0.88);
+                                border:2px solid rgba(255,149,0,0.35);
+                                box-shadow:0 10px 30px rgba(255,149,0,0.15), 0 4px 12px rgba(0,0,0,0.2);
+                                backdrop-filter:blur(25px) saturate(200%);
+                                -webkit-backdrop-filter:blur(25px) saturate(200%);
+                                flex-shrink:0;
+                            ">
+                                <!-- іконка сонця -->
+                                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;filter:drop-shadow(0 0 8px rgba(255,149,0,0.5));">
+                                    <circle cx="12" cy="12" r="4.5" fill="#FF9500"/>
+                                    <g stroke="#FF9500" stroke-width="2" stroke-linecap="round">
+                                        <line x1="12" y1="2.5" x2="12" y2="5"/>
+                                        <line x1="12" y1="19" x2="12" y2="21.5"/>
+                                        <line x1="2.5" y1="12" x2="5" y2="12"/>
+                                        <line x1="19" y1="12" x2="21.5" y2="12"/>
+                                        <line x1="5.6" y1="5.6" x2="7.4" y2="7.4"/>
+                                        <line x1="16.6" y1="16.6" x2="18.4" y2="18.4"/>
+                                        <line x1="18.4" y1="5.6" x2="16.6" y2="7.4"/>
+                                        <line x1="7.4" y1="16.6" x2="5.6" y2="18.4"/>
+                                    </g>
+                                </svg>
+                                <div style="display:flex;flex-direction:column;gap:2px;">
+                                    <span id="stat-light-val" style="font-size:20px;font-weight:850;color:#FF9500;line-height:1;letter-spacing:-0.5px;text-shadow:0 0 12px rgba(255,149,0,0.3);">--</span>
+                                    <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Год зі світлом</span>
+                                </div>
+                            </div>
+
+                            <!-- Stat Bubble: Темрява (сірий акцент) -->
+                            <div id="stat-off" style="
+                                display:flex;flex-direction:row;align-items:center;
+                                gap:14px;
+                                padding:14px 20px;
+                                border-radius:24px;
+                                background:rgba(28,28,30,0.88);
+                                border:2px solid rgba(142,142,147,0.3);
+                                box-shadow:0 10px 30px rgba(0,0,0,0.2), 0 4px 12px rgba(0,0,0,0.15);
+                                backdrop-filter:blur(25px) saturate(200%);
+                                -webkit-backdrop-filter:blur(25px) saturate(200%);
+                                flex-shrink:0;
+                            ">
+                                <!-- іконка місяця -->
+                                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;filter:drop-shadow(0 0 6px rgba(174,174,178,0.35));">
+                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="#AEAEB2"/>
+                                </svg>
+                                <div style="display:flex;flex-direction:column;gap:2px;">
+                                    <span id="stat-off-val" style="font-size:20px;font-weight:850;color:#AEAEB2;line-height:1;letter-spacing:-0.5px;">--</span>
+                                    <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Год без світла</span>
+                                </div>
+                            </div>
+
+                            <!-- Stat Bubble: Відключення (індиго акцент) -->
+                            <div id="stat-count" style="
+                                display:flex;flex-direction:row;align-items:center;
+                                gap:14px;
+                                padding:14px 20px;
+                                border-radius:24px;
+                                background:rgba(28,28,30,0.88);
+                                border:2px solid rgba(94,92,230,0.4);
+                                box-shadow:0 10px 30px rgba(94,92,230,0.15), 0 4px 12px rgba(0,0,0,0.2);
+                                backdrop-filter:blur(25px) saturate(200%);
+                                -webkit-backdrop-filter:blur(25px) saturate(200%);
+                                flex-shrink:0;
+                            ">
+                                <!-- іконка блискавки-відключення -->
+                                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;filter:drop-shadow(0 0 8px rgba(94,92,230,0.5));">
+                                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#7B79FF"/>
+                                </svg>
+                                <div style="display:flex;flex-direction:column;gap:2px;">
+                                    <span id="stat-count-val" style="font-size:20px;font-weight:850;color:#7B79FF;line-height:1;letter-spacing:-0.5px;text-shadow:0 0 12px rgba(94,92,230,0.3);">--</span>
+                                    <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Відключень</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="ruler-wrapper" class="ruler-wrapper">
+                            <div id="ruler-rail" class="ruler-rail"></div>
+                            <div id="ruler-ticks" class="ruler-ticks"></div>
+                            <input type="range" id="timeline-scrubber" class="timeline-scrubber" min="0" max="287"
+                                value="0">
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+        
+        <!-- Push nav to bottom safely -->
+        <div style="height: 100px;"></div>
+
+        <nav class="glass-nav">
+            <button class="nav-item  focus-ring" onclick="window.location.href='index.html'">
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+                <span class="nav-text">Home</span>
+            </button>
+            <button class="nav-item  focus-ring" onclick="window.location.href='full_schedule.html'">
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span>
+                <span class="nav-text">Graph</span>
+            </button>
+            <button class="nav-item active focus-ring" onclick="window.location.href='javascript:void(0)'">
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span>
+                <span class="nav-text">App</span>
+            </button>
+            <button class="nav-item  focus-ring" onclick="window.location.href='cabinet.html'">
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                <span class="nav-text">Profile</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Bottom Sheet Menu -->
+    <div id="overlay" class="overlay">
+        <div id="bottom-sheet" class="glass-card bottom-sheet">
+            <div class="sheet-handle"></div>
+            <h2 class="subheadline">Оберіть вашу чергу</h2>
+            <div class="group-grid" id="group-buttons">
+                <!-- Group buttons injected here -->
+            </div>
+            <button id="btn-close-sheet" class="close-btn">Готово</button>
+        </div>
+    </div>
+
+    <!-- Include the Tomorrow module -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <!-- Core Logic -->
+    <script type="module" src="js/pages/tomorrow.js?v=testpills2"></script>
+</body>
+
+</html>

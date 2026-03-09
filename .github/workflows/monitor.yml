@@ -76,6 +76,15 @@ jobs:
           OVERRIDE_DURATION: ${{ github.event.inputs.override_duration }}
         run: python parser/src/parse_schedule.py
 
+      - name: Sync schedule_api.json to PWA data folder
+        run: |
+          if [ -f parser/data/schedule_api.json ]; then
+            cp parser/data/schedule_api.json pwa/data/schedule_api.json
+            echo "Synced schedule_api.json -> pwa/data/"
+          else
+            echo "schedule_api.json not found, skipping sync."
+          fi
+
       - name: Commit and push changes
         run: |
           git config --global user.name "github-actions[bot]"
@@ -83,6 +92,7 @@ jobs:
           # Додаємо лише існуючі файли, щоб уникнути помилок pathspec
           git add parser/data/*.json 2>/dev/null || true
           git add parser/data/raw_site/*.png 2>/dev/null || true
-          git add parser/data/raw_telegram/*.png 2>/dev/null || true
+          git add parser/data/raw_telegram/*.jpg 2>/dev/null || true
           git add parser/data/logs/*.txt 2>/dev/null || true
+          git add pwa/data/schedule_api.json 2>/dev/null || true
           git diff --quiet && git diff --staged --quiet || (git commit -m "Parser: Update data and state" && git push)

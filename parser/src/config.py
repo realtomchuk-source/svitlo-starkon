@@ -7,6 +7,7 @@ LOGS_DIR = os.path.join(DATA_DIR, "logs")
 
 STATE_FILE = os.path.join(DATA_DIR, "state.json")
 UNIFIED_DB = os.path.join(DATA_DIR, "unified_schedules.json")
+SCHEDULE_API_FILE = os.path.join(DATA_DIR, "schedule_api.json")
 
 RAW_SITE_DIR = os.path.join(DATA_DIR, "raw_site")
 RAW_TELEGRAM_DIR = os.path.join(DATA_DIR, "raw_telegram")

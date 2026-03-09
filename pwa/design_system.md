@@ -53,8 +53,29 @@ This document defines the visual and interaction guidelines for the Svitlo Stark
 
 ---
 
-## 6. Implementation Checklist
-- [ ] Implement CSS Variables for colors and blurs.
-- [ ] Create a reusable `glass-card` CSS utility.
-- [ ] Define reusable typography classes (`headline-hero`, `body-neutral`).
-- [ ] Setup dark/light theme triggers.
+## 6. Data Visualization & Interactive Elements
+- **Radar Chart:** 24-hour circular візуалізація графіків. Використовує напівпрозорі сегменти (glass segments) та ефекти світіння.
+- **Timeline Scrubber:** Плавний інтерактивний повзунок (range input) налаштований під свайп для швидкої прокрутки часу.
+- **Neon Pills:** Плаваючі мітки часу (time pills) на границях змін графіку для швидкої орієнтації.
+
+---
+
+### 7. Status Coloring
+- 🟢 **Power On:** Hot Orange (`#FF9500`) — символізує світло та енергію.
+- ⚪ **Power Off:** Neutral Gray (`#8E8E93`) — відсутність світла.
+- 🔵 **Акценти/Радар:** System Blue (`#007AFF`) — використовується для ліній скраббера та активних поділок часу.
+
+---
+
+## 8. Admin Panel UI
+- Адміністративний інтерфейс (`admin.html`, `admin.css`) має більшу щільність даних (data density).
+- Зберігає загальну філософію Glassmorphism, але використовує більш виразні рамки та вищий контраст для зручності модерації бази даних парсера.
+
+---
+
+## 9. Implementation Checklist
+- [x] Implement CSS Variables for colors and blurs.
+- [x] Create a reusable `glass-card` CSS utility.
+- [x] Define reusable typography classes (`headline-hero`, `body-neutral`).
+- [x] Setup dark/light theme triggers.
+- [x] **New Color Palette:** Apply Orange/Gray for power status.

@@ -1,0 +1,56 @@
+[
+  {
+    "timestamp": "2026-03-03T20:57:02.890503+02:00",
+    "target_date": null,
+    "source": "site",
+    "raw_path": "data/raw_site/20260303_205702.png",
+    "is_update": true,
+    "processed": false,
+    "parsed_text": ""
+  },
+  {
+    "timestamp": "2026-03-08T12:54:02.970944+02:00",
+    "target_date": "08.03",
+    "source": "site",
+    "raw_path": "data/raw_site/20260308_125401.png",
+    "is_update": false,
+    "processed": false,
+    "parsed_text": "Графік погодинних відключень на 08.03.2026. Відключення заплановані."
+  },
+  {
+    "timestamp": "2026-03-08T21:02:24.768751+02:00",
+    "target_date": "09.03",
+    "source": "site",
+    "raw_path": "data/raw_site/20260308_210223.png",
+    "is_update": false,
+    "processed": false,
+    "parsed_text": "Графік погодинних відключень на 09.03.2026. Відключення заплановані."
+  },
+  {
+    "timestamp": "2026-03-09T21:28:49.006354+02:00",
+    "target_date": "10.03",
+    "source": "site",
+    "raw_path": "data/raw_site/20260309_212847.png",
+    "is_update": false,
+    "processed": false,
+    "parsed_text": "Графік погодинних відключень на 10.03.2026. Відключення заплановані."
+  },
+  {
+    "timestamp": "2026-03-11T00:00:00.000000+02:00",
+    "target_date": "11.03",
+    "source": "mockup",
+    "raw_path": "",
+    "is_update": false,
+    "processed": false,
+    "parsed_text": "Увага! Сьогодні 11.03.2026 діють погодинні відключення."
+  },
+  {
+    "timestamp": "2026-03-12T00:00:00.000000+02:00",
+    "target_date": "12.03",
+    "source": "mockup",
+    "raw_path": "",
+    "is_update": false,
+    "processed": false,
+    "parsed_text": "Увага! Завтра 12.03.2026 діють погодинні відключення."
+  }
+]

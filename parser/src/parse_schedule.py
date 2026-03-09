@@ -8,10 +8,34 @@ from modules.utils import load_json, save_json, get_now, should_run, send_telegr
 from modules.site_parser import run_site_parser
 from modules.telegram_parser import run_telegram_parser
 from modules.ocr_helper import extract_text_from_image
-from config import STATE_FILE, UNIFIED_DB, RAW_SITE_DIR, RAW_TELEGRAM_DIR, LOGS_DIR
+from config import STATE_FILE, UNIFIED_DB, SCHEDULE_API_FILE, RAW_SITE_DIR, RAW_TELEGRAM_DIR, LOGS_DIR
 
 # Initialize logger for the main script
 logger = logging.getLogger("SSSK-Main")
+
+
+def generate_api_export(db):
+    """
+    Transforms the internal parser DB (unified_schedules.json) into a
+    PWA-compatible API file (schedule_api.json).
+    This is the isolation contract between the parser layer and the PWA layer.
+    The PWA should only ever read schedule_api.json, never unified_schedules.json.
+    """
+    api_entries = []
+    for entry in db:
+        api_entry = {
+            "timestamp": entry.get("timestamp"),
+            "target_date": entry.get("target_date"),
+            "source": entry.get("source"),
+            # Normalize field name: raw_text_summary (parser) -> parsed_text (PWA)
+            "parsed_text": entry.get("raw_text_summary", entry.get("parsed_text", "")),
+            "is_update": entry.get("is_update", False),
+        }
+        api_entries.append(api_entry)
+
+    save_json(SCHEDULE_API_FILE, api_entries)
+    logger.info(f"schedule_api.json exported: {len(api_entries)} entries.")
+
 
 def main():
     logger.info("Starting SSSK Parser cycle")
@@ -106,6 +130,9 @@ def main():
         db = load_json(UNIFIED_DB, default=[])
         db.append(entry)
         save_json(UNIFIED_DB, db)
+
+        # Export PWA-compatible API file (isolates parser DB from PWA layer)
+        generate_api_export(db)
         
         logger.info(f"!!! SUCCESS: Extracted data from {source_used} schedule !!!")
         if is_emergency:

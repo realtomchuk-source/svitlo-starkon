@@ -12,7 +12,7 @@ def run_telegram_parser(state):
     chat_id = os.getenv("TELEGRAM_CHAT_ID")
     
     if not token or not chat_id:
-        logger.error("Telegram bot credentials missing.")
+        logger.info("Telegram: channel not configured yet (stub mode). Skipping.")
         return None
 
     url = f"https://api.telegram.org/bot{token}/getUpdates"

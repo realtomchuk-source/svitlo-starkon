@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Світло-Старкон | Коли буде світло?</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app">
+        <div class="glass-header">
+            <h1 class="headline-hero">Світло-Старкон</h1>
+        </div>
+
+
+        <main class="content-area">
+            <!-- Home Section -->
+            <section id="home-section">
+                <div id="group-carousel" class="group-carousel fade-in">
+                    <!-- Dynamic pills will be injected here -->
+                </div>
+
+                <!-- Removed Date Badge as per user request to integrate into hero -->
+
+                <!-- Smart Hero Section -->
+                <div id="smart-hero" class="hero-section glass-card fade-in" style="margin-top: 60px; margin-bottom: 40px; padding: 24px 16px; border-radius: 24px; margin-left: 20px; margin-right: 20px;">
+
+                    <!-- Current Date -->
+                    <div style="text-align: center; margin-bottom: 24px;">
+                        <span id="current-date-display" style="display: inline-block; padding: 6px 16px; border-radius: 20px; background: rgba(128, 128, 128, 0.1); border: 1px solid rgba(128, 128, 128, 0.15); font-size: 12px; font-weight: 700; color: var(--system-text-neutral); text-transform: uppercase; letter-spacing: 1px; backdrop-filter: blur(5px);"></span>
+                    </div>
+                    
+                    <img id="hero-icon-3d" src="assets/power_off.png" alt="Status" class="hero-3d-icon" style="margin: 0 auto; display: block;">
+
+                    <!-- Texts aligned to screenshot -->
+                    <h2 class="hero-group-title" id="hero-group-title">ЧЕРГА 5.2</h2>
+                    <p class="hero-status-text" id="hero-title">Світла немає</p>
+                    
+                    <div style="margin-top: 24px; margin-bottom: 16px; display: flex; flex-direction: column; align-items: center;">
+                        <p class="hero-countdown" id="hero-countdown">--:--</p>
+                        <p class="body-neutral" id="hero-subtitle" style="font-size: 13px;">Оновлення даних</p>
+                    </div>
+
+                    <div class="swipe-hint">— свайп для зміни черги —</div>
+                </div>
+
+                <div class="section-container" style="padding: 0 20px; margin-top: 48px;">
+                    <div id="schedule-container" class="glass-card fade-in" style="animation-delay: 0.1s; padding: 16px; position: relative;">
+                        
+                        <!-- Date title and tomorrow button removed from view as per screenshot (hidden or relocated) -->
+                        <div style="display: none; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                            <h2 class="subheadline" id="schedule-date-title" style="margin-bottom: 0;"></h2>
+                        </div>
+
+                        <!-- Top Controls: Preview Bubble (Left) and Tomorrow Button (Right) -->
+                        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
+                            <!-- Scrubber Preview Window -->
+                            <div id="scrubber-preview" class="scrubber-preview fade-in preview-off" style="margin: 0;">
+                                <div class="preview-status-icon">
+                                    <!-- Initial empty state or default SVG off -->
+                                </div>
+                                <div class="preview-details">
+                                    <div class="preview-time" id="preview-time">--:--</div>
+                                    <div class="preview-msg" id="preview-msg">Завантаження...</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Tomorrow Button -->
+                            <button id="btn-show-tomorrow" class="btn-tomorrow fade-in hidden"
+                                onclick="window.location.href='full_schedule.html'"
+                                style="margin: 0; padding: 10px 16px; font-size: 13px; border-radius: 16px; backdrop-filter: blur(5px);">
+                                Графік на завтра
+                            </button>
+                        </div>
+
+                        <div id="ruler-wrapper" class="ruler-wrapper">
+                            <div id="ruler-rail" class="ruler-rail"></div>
+                            <div id="ruler-ticks" class="ruler-ticks"></div>
+                            <input type="range" id="timeline-scrubber" class="timeline-scrubber" min="0" max="287"
+                                value="0">
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </section>
+
+        </main>
+        
+        <!-- Push nav to bottom safely -->
+        <div style="height: 100px;"></div>
+
+        <nav class="glass-nav">
+            <button class="nav-item active focus-ring" onclick="window.location.href='index.html'">
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+                <span class="nav-text">Home</span>
+            </button>
+            <button class="nav-item  focus-ring" onclick="window.location.href='full_schedule.html'">
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span>
+                <span class="nav-text">Graph</span>
+            </button>
+            <button class="nav-item  focus-ring" onclick="window.location.href='javascript:void(0)'">
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span>
+                <span class="nav-text">App</span>
+            </button>
+            <button class="nav-item  focus-ring" onclick="window.location.href='cabinet.html'">
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                <span class="nav-text">Profile</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Bottom Sheet Menu -->
+    <div id="overlay" class="overlay">
+        <div id="bottom-sheet" class="glass-card bottom-sheet">
+            <div class="sheet-handle"></div>
+            <h2 class="subheadline">Оберіть вашу чергу</h2>
+            <div class="group-grid" id="group-buttons">
+                <!-- Group buttons injected here -->
+            </div>
+            <button id="btn-close-sheet" class="close-btn">Готово</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script type="module" src="js/pages/home.js"></script>
+</body>
+
+</html>
