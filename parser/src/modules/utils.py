@@ -2,23 +2,42 @@ import json
 import os
 import time
 import requests
+import logging
 from datetime import datetime, timedelta
 import pytz
+from config import STATE_FILE, LOGS_DIR, TIMEZONE
 
-STATE_FILE = "parser/data/state.json"
-UNIFIED_DB = "parser/data/unified_schedules.json"
-TZ = pytz.timezone("Europe/Kiev")
+# Setup logging
+os.makedirs(LOGS_DIR, exist_ok=True)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(name)s: %(message)s',
+    handlers=[
+        logging.FileHandler(os.path.join(LOGS_DIR, "parser.log"), encoding='utf-8'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger("SSSK-Utils")
+
+TZ = pytz.timezone(TIMEZONE)
 
 def load_json(path, default=None):
     if not os.path.exists(path):
         return default if default is not None else {}
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        logger.error(f"Error loading JSON from {path}: {e}")
+        return default if default is not None else {}
 
 def save_json(path, data):
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+    try:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        logger.error(f"Error saving JSON to {path}: {e}")
 
 def get_now():
     return datetime.now(TZ)
@@ -27,16 +46,19 @@ def send_telegram_alert(message):
     token = os.getenv("TELEGRAM_BOT_TOKEN")
     chat_id = os.getenv("TELEGRAM_CHAT_ID")
     if not token or not chat_id:
-        print(f"Telegram alert (skipped - no credentials): {message}")
+        logger.warning(f"Telegram alert skipped (missing credentials): {message}")
         return
     
     url = f"https://api.telegram.org/bot{token}/sendMessage"
     try:
-        requests.post(url, json={"chat_id": chat_id, "text": message})
+        resp = requests.post(url, json={"chat_id": chat_id, "text": message}, timeout=10)
+        resp.raise_for_status()
+        logger.info("Telegram alert sent successfully.")
     except Exception as e:
-        print(f"Failed to send telegram alert: {e}")
+        logger.error(f"Failed to send telegram alert: {e}")
 
 def should_run(state):
+    from config import PEAK_HOUR_START, PEAK_HOUR_END, PEAK_INTERVAL, DEFAULT_INTERVAL_HOURS
     now = get_now()
     
     # 1. Перевірка Override
@@ -45,7 +67,9 @@ def should_run(state):
         override_until = datetime.fromisoformat(override_until_str)
         if now < override_until:
             interval = state.get("override_interval_minutes", 0)
-            if interval <= 0: return True # Форсований запуск без інтервалу
+            if interval <= 0: 
+                logger.info("Override active (forced run).")
+                return True
             
             last_run_str = state.get("last_run")
             if not last_run_str: return True
@@ -55,10 +79,10 @@ def should_run(state):
                 return True
             return False
         else:
-            # Термін дії override вийшов
             state["override_until"] = None
             state["override_interval_minutes"] = None
             save_json(STATE_FILE, state)
+            logger.info("Override expired.")
 
     # 2. Стандартний розклад
     curr_hour = now.hour
@@ -66,40 +90,12 @@ def should_run(state):
     if not last_run_str: return True
     last_run = datetime.fromisoformat(last_run_str)
     
-    # ============================================================
-    # ТИМЧАСОВИЙ РЕЖИМ (відсутність відключень)
-    # Повернути стандартний режим — розкоментувати блок нижче
-    # та видалити/закоментувати тимчасовий блок
-    # ============================================================
+    # Піковий годинник (кожні PEAK_INTERVAL хвилин)
+    if PEAK_HOUR_START <= curr_hour < PEAK_HOUR_END:
+        return (now - last_run).total_seconds() / 60 >= PEAK_INTERVAL
     
-    # 19:00 - 23:00 (Пік): кожні 15 хв
-    if 19 <= curr_hour < 23:
-        return (now - last_run).total_seconds() / 60 >= 15
-    
-    # Решта доби: кожні 5 годин
-    return (now - last_run).total_seconds() / 3600 >= 5
-
-    # ============================================================
-    # СТАНДАРТНИЙ РЕЖИМ (при активних відключеннях)
-    # ============================================================
-    # # 19:00 - 24:00 (Пік)
-    # if curr_hour >= 19:
-    #     last_success = state.get("last_success_site") or state.get("last_success_telegram")
-    #     if last_success:
-    #         ls_dt = datetime.fromisoformat(last_success)
-    #         if ls_dt.date() == now.date() and ls_dt.hour >= 19:
-    #             return (now - last_run).total_seconds() / 60 >= 60
-    #     return True
-    #
-    # # 00:00 - 09:00 (Ніч)
-    # if 0 <= curr_hour < 9:
-    #     return (now - last_run).total_seconds() / 3600 >= 5
-    #
-    # # 09:00 - 19:00 (День)
-    # if 9 <= curr_hour < 19:
-    #     return (now - last_run).total_seconds() / 3600 >= 3
-    #
-    # return True
+    # Решта доби (DEFAULT_INTERVAL_HOURS годин)
+    return (now - last_run).total_seconds() / 3600 >= DEFAULT_INTERVAL_HOURS
 
 def cleanup_old_files(directory, days=7):
     if not os.path.exists(directory): return
@@ -107,6 +103,10 @@ def cleanup_old_files(directory, days=7):
     for f in os.listdir(directory):
         f_path = os.path.join(directory, f)
         if os.stat(f_path).st_mtime < now - (days * 86400):
-            if os.path.isfile(f_path):
-                os.remove(f_path)
-                print(f"Removed old file: {f}")
+            try:
+                if os.path.isfile(f_path):
+                    os.remove(f_path)
+                    logger.info(f"Removed old file: {f}")
+            except Exception as e:
+                logger.error(f"Error removing file {f_path}: {e}")
+
