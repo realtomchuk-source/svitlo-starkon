@@ -1,0 +1,16 @@
+{
+  "name": "Світло-Старкон",
+  "short_name": "Світло",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#007AFF",
+  "icons": [
+    {
+      "src": "assets/logo.png",
+      "sizes": "150x150",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
