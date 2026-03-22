@@ -10,6 +10,10 @@ import { openSheet, closeSheet, renderGroupCarousel, initHeroSwipes, centerActiv
 
 const groups = ['1.1', '1.2', '2.1', '2.2', '3.1', '3.2', '4.1', '4.2', '5.1', '5.2', '6.1', '6.2'];
 
+let savedScrubberValue = null;
+let hasInteractedWithScrubber = false;
+let globalScrubberTimeout = null;
+
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('Home Page Module Initialized');
 
@@ -70,6 +74,25 @@ function initUI(selectedGroup) {
         () => swipeToGroup(1),   // Left 
         () => swipeToGroup(-1)   // Right
     );
+
+    // Зберігаємо позицію повзунка (якщо користувач вручну тягне)
+    const scrubber = document.getElementById('timeline-scrubber');
+    if (scrubber) {
+        scrubber.addEventListener('input', (e) => {
+            hasInteractedWithScrubber = true;
+            savedScrubberValue = parseInt(e.target.value);
+            if (globalScrubberTimeout) clearTimeout(globalScrubberTimeout);
+        });
+
+        // Після відпускання пальця, скидаємо "ручний" стан через 2 секунди, щоб движок міг повернутися до Now
+        scrubber.addEventListener('change', () => {
+            if (globalScrubberTimeout) clearTimeout(globalScrubberTimeout);
+            globalScrubberTimeout = setTimeout(() => {
+                hasInteractedWithScrubber = false;
+                savedScrubberValue = null;
+            }, 2100); // Синхронізуємо з таймаутом TimelineEngine
+        });
+    }
 
     // Оновлення поточної дати
     updateDateDisplay();
@@ -155,22 +178,45 @@ async function loadAndRender(selectedGroup) {
     const groupTitle = document.getElementById('hero-group-title');
     if (groupTitle) groupTitle.textContent = 'ЧЕРГА ' + selectedGroup;
 
+    const scheduleString = daySchedule ? daySchedule[selectedGroup] : null;
+
+    // Зупиняємо старий 엔진, щоб не накопичувати інтервали автооновлення
+    if (window.activeEngine) {
+        window.activeEngine.stopAutoUpdate();
+    }
+
     // Створюємо 엔진 і відмальовуємо графік
     const engine = new TimelineEngine({
         scheduleData: scheduleData,
+        scheduleString: scheduleString,
         selectedGroup: selectedGroup,
         groups: groups,
         demoMode: demoMode,
         isAllClearDay: isAllClearDay
     });
     
+    window.activeEngine = engine;
     engine.init();
 
+    // Якщо користувач під час свайпу вже тримає певну годину, примусово відновлюємо її
+    setTimeout(() => {
+        if (hasInteractedWithScrubber && savedScrubberValue !== null) {
+            const scrubber = document.getElementById('timeline-scrubber');
+            if (scrubber) {
+                engine.stopAutoUpdate(); // Зупиняємо автострибок до Now
+                scrubber.value = savedScrubberValue;
+                engine.scrubberInteracted = true;
+                if (engine.preview) engine.preview.classList.remove('preview-off');
+                engine.updateScrubberPreview();
+            }
+        }
+    }, 50);
+
     // Оновлення Hero UI (колір картки, таймер)
-    updateHeroUI(selectedGroup, now, isAllClearDay, demoMode);
+    updateHeroUI(selectedGroup, now, isAllClearDay, demoMode, scheduleString);
 }
 
-function updateHeroUI(selectedGroup, now, isAllClear, demoMode) {
+function updateHeroUI(selectedGroup, now, isAllClear, demoMode, scheduleString) {
     const heroCard = document.getElementById('smart-hero');
     const heroTitle = document.getElementById('hero-title');
     const heroSubtitle = document.getElementById('hero-subtitle');
@@ -200,7 +246,17 @@ function updateHeroUI(selectedGroup, now, isAllClear, demoMode) {
     let isCurrentlyOn = true;
     let nextChangeHour = 24;
 
-    if (demoMode) {
+    if (scheduleString && scheduleString.length === 24) {
+        // Використовуємо реальний графік з API або моку
+        isCurrentlyOn = scheduleString[currentHour] === '1';
+        for (let i = currentHour + 1; i <= 24; i++) {
+            if (i === 24) { nextChangeHour = 24; break; }
+            if ((scheduleString[i] === '1') !== isCurrentlyOn) {
+                nextChangeHour = i;
+                break;
+            }
+        }
+    } else if (demoMode) {
         // 5 hours OFF, 5 hours ON pattern shifted
         isCurrentlyOn = !((currentHour + groupIndex) % 10 < 5);
         for (let i = currentHour + 1; i <= 24; i++) {
@@ -209,7 +265,7 @@ function updateHeroUI(selectedGroup, now, isAllClear, demoMode) {
             if (stateAtHour !== isCurrentlyOn) { nextChangeHour = i; break; }
         }
     } else {
-        // Original logic for production
+        // Original logic for production fallback
         isCurrentlyOn = !((currentHour + groupIndex * 2) % 6 < 3);
         for (let i = currentHour + 1; i <= 24; i++) {
             if (i === 24) { nextChangeHour = 24; break; }

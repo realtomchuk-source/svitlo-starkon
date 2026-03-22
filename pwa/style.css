@@ -569,37 +569,7 @@ body {
     display: none !important;
 }
 
-/* Tomorrow Theme (Dark / Deep Blue/Purple) */
-body.tomorrow-theme {
-    background-color: #0b0c10;
-    background-image: radial-gradient(circle at top right, rgba(94, 92, 230, 0.15), transparent 40%),
-                      radial-gradient(circle at bottom left, rgba(10, 132, 255, 0.1), transparent 40%);
-    color: #ffffff;
-}
 
-body.tomorrow-theme .glass-header,
-body.tomorrow-theme .glass-nav {
-    background: rgba(15, 15, 25, 0.8);
-    border-color: rgba(255, 255, 255, 0.1);
-}
-
-body.tomorrow-theme .glass-card,
-body.tomorrow-theme .scrubber-preview {
-    background: rgba(20, 20, 35, 0.6);
-    border-color: rgba(255, 255, 255, 0.1);
-    color: #fff;
-}
-
-body.tomorrow-theme .carousel-pill {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
-    color: #fff;
-}
-
-body.tomorrow-theme .carousel-pill.active {
-    background: linear-gradient(135deg, #0A84FF 0%, #5E5CE6 100%);
-    border-color: transparent;
-}
 
 
 /* Google Button */
@@ -840,71 +810,36 @@ body.tomorrow-theme .carousel-pill.active {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 2px;
+    gap: 1px; /* Closer gap like in stat widgets */
 }
 
 .preview-time {
-    font-size: 20px; /* Increased size */
-    font-weight: 850; /* Even bolder */
-    color: #FFFFFF;
-    line-height: 1;
-    letter-spacing: -0.5px;
-    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.4)); /* Sharper shadow for pop */
-}
-
-/* Specific contrast for OFF state */
-.preview-off .preview-time {
-    color: #FF9500; /* Use orange for the time as well in 'off' state to match the icon and pop against gray */
-    text-shadow: 0 0 12px rgba(255, 149, 0, 0.2);
-}
-
-.preview-msg {
-    font-size: 13px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
-    white-space: nowrap;
-}
-
-/* Accent for colored text in details if needed */
-.preview-on .preview-time, 
-.preview-on .preview-msg {
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-}
-
-.preview-details {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.preview-time {
-    font-size: 16px;
-    font-weight: 800;
-    color: var(--system-text-dark, #000);
+    font-size: 19px; /* Standardized to 19px like stat widgets */
+    font-weight: 900; /* Standardized 900 weight */
+    color: #FFFFFF !important; /* Always white */
     line-height: 1.1;
+    letter-spacing: -0.2px;
+    -webkit-text-stroke: 0.4px rgba(0, 0, 0, 0.1);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     transition: color 0.3s ease;
 }
 
 .preview-msg {
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 14px; /* Standardized to 14px */
+    font-weight: 800; /* Standardized 800 weight */
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    white-space: nowrap;
     transition: color 0.3s ease;
 }
 
+/* Status-specific Label Colors */
 .preview-on .preview-msg {
-    color: #FF9500;
+    color: #000000 !important; /* Black label on orange bubble */
 }
 
 .preview-off .preview-msg {
-    color: #8E8E93;
-}
-
-.preview-on .preview-msg,
-.preview-off .preview-msg {
-    color: white !important;
-    opacity: 0.9 !important;
+    color: #FF9500 !important; /* Orange label on dark grey bubble */
 }
 
 .ruler-wrapper {
@@ -1330,15 +1265,4 @@ body.tomorrow-theme .carousel-pill.active {
         border-top-color: #1C1C1E;
     }
 }
-
-/* Tomorrow Page Specific Accents */
-.tomorrow-accent {
-    background: rgba(160, 120, 255, 0.08) !important;
-    border: 1px solid rgba(160, 120, 255, 0.2) !important;
-}
-
-@media (prefers-color-scheme: dark) {
-    .tomorrow-accent {
-        background: rgba(160, 120, 255, 0.15) !important;
-    }
-}
+

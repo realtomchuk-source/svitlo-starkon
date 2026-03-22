@@ -7,6 +7,7 @@
 export class TimelineEngine {
     constructor(config) {
         this.scheduleData = config.scheduleData;
+        this.scheduleString = config.scheduleString;
         this.selectedGroup = config.selectedGroup;
         this.groups = config.groups || ['1.1', '1.2', '2.1', '2.2', '3.1', '3.2', '4.1', '4.2', '5.1', '5.2', '6.1', '6.2'];
         
@@ -26,6 +27,9 @@ export class TimelineEngine {
         if (!this.scrubber) return;
 
         this.scrubber.max = 287;
+        // Лінеаризація нативного повзунка: робимо так, щоб центр повзунка ідеально співпадав із відсотками (напр. 66.66%)
+        this.scrubber.style.width = 'calc(100% + 20px)';
+        this.scrubber.style.marginLeft = '-10px';
 
         this.scrubber.oninput = () => {
             this.scrubberInteracted = true;
@@ -85,6 +89,11 @@ export class TimelineEngine {
     checkIsOffAtHour(h) {
         if (this.isAllClearDay) return false;
 
+        // Use the actual schedule string data if available instead of math formula
+        if (this.scheduleString && this.scheduleString.length === 24) {
+            return this.scheduleString[Math.floor(h)] === '0';
+        }
+
         const groupIndex = this.groups.indexOf(this.selectedGroup);
         if (this.demoMode) {
             return ((Math.floor(h) + groupIndex) % 10 < 5);
@@ -99,7 +108,7 @@ export class TimelineEngine {
         this.rail.innerHTML = '';
         this.rail.style.background = 'transparent';
         this.rail.style.display = 'flex';
-        this.rail.style.gap = '3px';
+        this.rail.style.gap = '0'; // Забираємо gap, щоб кожен блок займав рівно 1/24 ширини без зсувів
         this.rail.style.height = '55px'; // Дводоріжковий таймлайн
         this.rail.style.borderRadius = '0';
         
@@ -128,8 +137,11 @@ export class TimelineEngine {
             // Рендер верхньої та нижньої доріжок
             const topTrack = document.createElement('div');
             topTrack.className = 'top-track';
+            topTrack.style.width = 'calc(100% - 2px)'; // Візуальний зазор
+
             const bottomTrack = document.createElement('div');
             bottomTrack.className = 'bottom-track';
+            bottomTrack.style.width = 'calc(100% - 2px)'; // Візуальний зазор
 
             if (this.isAllClearDay) {
                 topTrack.style.backgroundColor = '#FF9500';
@@ -235,7 +247,7 @@ export class TimelineEngine {
         this.preview.classList.remove('preview-on', 'preview-off');
         this.preview.classList.add(isOff ? 'preview-off' : 'preview-on');
 
-        const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
+        const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" fill="currentColor" style="width:100%; height:100%;"><path d="M292.9 384c7.3-22.3 21.9-42.5 38.4-59.9 32.7-34.4 52.7-80.9 52.7-132.1 0-106-86-192-192-192S0 86 0 192c0 51.2 20 97.7 52.7 132.1 16.5 17.4 31.2 37.6 38.4 59.9l201.7 0zM288 432l-192 0 0 16c0 44.2 35.8 80 80 80l32 0c44.2 0 80-35.8 80-80l0-16zM184 112c-39.8 0-72 32.2-72 72 0 13.3-10.7 24-24 24s-24-10.7-24-24c0-66.3 53.7-120 120-120 13.3 0 24 10.7 24 24s-10.7 24-24 24z"/></svg>`;
 
         this.preview.innerHTML = `
             <div class="preview-status-icon">${svgIcon}</div>

@@ -9,6 +9,10 @@ import { openSheet, closeSheet, renderGroupCarousel, initHeroSwipes, centerActiv
 
 const groups = ['1.1', '1.2', '2.1', '2.2', '3.1', '3.2', '4.1', '4.2', '5.1', '5.2', '6.1', '6.2'];
 
+let savedScrubberValue = 0; // Зберігаємо позицію повзунка при перемиканні черг
+let hasInteractedWithScrubber = false; // Перевіряємо, чи був ручний дотик
+let currentArrowStyle = localStorage.getItem('sssk_arrow_style') || 'skeleton'; // Стиль стрілки радара
+
 document.addEventListener('DOMContentLoaded', async () => {
     let selectedGroup = localStorage.getItem('sssk_group') || '1.1';
 
@@ -44,6 +48,25 @@ function initUI(selectedGroup) {
     );
 
     updateDateDisplay();
+
+    // Синхронізуємо Радар з рухом скрабера (один раз при ініціалізації)
+    const scrubber = document.getElementById('timeline-scrubber');
+    if (scrubber) {
+        scrubber.addEventListener('input', (e) => {
+            hasInteractedWithScrubber = true; // Фіксуємо ручний дотик
+            const val = parseInt(e.target.value);
+            savedScrubberValue = val; // Запам'ятовуємо позицію!
+            const hour = Math.floor((val * 5) / 60); // 1 крок = 5 хв
+            updateRadarHighlight(hour, val);
+        });
+    }
+
+    // Секретна фіча: перемикання стилю стрілки при кліку на центральне ядро
+    const radarCore = document.getElementById('radar-core');
+    if (radarCore) {
+        radarCore.addEventListener('click', toggleArrowStyle);
+    }
+    applyArrowStyle(); // Застосовуємо стиль при завантаженні сторінки
 }
 
 function swipeToGroup(direction) {
@@ -129,9 +152,12 @@ async function loadAndRender(selectedGroup) {
         text = daySchedule.content || daySchedule.parsed_text || '';
     }
 
+    const scheduleString = daySchedule ? daySchedule[selectedGroup] : null;
+
     // Малюємо шкалу
     const engine = new TimelineEngine({
         scheduleData: targetData, // <-- using targetData because we mocked it
+        scheduleString: scheduleString,
         selectedGroup: selectedGroup,
         groups: groups,
         demoMode: false,
@@ -143,26 +169,26 @@ async function loadAndRender(selectedGroup) {
     // Застосовуємо дизайн сторінки ЗАВТРА та розраховуємо статистику
     overrideHero(selectedGroup, daySchedule[selectedGroup]);
     
-    // Скидаємо повзунок на 00:00 для сторінки ЗАВТРА
+    // Відновлюємо позицію повзунка (або 00:00, якщо сторінку тільки відкрили)
     const scrubber = document.getElementById('timeline-scrubber');
     if (scrubber) {
         engine.stopAutoUpdate(); // Відключаємо автооновлення до поточного часу
-        // Форсуємо скидання на 00:00 та оновлення UI графіка
-        setTimeout(() => {
-            scrubber.value = 0;
-            engine.updateScrubberPreview();
-            scrubber.dispatchEvent(new Event('input'));
-        }, 50);
-
-        // Синхронізуємо Радар з рухом скрабера
-        scrubber.addEventListener('input', (e) => {
-            const val = parseInt(e.target.value);
-            const hour = Math.floor((val * 5) / 60); // 1 крок = 5 хв
-            updateRadarHighlight(hour, val);
-        });
         
-        // Ми більше не скидаємо ховер при відпусканні, 
-        // колір ядра завжди залишається насиченим відповідно до вибраного часу
+        // Форсуємо оновлення інтерфейсу з урахуванням збереженого значення
+        setTimeout(() => {
+            scrubber.value = savedScrubberValue;
+            
+            if (!hasInteractedWithScrubber) {
+                // Клієнт ще не торкався: не імітуємо евент, щоб блок не підстрибував
+                engine.scrubberInteracted = false;
+                if (engine.preview) engine.preview.classList.add('preview-off');
+                engine.updateScrubberPreview(); 
+                updateRadarHighlight(0, savedScrubberValue);
+            } else {
+                // Користувач раніше посунув повзунок, отже імітуємо клік для ідеальної синхронізації
+                scrubber.dispatchEvent(new Event('input'));
+            }
+        }, 50);
     }
 }
 
@@ -175,9 +201,7 @@ function overrideHero(selectedGroup, dayScheduleStr) {
     const fallbackContainer = document.getElementById('hero-fallback');
 
     if (heroCard) {
-        heroCard.classList.add('tomorrow-accent');
-        heroCard.style.setProperty('--hero-color', '#5E5CE6');
-        heroCard.style.setProperty('--hero-glow', 'rgba(94, 92, 230, 0.25)');
+        heroCard.classList.remove('status-on', 'status-off');
     }
 
     // Номер черги всередині ядра
@@ -200,12 +224,18 @@ function overrideHero(selectedGroup, dayScheduleStr) {
         const offHours = (dayScheduleStr.match(/0/g) || []).length;
         const offCount = (dayScheduleStr.match(/0+/g) || []).length;
 
-        if (statLightVal) statLightVal.textContent = lightHours;
-        if (statOffVal) statOffVal.textContent = offHours;
+        if (statLightVal) statLightVal.innerHTML = formatStatDuration(lightHours);
+        if (statOffVal) statOffVal.innerHTML = formatStatDuration(offHours);
         if (statCountVal) statCountVal.textContent = offCount;
     }
 
     if (window.heroTimerInterval) clearInterval(window.heroTimerInterval);
+}
+
+// Допоміжна функція для форматування тривалості статистики у форматі HH:MM (Apple Watch style)
+function formatStatDuration(hours) {
+    const formattedHours = hours < 10 ? `0${hours}` : hours;
+    return `${formattedHours}<span style="opacity: 0.5;">:</span>00`;
 }
 
 // --- RADAR MATH & RENDERING ---
@@ -232,10 +262,10 @@ function drawRadar(dayScheduleStr) {
     if (!svg) return;
     svg.innerHTML = '';
 
-    const radius = 138; // Радіус кільця (SVG 300x300, center=150)
+    const radius = 130.5; // Зменшено ще більше, щоб зовнішній край (130.5 + 12.5 = 143) не змінювався
     const center = 150; 
     const segmentAngle = 360 / 24;
-    const gapAngle = 3;
+    const gapAngle = 1.5; // Зменшили кут зазору, щоб виглядав як тонка лінія
 
     for (let h = 0; h < 24; h++) {
         const isOff = dayScheduleStr ? dayScheduleStr[h] === '0' : false;
@@ -249,8 +279,8 @@ function drawRadar(dayScheduleStr) {
         path.setAttribute("d", d);
         path.setAttribute("fill", "none");
         path.setAttribute("stroke", isOff ? "rgba(142, 142, 147, 0.35)" : "#FF9500");
-        path.setAttribute("stroke-width", "10");
-        path.setAttribute("stroke-linecap", "round");
+        path.setAttribute("stroke-width", "25"); // Ще на 5px товщі
+        path.setAttribute("stroke-linecap", "butt"); // Прямокутні краї, щоб не було накладання
         path.id = `radar-segment-${h}`;
         path.style.transition = "all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)";
         path.dataset.baseStroke = isOff ? "rgba(142, 142, 147, 0.35)" : "#FF9500";
@@ -266,32 +296,40 @@ function drawRadarLabels(dayScheduleStr) {
     outerSvg.innerHTML = '';
     if (container) container.innerHTML = ''; // clear old div labels
 
-    const labels = [0, 3, 6, 9, 12, 15, 18, 21];
     const C = 200;       // centre of 400×400 wrapper
 
     // Ring outer edge in wrapper coords:
-    // container offset (40) + svgCenter (150) + radius (138) + halfStroke (5) = 333
-    // distance from C (200) = 133
     const ringEdge = 133;
-    const tickR1   = ringEdge + 7;   // 140 – tick inner
-    const tickR2   = ringEdge + 17;  // 150 – tick outer
-    const labelR   = ringEdge + 30;  // 163 – label
+    const labelR   = ringEdge + 30;  // Ще ближче до шкали для візуальної цілісності
 
     // ── Subtle guide ring ──
     const guide = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     guide.setAttribute('cx', C); guide.setAttribute('cy', C);
     guide.setAttribute('r', ringEdge + 12);
     guide.setAttribute('fill', 'none');
-    guide.setAttribute('stroke', 'rgba(255,255,255,0.07)');
+    guide.setAttribute('stroke', 'rgba(0,0,0,0.04)');
     guide.setAttribute('stroke-width', 12);
     outerSvg.appendChild(guide);
 
-    labels.forEach(h => {
-        const angleDeg = (h / 24) * 360 - 90; // 0 h → top
+    for (let slot = 0; slot < 48; slot++) {
+        const isHalfHour = slot % 2 !== 0;
+        const h = Math.floor(slot / 2);
+        
+        const angleDeg = (slot / 48) * 360 - 90; // 0 slot → top
         const angleRad = angleDeg * Math.PI / 180;
-        const isCardinal = h % 6 === 0;
-
-        // Tick line
+        
+        const isCardinal = !isHalfHour && (h % 6 === 0);      // 0, 6, 12, 18
+        const isSubCardinal = !isHalfHour && (h % 3 === 0);   // 3, 9, 15, 21
+        const isHourly = !isHalfHour;
+        
+        // Tick line length & stroke based on importance
+        const tickR1 = ringEdge + 8;
+        let tickR2;
+        if (isCardinal) tickR2 = ringEdge + 20;
+        else if (isSubCardinal) tickR2 = ringEdge + 15;
+        else if (isHourly) tickR2 = ringEdge + 12;
+        else tickR2 = ringEdge + 10; // Half-hour ticks
+        
         const x1 = C + tickR1 * Math.cos(angleRad);
         const y1 = C + tickR1 * Math.sin(angleRad);
         const x2 = C + tickR2 * Math.cos(angleRad);
@@ -300,89 +338,55 @@ function drawRadarLabels(dayScheduleStr) {
         const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
         line.setAttribute('x1', x1); line.setAttribute('y1', y1);
         line.setAttribute('x2', x2); line.setAttribute('y2', y2);
-        line.setAttribute('stroke', isCardinal ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.35)');
-        line.setAttribute('stroke-width', isCardinal ? 3 : 1.5);
+        
+        let strokeColor, strokeWidth;
+        if (isCardinal) {
+            strokeColor = 'rgba(0,0,0,0.5)';
+            strokeWidth = 3.5;
+        } else if (isSubCardinal) {
+            strokeColor = 'rgba(0,0,0,0.4)';
+            strokeWidth = 2.5;
+        } else if (isHourly) {
+            strokeColor = 'rgba(0,0,0,0.25)';
+            strokeWidth = 2;
+        } else {
+            strokeColor = 'rgba(0,0,0,0.15)';
+            strokeWidth = 1.5;
+        }
+        
+        line.setAttribute('stroke', strokeColor);
+        line.setAttribute('stroke-width', strokeWidth);
         line.setAttribute('stroke-linecap', 'round');
         outerSvg.appendChild(line);
 
-        // SVG text label (never clipped by parent overflow)
-        const lx = C + labelR * Math.cos(angleRad);
-        const ly = C + labelR * Math.sin(angleRad);
+        // Чисті цифри-мітки кожні 3 години (без хвилин і без фону)
+        if (isSubCardinal) {
+            const lx = C + labelR * Math.cos(angleRad);
+            const ly = C + labelR * Math.sin(angleRad);
 
-        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        text.setAttribute('x', lx);
-        text.setAttribute('y', ly);
-        text.setAttribute('text-anchor', 'middle');
-        text.setAttribute('dominant-baseline', 'central');
-        text.setAttribute('font-size', isCardinal ? '14' : '11');
-        text.setAttribute('font-weight', isCardinal ? '800' : '600');
-        text.setAttribute('fill', isCardinal ? 'rgba(255,255,255,0.75)' : 'rgba(255,255,255,0.4)');
-        text.setAttribute('font-family', '-apple-system, BlinkMacSystemFont, sans-serif');
-        text.setAttribute('letter-spacing', '0.5');
-        text.textContent = String(h).padStart(2, '0');
-        outerSvg.appendChild(text);
-    });
-
-    // ── Маркери зміни графіку (Pills) ──
-    if (dayScheduleStr && dayScheduleStr.length === 24) {
-        for (let h = 0; h < 24; h++) {
-            const prevHour = h === 0 ? 23 : h - 1;
-            if (dayScheduleStr[h] !== dayScheduleStr[prevHour]) {
-                const isNowOn = dayScheduleStr[h] === '1';
-                
-                // Кут години h (де 0 -> -90deg або вгору)
-                const angleDeg = (h / 24) * 360 - 90;
-                const angleRad = angleDeg * Math.PI / 180;
-                
-                // Довга ціанова лінія (виходить назовні)
-                const rInner = 125; // Від внутрішнього краю кільця
-                const rOuter = 160; // Виходить далеко назовні
-                const x1 = C + rInner * Math.cos(angleRad);
-                const y1 = C + rInner * Math.sin(angleRad);
-                const x2 = C + rOuter * Math.cos(angleRad);
-                const y2 = C + rOuter * Math.sin(angleRad);
-                
-                const shiftTick = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                shiftTick.setAttribute("x1", x1);
-                shiftTick.setAttribute("y1", y1);
-                shiftTick.setAttribute("x2", x2);
-                shiftTick.setAttribute("y2", y2);
-                shiftTick.setAttribute("stroke", "#00F0FF");
-                shiftTick.setAttribute("stroke-width", "3.5");
-                shiftTick.setAttribute("stroke-linecap", "round");
-                shiftTick.style.filter = "drop-shadow(0 0 6px #00F0FF)";
-                outerSvg.appendChild(shiftTick);
-
-                // Floating Pill (Неонова мітка з часом)
-                const pillR = rOuter + 14; // Далі за ціанову лінію
-                const px = C + pillR * Math.cos(angleRad);
-                const py = C + pillR * Math.sin(angleRad);
-                
-                const pill = document.createElement('div');
-                pill.textContent = `${String(h).padStart(2, '0')}:00`;
-
-                // Стиль як на нижньому графіку, але з неоновим сяйвом
-                const bgColor = isNowOn ? '#FF9500' : '#8E8E93';
-                const shadowColor = isNowOn ? 'rgba(255,149,0,0.6)' : 'rgba(142,142,147,0.6)';
-                
-                pill.style.cssText = `
-                    position:absolute;
-                    left:${px}px; top:${py}px;
-                    transform:translate(-50%,-50%);
-                    background:${bgColor};
-                    color:#FFF;
-                    font-size:11px;
-                    font-weight:800;
-                    padding:3px 8px;
-                    border-radius:12px;
-                    box-shadow:0 0 12px ${shadowColor}, 0 2px 4px rgba(0,0,0,0.5);
-                    border: 1px solid rgba(255,255,255,0.25);
-                    letter-spacing:0.5px;
-                `;
-                container.appendChild(pill);
-            }
+            const textLabel = document.createElement('div');
+            textLabel.textContent = String(h).padStart(2, '0');
+            
+            const fontSize = isCardinal ? '18px' : '14px';
+            const fontWeight = isCardinal ? '800' : '600';
+            const opacity = isCardinal ? '1' : '0.75';
+            
+            textLabel.style.cssText = `
+                position: absolute;
+                left: ${lx}px;
+                top: ${ly}px;
+                transform: translate(-50%, -50%);
+                color: #1C1C1E;
+                opacity: ${opacity};
+                font-size: ${fontSize};
+                font-weight: ${fontWeight};
+                letter-spacing: 0.5px;
+            `;
+            container.appendChild(textLabel);
         }
     }
+
+    // ── Чудовий мінімалістичний радар зі збалансованою геометрією ──
 
     // Responsive scale
     scaleRadar();
@@ -405,6 +409,7 @@ function updateRadarHighlight(activeHour, activeVal = -1) {
 
     // 2. Радикальний колір центрального ядра і самої стрілки (стрічка-графік більше не підсвічується)
     const indicatorLine = document.getElementById('radar-indicator-line');
+    const label = document.getElementById('hero-queue-label');
 
     if (core) {
         if (activeHour >= 0 && activeHour < 24) {
@@ -418,9 +423,9 @@ function updateRadarHighlight(activeHour, activeVal = -1) {
                     title.style.color = '#AEAEB2';
                     title.style.textShadow = '0 2px 10px rgba(0,0,0,0.5)';
                 }
-                if (indicatorLine) {
-                    indicatorLine.style.background = '#8E8E93';
-                    indicatorLine.style.boxShadow = '0 0 10px rgba(142,142,147,0.5), 0 0 20px rgba(142,142,147,0.3)';
+                if (label) {
+                    label.style.color = '#AEAEB2';
+                    label.style.textShadow = '0 2px 10px rgba(0,0,0,0.5)';
                 }
             } else {
                 // Світло є — повністю непрозорий помаранчевий
@@ -431,13 +436,42 @@ function updateRadarHighlight(activeHour, activeVal = -1) {
                     title.style.color = '#FFF';
                     title.style.textShadow = '0 2px 10px rgba(0,0,0,0.3)';
                 }
-                if (indicatorLine) {
-                    indicatorLine.style.background = '#FF9500';
-                    indicatorLine.style.boxShadow = '0 0 10px #FF9500, 0 0 20px #FF9500';
+                if (label) {
+                    label.style.color = '#FFF';
+                    label.style.textShadow = '0 2px 10px rgba(0,0,0,0.3)';
                 }
             }
         }
     }
+}
+
+// === ЛОГІКА ПЕРЕМИКАННЯ СТИЛІВ СТРІЛКИ (EASTER EGG) ===
+window.applyArrowStyle = function() {
+    const skele = document.getElementById('arrow-style-skeleton');
+    const speedo = document.getElementById('arrow-style-speedo');
+    if (!skele || !speedo) return;
+
+    if (currentArrowStyle === 'skeleton') {
+        skele.style.display = 'block';
+        speedo.style.display = 'none';
+    } else {
+        skele.style.display = 'none';
+        speedo.style.display = 'block';
+    }
+}
+
+window.toggleArrowStyle = function() {
+    currentArrowStyle = currentArrowStyle === 'skeleton' ? 'speedo' : 'skeleton';
+    localStorage.setItem('sssk_arrow_style', currentArrowStyle);
+    
+    // Візуальний відгук (тактильний натиск ядра)
+    const core = document.getElementById('radar-core');
+    if (core) {
+        core.style.transform = 'scale(0.92)';
+        setTimeout(() => core.style.transform = 'scale(1)', 150);
+    }
+    
+    window.applyArrowStyle();
 }
 
 // Responsive Scaling — підганяємо 400px wrapper під ширину екрану

@@ -55,9 +55,16 @@
                         </div>
 
                         <!-- Top Controls: Preview Bubble (Left) and Tomorrow Button (Right) -->
-                        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
-                            <!-- Scrubber Preview Window -->
-                            <div id="scrubber-preview" class="scrubber-preview fade-in preview-off" style="margin: 0;">
+                        <div style="display: flex; justify-content: flex-end; align-items: flex-end; margin-bottom: 24px; width: 100%;">
+                            <!-- Tomorrow Button -->
+                            <button id="btn-show-tomorrow" class="btn-tomorrow fade-in hidden"
+                                onclick="window.location.href='full_schedule.html'"
+                                style="margin: 0; margin-right: auto; padding: 10px 16px; font-size: 13px; border-radius: 16px; backdrop-filter: blur(5px); pointer-events: auto;">
+                                Графік на завтра
+                            </button>
+
+                            <!-- Scrubber Preview (існуюча кулька - Праворуч) -->
+                            <div id="scrubber-preview" class="scrubber-preview fade-in preview-off" style="margin: 0; margin-left: auto;">
                                 <div class="preview-status-icon">
                                     <!-- Initial empty state or default SVG off -->
                                 </div>
@@ -66,13 +73,6 @@
                                     <div class="preview-msg" id="preview-msg">Завантаження...</div>
                                 </div>
                             </div>
-                            
-                            <!-- Tomorrow Button -->
-                            <button id="btn-show-tomorrow" class="btn-tomorrow fade-in hidden"
-                                onclick="window.location.href='full_schedule.html'"
-                                style="margin: 0; padding: 10px 16px; font-size: 13px; border-radius: 16px; backdrop-filter: blur(5px);">
-                                Графік на завтра
-                            </button>
                         </div>
 
                         <div id="ruler-wrapper" class="ruler-wrapper">
