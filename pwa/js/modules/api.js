@@ -20,3 +20,6 @@ export async function fetchScheduleData() {
         return null; // Return null to trigger fallback in the UI controllers
     }
 }
+
+// Attach to window for non-module usage
+window.fetchScheduleData = fetchScheduleData;

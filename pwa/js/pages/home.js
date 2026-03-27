@@ -17,11 +17,11 @@ let globalScrubberTimeout = null;
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('Home Page Module Initialized');
 
-    // 1. Отримання збереженої черги
-    let selectedGroup = localStorage.getItem('sssk_group') || '1.1';
-    if (!localStorage.getItem('sssk_group')) {
-        localStorage.setItem('sssk_group', selectedGroup);
-    }
+    // 1. Отримання збереженої черги (пріоритет: зафіксована для старту -> поточна сесія)
+    let selectedGroup = localStorage.getItem('sssk_start_group') || localStorage.getItem('sssk_group') || '1.1';
+    
+    // Оновлюємо поточну сесію, щоб вона відповідала стартовій
+    localStorage.setItem('sssk_group', selectedGroup);
 
     // 2. Ініціалізація UI
     initUI(selectedGroup);
@@ -29,7 +29,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 3. Завантаження даних та малювання графіка
     await loadAndRender(selectedGroup);
 
-    // 4. Ініціалізація Supabase та Авторизації (глобальні функції з supabase-client.js)
+    // 4. Приховування екрану завантаження
+    const loader = document.getElementById('loading-screen');
+    if (loader) {
+        setTimeout(() => {
+            loader.classList.add('fade-out');
+            setTimeout(() => loader.remove(), 600);
+        }, 800); 
+    }
+
+    // 5. Ініціалізація Supabase та Авторизації (глобальні функції з supabase-client.js)
     if (typeof window.initSupabase === 'function') window.initSupabase();
     if (typeof window.updateAuthState === 'function') window.updateAuthState();
 
@@ -274,8 +283,8 @@ function updateHeroUI(selectedGroup, now, isAllClear, demoMode, scheduleString) 
         }
     }
 
-    const color = isCurrentlyOn ? '#FF9500' : '#007AFF'; // System Orange / System Blue
-    const glow = isCurrentlyOn ? 'rgba(255, 149, 0, 0.15)' : 'rgba(0, 122, 255, 0.15)';
+    const color = isCurrentlyOn ? '#FF9500' : '#FF9500'; // Standardized to theme orange
+    const glow = isCurrentlyOn ? 'rgba(255, 149, 0, 0.15)' : 'rgba(255, 149, 0, 0.15)';
     const statusIcon = isCurrentlyOn ? 'assets/power_on.png' : 'assets/power_off.png';
 
     if (heroCard) {

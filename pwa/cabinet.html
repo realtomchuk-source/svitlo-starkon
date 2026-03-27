@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Світло-Старкон | Особистий кабінет</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         /* Cabinet Specific Styles */
         .profile-card {
@@ -57,9 +58,415 @@
             cursor: pointer;
             transition: 0.2s;
         }
-        
+
         .btn-location-delete:active {
             transform: scale(0.9);
+        }
+
+        /* Start Card Premium Styles */
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+            display: inline-block;
+            position: relative;
+        }
+
+        .status-dot.on {
+            background-color: #FF9500;
+            box-shadow: 0 0 12px rgba(255, 149, 0, 0.8), 0 0 4px rgba(255, 149, 0, 0.4);
+        }
+
+        .status-dot.off {
+            background-color: #8E8E93;
+            box-shadow: 0 0 8px rgba(142, 142, 147, 0.5);
+        }
+
+        .mirror-avatar-btn {
+            width: 116px;
+            height: 116px;
+            border-radius: 20px;
+            background: rgba(20, 20, 22, 0.1);
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            padding: 0;
+            gap: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .interactive-badge {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .interactive-badge:hover {
+            border-color: rgba(255, 149, 0, 0.6) !important;
+            background: rgba(255, 149, 0, 0.2) !important;
+            box-shadow: 0 8px 25px rgba(255, 149, 0, 0.25) !important;
+        }
+
+        .interactive-badge:active {
+            transform: scale(0.95);
+        }
+
+        .mirror-avatar-btn.status-on {
+            background: rgba(255, 149, 0, 0.15);
+            border-color: rgba(255, 149, 0, 0.4);
+            box-shadow: 0 8px 32px rgba(255, 149, 0, 0.15);
+        }
+
+        .mirror-avatar-btn.status-on .queue-num {
+            color: #FF9500;
+            text-shadow: 0 0 15px rgba(255, 149, 0, 0.4);
+        }
+
+        .mirror-avatar-btn.status-off {
+            background: rgba(142, 142, 147, 0.15);
+            border-color: rgba(142, 142, 147, 0.4);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .mirror-avatar-btn.status-off .queue-num {
+            color: #8E8E93;
+            text-shadow: none;
+        }
+
+        .mirror-avatar-btn:active {
+            transform: scale(0.96) translateY(2px);
+            background: rgba(20, 20, 22, 0.15);
+        }
+
+        .mirror-avatar-btn .queue-num {
+            font-size: 38px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: -1.5px;
+            line-height: 1;
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+            margin-top: -10px;
+        }
+
+        .mirror-avatar-btn .btn-label {
+            position: absolute;
+            bottom: 5px;
+            font-size: 13px;
+            font-weight: 800;
+            color: #000000 !important;
+            text-transform: lowercase;
+            letter-spacing: -0.4px;
+            opacity: 1;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Generalized Overlay System */
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .overlay.active {
+            opacity: 1;
+        }
+
+        .picker-container {
+            width: 100%;
+            max-width: 360px;
+            background: var(--glass-bg-light);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border-light);
+            border-radius: 28px;
+            padding: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .overlay.active .picker-container {
+            transform: translateY(0);
+        }
+
+        .picker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0;
+            padding: 2px 4px 0 4px;
+        }
+
+        .picker-title {
+            margin: 0;
+            font-weight: 850;
+            font-size: 19px;
+            letter-spacing: -0.5px;
+            color: var(--system-text);
+            line-height: 1.2;
+        }
+
+        .picker-close {
+            cursor: pointer;
+            opacity: 0.5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            transition: opacity 0.2s;
+            margin-right: -4px;
+        }
+
+        .picker-close:hover {
+            opacity: 1;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .picker-container {
+                background: var(--glass-bg-dark);
+                border: 1px solid var(--glass-border-dark);
+            }
+        }
+
+        .group-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .picker-btn {
+            background: rgba(128, 128, 128, 0.08);
+            border: 1px solid rgba(128, 128, 128, 0.1);
+            color: var(--system-text);
+            padding: 14px;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+        }
+
+        .picker-btn.active {
+            background: #FF9500 !important;
+            color: white !important;
+            border-color: #FF9500 !important;
+            box-shadow: 0 4px 15px rgba(255, 149, 0, 0.3);
+        }
+
+        /* Notification & DND Styles */
+        .highlight-orange {
+            color: #FF9500 !important;
+            font-weight: 800;
+        }
+
+        .dnd-summary-row {
+            margin-top: 0px;
+            padding: 12px 18px;
+            background: transparent;
+            border: none;
+            border-top: 1px solid rgba(128, 128, 128, 0.1);
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .dnd-text {
+            font-size: 13px;
+            line-height: 1.4;
+            color: var(--system-text);
+            flex: 1;
+        }
+
+        .dnd-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .dnd-btn {
+            background: rgba(128, 128, 128, 0.1);
+            border: none;
+            padding: 6px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--system-text);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .dnd-btn.accent {
+            background: var(--system-accent);
+            color: white;
+        }
+
+        .dnd-btn.danger {
+            color: #FF3B30;
+            background: rgba(255, 59, 48, 0.1);
+        }
+
+        .notifications-group {
+            border: 1px solid rgba(128, 128, 128, 0.22);
+            border-radius: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            padding: 2px 2px 0 2px;
+        }
+
+        .slot-card {
+            min-height: 48px !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: rgba(128, 128, 128, 0.05) !important;
+            border: 1px solid rgba(128, 128, 128, 0.08) !important;
+            border-radius: 12px !important;
+            box-shadow: none !important;
+            padding: 10px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .slot-card.active {
+            padding: 10px !important;
+        }
+
+        .slot-card.paused {
+            opacity: 0.6;
+        }
+
+        .slot-card.inactive {
+            background: rgba(128, 128, 128, 0.08) !important;
+            border-color: rgba(128, 128, 128, 0.15) !important;
+        }
+
+        /* Gray out specific content inside inactive card except the action button */
+        .slot-card.inactive .location-name-container,
+        .slot-card.inactive .right-block-container {
+            filter: grayscale(1);
+            opacity: 0.45;
+        }
+
+        /* Ensure Activate button is always vibrant green */
+        .premium-action-btn.activate {
+            background: linear-gradient(135deg, #34C759, #28CD41) !important;
+            box-shadow: 0 4px 15px rgba(52, 199, 89, 0.4) !important;
+            filter: none !important;
+            opacity: 1 !important;
+        }
+
+        .premium-action-btn {
+            width: auto;
+            height: auto;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 850;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            white-space: nowrap;
+            letter-spacing: -0.2px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .premium-action-btn.deactivate {
+            background: linear-gradient(135deg, #FF3B30, #FF2D55);
+            box-shadow: 0 4px 15px rgba(255, 59, 48, 0.35);
+        }
+
+        .premium-action-btn.activate {
+            background: linear-gradient(135deg, #34C759, #28CD41);
+            box-shadow: 0 4px 15px rgba(52, 199, 89, 0.35);
+        }
+
+        .premium-action-btn.confirm {
+            background: linear-gradient(135deg, #007AFF, #0056b3) !important;
+            box-shadow: 0 4px 15px rgba(0, 122, 255, 0.4) !important;
+            filter: none !important;
+            opacity: 1 !important;
+        }
+
+        .premium-action-btn:active {
+            transform: scale(0.96);
+        }
+
+        .picker-btn.active {
+            background: #FF9500 !important;
+            color: white !important;
+            border-color: #FF9500 !important;
+            box-shadow: 0 4px 15px rgba(255, 149, 0, 0.3) !important;
+        }
+
+        .start-card-premium {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            padding: 12px !important;
+            gap: 14px !important;
+            height: 140px !important;
+            min-height: 140px !important;
+            overflow: hidden !important;
+            position: relative !important;
+        }
+
+        .notifications-group {
+            padding: 0 !important;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(128, 128, 128, 0.22) !important;
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+        }
+
+        .cabinet-row-2 {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 12px !important;
+            padding: 12px !important;
+            background: transparent !important;
+        }
+
+        .notifications-divider {
+            display: none;
         }
     </style>
 </head>
@@ -71,192 +478,321 @@
         </div>
 
         <main class="content-area">
-            <section id="cabinet-section" style="padding-top: 10px;">
-                
-                <!-- Profile Card (Passport Style) -->
-                <div class="glass-card fade-in profile-card" style="margin-bottom: 32px;">
-                    <div class="profile-avatar-square">
-                        <img id="user-avatar" src="https://ui-avatars.com/api/?name=Guest&background=e0e0e0&color=666"
-                            alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+            <section id="cabinet-section" class="cabinet-container" style="padding-top: 10px;">
+                <!-- Row 1: Profile & Start App From -->
+                <div class="cabinet-row-1"
+                    style="display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 12px !important; margin-bottom: -4px !important;">
+                    <!-- Profile Card -->
+                    <div id="profile-card-slot" class="fade-in" style="animation-delay: 0.1s;">
+                        <div class="loading-spinner"></div>
                     </div>
-                    
-                    <div class="profile-details">
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <h2 id="user-name" class="subheadline" style="margin: 0;">Гість</h2>
-                            <span class="pro-badge">Free</span>
-                        </div>
-                        
-                        <button id="btn-google-auth" class="btn-google"
-                            style="margin-top: 8px; width: 100%; padding: 10px 16px; font-size: 14px;">
-                            <svg width="16" height="16" viewBox="0 0 18 18" style="margin-right: -4px;">
-                                <path d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.49h4.84c-.21 1.12-.84 2.07-1.79 2.7l2.86 2.22c1.67-1.54 2.63-3.81 2.63-6.57z" fill="#4285F4" />
-                                <path d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.86-2.22c-.79.53-1.8.85-3.1.85-2.39 0-4.41-1.61-5.14-3.78H.95v2.33C2.43 15.93 5.48 18 9 18z" fill="#34A853" />
-                                <path d="M3.86 10.67c-.19-.53-.3-1.1-.3-1.67s.11-1.14.3-1.67V5.01H.95c-.65 1.25-1.02 2.66-1.02 4.14s.37 2.89 1.02 4.14l2.91-2.48z" fill="#FBBC05" />
-                                <path d="M9 3.58c1.32 0 2.51.45 3.44 1.35l2.58-2.58C13.47.8 11.43 0 9 0 5.48 0 2.43 2.07.95 5.01l2.91 2.48c.73-2.17 2.75-3.78 5.14-3.78z" fill="#EA4335" />
-                            </svg>
-                            Увійти через Google
-                        </button>
 
-                        <div style="display: flex; align-items: center; margin: 8px 0;">
-                            <hr style="flex: 1; border: none; border-top: 1px solid rgba(128,128,128,0.1);">
-                            <span style="padding: 0 10px; font-size: 12px; color: var(--system-text-neutral); font-weight: 500;">або</span>
-                            <hr style="flex: 1; border: none; border-top: 1px solid rgba(128,128,128,0.1);">
-                        </div>
-                        
-                        <button class="btn-telegram" style="width: 100%; padding: 10px 16px; display: flex; justify-content: center; align-items: center; gap: 8px; background: #2AABEE; color: white; border: none; border-radius: 100px; font-weight: 500; font-size: 14px; cursor: pointer; box-shadow: 0 4px 12px rgba(42,171,238,0.3);" onclick="window.location.href='#'">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="white" style="margin-right: -4px;">
-                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.69-.52.36-.99.53-1.39.52-.45-.01-1.31-.25-1.95-.45-.78-.25-1.4-.38-1.34-.81.06-.44.7-.89 1.94-1.35 1.48-.54 7.6-3.3 12.67-5.48 15.2-6.55.72-.3 1.5-.42 2.04-.42.54 0 1.26.13 1.8.52.4.3.4.6.4.82z" />
-                            </svg>
-                            Увійти через Telegram
-                        </button>
+                    <!-- Start Queue Card -->
+                    <div id="start-group-card-slot" class="glass-card fade-in"
+                        style="padding: 16px; animation-delay: 0.15s; display: flex; flex-direction: column; min-height: 140px;">
+                        <div class="loading-spinner"></div>
                     </div>
                 </div>
 
-                <!-- Control Center: My Locations -->
-                <div id="section-subscriptions" class="fade-in" style="animation-delay: 0.1s;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <div class="section-icon-bg" style="width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: rgba(128,128,128,0.1);">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                    <circle cx="12" cy="10" r="3"></circle>
-                                </svg>
-                            </div>
-                            <h2 class="subheadline" style="margin: 0; font-size: 18px;">Мої локації</h2>
+                <!-- Push Notifications Unified Block -->
+                <div id="push-notifications-block" class="glass-card" style="padding: 8px; margin-bottom: 12px; background: rgba(128, 128, 128, 0.03); border: 1.5px solid rgba(128, 128, 128, 0.1);">
+                    <!-- Row 2: Notifications -->
+                    <div class="cabinet-row-2"
+                        style="display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 12px !important; margin-bottom: 2px !important;">
+                        <div id="slot-0" class="slot-card" style="background: var(--glass-bg-light) !important;">
+                            <!-- JS renders Slot 1 -->
                         </div>
+                        <div id="slot-1" class="slot-card" style="background: var(--glass-bg-light) !important;">
+                            <!-- JS renders Slot 2 -->
+                        </div>
+                    </div>
+
+                    <!-- Silent Mode / DND Summary Block -->
+                    <div id="dnd-summary-container" class="fade-in" style="padding: 0; animation-delay: 0.25s;">
+                        <!-- JS renders DND Summary here -->
+                    </div>
+                </div>
+
+                <!-- Community Leaderboard Section -->
+                <div id="leaderboard-section" class="glass-card fade-in" style="margin-bottom: 12px; padding: 16px; display: none; background: rgba(255, 149, 0, 0.03); border: 1.5px solid rgba(255, 149, 0, 0.1);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                        <h3 style="margin: 0; font-size: 15px; font-weight: 850; color: #FF9500; letter-spacing: -0.3px;">Топ активних користувачів</h3>
+                        <div style="font-size: 10px; font-weight: 800; color: #FF9500; background: rgba(255,149,0,0.1); padding: 2px 8px; border-radius: 6px; text-transform: uppercase;">Глобально</div>
+                    </div>
+                    <div id="leaderboard-list" style="display: flex; flex-direction: column; gap: 10px;">
+                        <div class="loading-spinner" style="margin: 10px auto;"></div>
+                    </div>
+                </div>
+
+                <!-- Additional Actions Row -->
+                <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                    <!-- About Button -->
+                    <div class="glass-btn-secondary fade-in" 
+                         onclick="window.showAboutAlert()" 
+                         style="flex: 1; padding: 12px 10px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; animation-delay: 0.25s; background: rgba(128, 128, 128, 0.04); border: 1.5px solid rgba(128, 128, 128, 0.1); border-radius: 16px; transition: all 0.2s;">
+                        <i class="fas fa-circle-info" style="opacity: 0.7; font-size: 16px; color: #FF9500;"></i>
+                        <span style="font-size: 13px; font-weight: 800; white-space: nowrap; color: var(--system-text);">Про застосунок</span>
                     </div>
                     
-                    <div id="subscriptions-list" style="display: flex; flex-direction: column; gap: 16px;">
-                        <!-- Location Card 1 -->
-                        <div class="glass-card" style="padding: 0; overflow: hidden;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: rgba(128,128,128,0.05); border-bottom: 1px solid rgba(128,128,128,0.1);">
-                                <div>
-                                    <h3 style="margin: 0; font-size: 16px; font-weight: 600;">Дім</h3>
-                                    <p class="body-neutral" style="margin: 2px 0 0 0; font-size: 13px;">Черга 5.2</p>
-                                </div>
-                                <button class="btn-location-delete">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/>
-                                    </svg>
-                                </button>
-                            </div>
-                            <!-- Nested Toggles -->
-                            <div class="push-row">
-                                <span style="font-size: 14px; font-weight: 500;">За 15 хв до відключення</span>
-                                <label class="ios-toggle">
-                                    <input type="checkbox" checked>
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                            <div class="push-row">
-                                <span style="font-size: 14px; font-weight: 500;">Коли світло з'явилося</span>
-                                <label class="ios-toggle">
-                                    <input type="checkbox">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Add Location Button -->
-                        <button id="btn-add-location" class="glass-card dashed-border"
-                            style="width: 100%; padding: 16px; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; color: var(--system-text-neutral);">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19"></line>
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                            </svg>
-                            Додати нову адресу
-                        </button>
+                    <!-- Share Button -->
+                    <div class="glass-btn-secondary fade-in" 
+                         onclick="window.shareApp()" 
+                         style="flex: 1; padding: 12px 10px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; animation-delay: 0.25s; background: rgba(128, 128, 128, 0.04); border: 1.5px solid rgba(128, 128, 128, 0.1); border-radius: 16px; transition: all 0.2s;">
+                        <i class="fas fa-share-nodes" style="opacity: 0.7; font-size: 16px; color: #FF9500;"></i>
+                        <span style="font-size: 13px; font-weight: 800; white-space: nowrap; color: var(--system-text);">Поділитись</span>
                     </div>
+                </div>
+
+                <!-- Row 3: Feedback -->
+                <div id="section-feedback" class="glass-card fade-in" style="padding: 10px; animation-delay: 0.3s; background: rgba(128, 128, 128, 0.03); border: 1.5px solid rgba(128, 128, 128, 0.1);">
+                    <div style="position: relative; margin-bottom: 8px;">
+                        <textarea id="feedback-text" 
+                                  placeholder="Ваше повідомлення розробникам застосунку..." 
+                                  style="width: 100%; height: 80px; padding: 12px; border-radius: 12px; border: 1px solid rgba(128,128,128,0.1); background: rgba(128,128,128,0.04); color: var(--system-text); font-size: 14px; outline: none; resize: none;"></textarea>
+                    </div>
+                    <button id="btn-send-feedback" class="premium-action-btn confirm"
+                        style="width: 100%; padding: 12px; border-radius: 14px; font-size: 15px; font-weight: 800; border: none; cursor: pointer;">Надіслати</button>
+                    <p id="feedback-status"
+                        style="text-align: center; margin-top: 8px; font-size: 12px; opacity: 0; transition: 0.3s; color: #34C759; font-weight: 700;">
+                        Надіслано!</p>
                 </div>
 
 
             </section>
         </main>
-        
+
         <div style="height: 100px;"></div>
 
         <nav class="glass-nav">
             <button class="nav-item  focus-ring" onclick="window.location.href='index.html'">
-                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="24" height="24"
+                        fill="currentColor">
+                        <path
+                            d="M341.8 72.6C329.5 61.2 310.5 61.2 298.3 72.6L74.3 280.6C64.7 289.6 61.5 303.5 66.3 315.7C71.1 327.9 82.8 336 96 336L112 336L112 512C112 547.3 140.7 576 176 576L464 576C499.3 576 528 547.3 528 512L528 336L544 336C557.2 336 569 327.9 573.8 315.7C578.6 303.5 575.4 289.5 565.8 280.6L341.8 72.6zM304 384L336 384C362.5 384 384 405.5 384 432L384 528L256 528L256 432C256 405.5 277.5 384 304 384z" />
+                    </svg></span>
                 <span class="nav-text">Home</span>
             </button>
             <button class="nav-item  focus-ring" onclick="window.location.href='full_schedule.html'">
-                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span>
-                <span class="nav-text">Graph</span>
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="24" height="24"
+                        fill="currentColor">
+                        <path
+                            d="M224 64C241.7 64 256 78.3 256 96L256 128L384 128L384 96C384 78.3 398.3 64 416 64C433.7 64 448 78.3 448 96L448 128L480 128C515.3 128 544 156.7 544 192L544 480C544 515.3 515.3 544 480 544L160 544C124.7 544 96 515.3 96 480L96 192C96 156.7 124.7 128 160 128L192 128L192 96C192 78.3 206.3 64 224 64zM160 304L160 336C160 344.8 167.2 352 176 352L208 352C216.8 352 224 344.8 224 336L224 304C224 295.2 216.8 288 208 288L176 288C167.2 288 160 295.2 160 304zM288 304L288 336C288 344.8 295.2 352 304 352L336 352C344.8 352 352 344.8 352 336L352 304C352 295.2 344.8 288 336 288L304 288C295.2 288 288 295.2 288 304zM432 288C423.2 288 416 295.2 416 304L416 336C416 344.8 423.2 352 432 352L464 352C472.8 352 480 344.8 480 336L480 304C480 295.2 472.8 288 464 288L432 288zM160 432L160 464C160 472.8 167.2 480 176 480L208 480C216.8 480 224 472.8 224 464L224 432C224 423.2 216.8 416 208 416L176 416C167.2 416 160 423.2 160 432zM304 416C295.2 416 288 423.2 288 432L288 464C288 472.8 295.2 480 304 480L336 480C344.8 480 352 472.8 352 464L352 432C352 423.2 344.8 416 336 416L304 416zM416 432L416 464C416 472.8 423.2 480 432 480L464 480C472.8 480 480 472.8 480 464L480 432C480 423.2 472.8 416 464 416L432 416C423.2 416 416 423.2 416 432z" />
+                    </svg></span>
+                <span class="nav-text">Archive</span>
             </button>
             <button class="nav-item  focus-ring" onclick="window.location.href='javascript:void(0)'">
-                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span>
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="18" height="24"
+                        fill="currentColor">
+                        <path
+                            d="M64 0C28.7 0 0 28.7 0 64L0 480c0 11.5 6.2 22.2 16.2 27.8s22.3 5.5 32.2-.4L192 421.3 335.5 507.4c9.9 5.9 22.2 6.1 32.2 .4S384 491.5 384 480l0-416c0-35.3-28.7-64-64-64L64 0z" />
+                    </svg></span>
                 <span class="nav-text">App</span>
             </button>
             <button class="nav-item active focus-ring" onclick="window.location.href='cabinet.html'">
-                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="24" height="24"
+                        fill="currentColor">
+                        <path
+                            d="M320 312C386.3 312 440 258.3 440 192C440 125.7 386.3 72 320 72C253.7 72 200 125.7 200 192C200 258.3 253.7 312 320 312zM290.3 368C191.8 368 112 447.8 112 546.3C112 562.7 125.3 576 141.7 576L498.3 576C514.7 576 528 562.7 528 546.3C528 447.8 448.2 368 349.7 368L290.3 368z" />
+                    </svg></span>
                 <span class="nav-text">Profile</span>
             </button>
         </nav>
 
-        <!-- Push Wizard Overlay -->
-        <div id="push-wizard-overlay" class="overlay" style="display: none;">
-            <div id="push-wizard-sheet" class="glass-card bottom-sheet" style="padding: 24px 20px;">
-                <div class="sheet-handle"></div>
-                
-                <!-- Wizard Header -->
-                <div style="text-align: center; margin-bottom: 24px;">
-                    <div style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 12px; background: rgba(128,128,128,0.1); margin-bottom: 12px;">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                        </svg>
-                    </div>
-                    <h2 class="headline" id="wizard-title" style="margin: 0; font-size: 20px;">Налаштуймо сповіщення</h2>
-                    <p class="body-neutral" id="wizard-subtitle" style="margin: 4px 0 0 0; font-size: 14px;">Крок 1 з 3</p>
+    </div>
+
+    <!-- Overlays at Root Level -->
+    <div id="push-wizard-overlay" class="overlay" style="display: none;">
+        <div id="push-wizard-sheet" class="glass-card bottom-sheet" style="padding: 24px 20px;">
+            <div class="sheet-handle"></div>
+            <div style="text-align: center; margin-bottom: 24px;">
+                <div
+                    style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 12px; background: rgba(128,128,128,0.1); margin-bottom: 12px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                </div>
+                <h2 class="headline" id="wizard-title" style="margin: 0; font-size: 20px;">Налаштуймо сповіщення</h2>
+                <p class="body-neutral" id="wizard-subtitle" style="margin: 4px 0 0 0; font-size: 14px;">Крок 1 з 3</p>
+            </div>
+            <div id="wizard-content" style="min-height: 220px;">
+                <!-- Step 1: Queue & Location Name -->
+                <div id="wizard-step-1" class="wizard-step active-step">
+                    <p style="font-weight: 600; margin-bottom: 8px;">Назва локації:</p>
+                    <input type="text" id="wizard-location-name" maxlength="20" placeholder="напр. Дім, Робота..."
+                        style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid rgba(128,128,128,0.2); background: rgba(255,255,255,0.05); color: var(--system-text); margin-bottom: 4px; outline: none; font-family: inherit;">
+                    <div id="wizard-location-counter" style="font-size: 11px; text-align: right; color: var(--system-text-muted); padding-right: 4px; margin-bottom: 16px; font-weight: 700;">0/20</div>
+
+                    <p style="font-weight: 600; margin-bottom: 12px;">Оберіть вашу чергу:</p>
+                    <div class="group-grid" id="wizard-group-grid"
+                        style="grid-template-columns: repeat(4, 1fr); gap: 8px;"></div>
                 </div>
 
-                <!-- Wizard Content Area -->
-                <div id="wizard-content" style="min-height: 180px;">
-                    <!-- Step 1: Select Queue -->
-                    <div id="wizard-step-1" class="wizard-step active-step">
-                        <p style="font-weight: 600; margin-bottom: 12px;">Оберіть вашу чергу:</p>
-                        <div class="group-grid" id="wizard-group-grid">
-                            <!-- JS Will Inject Queue Buttons Here -->
-                        </div>
-                    </div>
-
-                    <!-- Step 2: Time Config -->
-                    <div id="wizard-step-2" class="wizard-step" style="display: none;">
-                        <p style="font-weight: 600; margin-bottom: 12px;">Коли вас попередити про вимкнення?</p>
-                        <div style="display: flex; flex-direction: column; gap: 12px;">
-                            <label class="glass-card" style="display: flex; align-items: center; gap: 12px; padding: 16px; cursor: pointer; border: 1px solid var(--system-accent);">
-                                <input type="radio" name="notify_time" value="15" checked style="accent-color: var(--system-accent);">
-                                <span style="font-weight: 500;">За 15 хвилин</span>
-                            </label>
-                            <label class="glass-card" style="display: flex; align-items: center; gap: 12px; padding: 16px; cursor: pointer;">
-                                <input type="radio" name="notify_time" value="5" style="accent-color: var(--system-accent);">
-                                <span style="font-weight: 500;">За 5 хвилин</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Step 3: Power On Config -->
-                    <div id="wizard-step-3" class="wizard-step" style="display: none;">
-                        <p style="font-weight: 600; margin-bottom: 16px;">Сповіщати, коли світло з'явилося?</p>
-                        <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center; padding: 16px;">
-                            <span style="font-weight: 500;">Коли є світло</span>
-                            <label class="ios-toggle">
-                                <input type="checkbox" id="wizard-power-on" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
+                <!-- Step 2: Notify Time -->
+                <div id="wizard-step-2" class="wizard-step" style="display: none;">
+                    <p style="font-weight: 600; margin-bottom: 16px; text-align: center;">За скільки хвилин попередити?
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <label class="glass-card"
+                            style="display: flex; align-items: center; justify-content: space-between; padding: 16px; cursor: pointer; border-radius: 16px;">
+                            <span>за 5 хвилин</span>
+                            <input type="radio" name="notify_time" value="5" checked>
+                        </label>
+                        <label class="glass-card"
+                            style="display: flex; align-items: center; justify-content: space-between; padding: 16px; cursor: pointer; border-radius: 16px;">
+                            <span>за 10 хвилин</span>
+                            <input type="radio" name="notify_time" value="10">
+                        </label>
+                        <label class="glass-card"
+                            style="display: flex; align-items: center; justify-content: space-between; padding: 16px; cursor: pointer; border-radius: 16px;">
+                            <span>за 15 хвилин</span>
+                            <input type="radio" name="notify_time" value="15">
+                        </label>
                     </div>
                 </div>
-
-                <!-- Wizard Controls -->
-                <div style="display: flex; gap: 12px; margin-top: 24px;">
-                    <button id="btn-wizard-back" class="glass-card" style="flex: 1; padding: 16px; display: none; font-weight: 600; text-align: center; border: 1px solid rgba(128,128,128,0.2); cursor: pointer; background: transparent;">Назад</button>
-                    <button id="btn-wizard-next" class="action-btn" style="flex: 2; padding: 16px; font-size: 16px; border-radius: 16px;">Далі</button>
+                <p style="font-weight: 600; margin-bottom: 12px;">Коли вас попередити про вимкнення?</p>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <label class="glass-card"
+                        style="display: flex; align-items: center; gap: 12px; padding: 16px; cursor: pointer; border: 1px solid var(--system-accent);">
+                        <input type="radio" name="notify_time" value="15" checked
+                            style="accent-color: var(--system-accent);">
+                        <span style="font-weight: 500;">За 15 хвилин</span>
+                    </label>
+                    <label class="glass-card"
+                        style="display: flex; align-items: center; gap: 12px; padding: 16px; cursor: pointer;">
+                        <input type="radio" name="notify_time" value="5" style="accent-color: var(--system-accent);">
+                        <span style="font-weight: 500;">За 5 хвилин</span>
+                    </label>
+                </div>
+            </div>
+            <div id="wizard-step-3" class="wizard-step" style="display: none;">
+                <p style="font-weight: 600; margin-bottom: 16px;">Сповіщати, коли світло з'явилося?</p>
+                <div class="glass-card"
+                    style="display: flex; justify-content: space-between; align-items: center; padding: 16px;">
+                    <span style="font-weight: 500;">Коли є світло</span>
+                    <label class="ios-toggle"><input type="checkbox" id="wizard-power-on" checked><span
+                            class="slider"></span></label>
                 </div>
             </div>
         </div>
+        <div style="display: flex; gap: 12px; margin-top: 24px;">
+            <button id="btn-wizard-back" class="glass-card"
+                style="flex: 1; padding: 16px; display: none; font-weight: 600; text-align: center; border: 1px solid rgba(128,128,128,0.2); cursor: pointer; background: transparent;">Назад</button>
+            <button id="btn-wizard-next" class="action-btn"
+                style="flex: 2; padding: 16px; font-size: 16px; border-radius: 16px;">Далі</button>
+        </div>
+    </div>
+    </div>
 
+    <!-- Queue Picker Overlay (already improved) -->
+    <div id="queue-picker-overlay" class="overlay" onclick="if(event.target===this) closeQueuePicker()">
+        <div class="picker-container fade-in-up">
+            <div class="picker-header">
+                <h2 class="picker-title">Оберіть чергу</h2>
+                <div class="picker-close" onclick="closeQueuePicker()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+            </div>
+
+            <div id="picker-grid" class="group-grid">
+            </div>
+        </div>
+    </div>
+
+    <!-- Location Name Picker Overlay (V6.0 Premium) -->
+    <div id="location-picker-overlay" class="overlay" onclick="if(event.target===this) closeLocationPicker()">
+        <div class="picker-container">
+            <div class="picker-header" style="margin-bottom: 20px;">
+                <h2 class="picker-title">Назва локації</h2>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="saveLocationName()" class="confirm-btn"
+                        style="background: rgba(52, 199, 89, 0.1); border: none; width: 32px; height: 32px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #34C759; transition: all 0.2s;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </button>
+                    <div class="picker-close" onclick="closeLocationPicker()"
+                        style="background: rgba(128, 128, 128, 0.08); border: none; width: 32px; height: 32px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--system-text); opacity: 1;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="3.5">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <input type="text" id="picker-location-input" maxlength="20" placeholder="Наприклад: Дім"
+                    style="width: 100%; height: 50px; background: rgba(128,128,128,0.06); border: 1.5px solid rgba(128,128,128,0.1); border-radius: 16px; padding: 0 16px; font-size: 16px; font-weight: 700; color: var(--system-text); outline: none; transition: border-color 0.3s; margin-bottom: 4px;">
+                <div id="picker-location-counter" style="font-size: 11px; text-align: right; color: var(--system-text-muted); padding-right: 8px; font-weight: 700;">0/20</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notify Time Picker Overlay (New) -->
+    <div id="notify-time-picker-overlay" class="overlay" onclick="if(event.target===this) closeNotifyTimePicker()">
+        <div class="picker-container fade-in-up">
+            <div class="picker-header" style="margin-bottom: 20px;">
+                <h2 class="picker-title">Час сповіщення</h2>
+                <div class="picker-close" onclick="closeNotifyTimePicker()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+            </div>
+
+            <div id="notify-time-options" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <button id="time-btn-5" onclick="selectNotifyTime(5)" class="picker-btn"
+                    style="height: 46px; border-radius: 14px; font-weight: 800; font-size: 16px;">5 хв</button>
+                <button id="time-btn-15" onclick="selectNotifyTime(15)" class="picker-btn"
+                    style="height: 46px; border-radius: 14px; font-weight: 800; font-size: 16px;">15 хв</button>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- DND Settings Overlay -->
+    <div id="dnd-settings-overlay" class="overlay" onclick="if(event.target===this) closeDNDSettings()">
+        <div class="picker-container fade-in-up">
+            <div class="picker-header" style="margin-bottom: 20px;">
+                <h2 class="picker-title">Не турбувати</h2>
+                <div class="picker-close" onclick="closeDNDSettings()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="background: rgba(128,128,128,0.05); padding: 12px; border-radius: 16px;">
+                    <p style="font-size: 13px; opacity: 0.6; margin: 0 0 8px 0; font-weight: 600;">Початок:</p>
+                    <input type="time" id="dnd-start-time" value="22:00"
+                        style="width: 100%; padding: 10px; border-radius: 12px; border: 1px solid rgba(128,128,128,0.1); background: rgba(255,255,255,0.05); color: var(--system-text); font-family: inherit; font-size: 16px; outline: none; font-weight: 600;">
+                </div>
+                <div style="background: rgba(128,128,128,0.05); padding: 12px; border-radius: 16px;">
+                    <p style="font-size: 13px; opacity: 0.6; margin: 0 0 8px 0; font-weight: 600;">Кінець:</p>
+                    <input type="time" id="dnd-end-time" value="08:00"
+                        style="width: 100%; padding: 10px; border-radius: 12px; border: 1px solid rgba(128,128,128,0.1); background: rgba(255,255,255,0.05); color: var(--system-text); font-family: inherit; font-size: 16px; outline: none; font-weight: 600;">
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button onclick="saveDNDSettings()" class="premium-action-btn"
+                    style="flex: 1; padding: 14px; background: linear-gradient(135deg, #FF9500, #FFCC00); color: white; border: none; border-radius: 16px; font-weight: 800; font-size: 15px; cursor: pointer; box-shadow: 0 8px 20px rgba(255,149,0,0.2);">Зберегти</button>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

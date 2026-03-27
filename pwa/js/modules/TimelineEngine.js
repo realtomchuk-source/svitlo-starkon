@@ -26,10 +26,18 @@ export class TimelineEngine {
     init() {
         if (!this.scrubber) return;
 
-        this.scrubber.max = 287;
-        // Лінеаризація нативного повзунка: робимо так, щоб центр повзунка ідеально співпадав із відсотками (напр. 66.66%)
-        this.scrubber.style.width = 'calc(100% + 20px)';
-        this.scrubber.style.marginLeft = '-10px';
+        // Ідеальна математична синхронізація:
+        // Rail та Ticks мають padding 10px (тобто ширина активної зони = 100% - 20px).
+        // Thumb має ширину 6px.
+        // Щоб центр Thumb (3px) стояв рівно на 0:00 (10px від краю), input має починатися на 10 - 3 = 7px.
+        // Ширина input має бути (100% - 20px) + 6px = 100% - 14px.
+        this.scrubber.max = 1440;
+        this.scrubber.style.position = 'absolute';
+        this.scrubber.style.left = '7px';
+        this.scrubber.style.width = 'calc(100% - 14px)';
+        this.scrubber.style.margin = '0';
+        this.scrubber.style.padding = '0';
+        this.scrubber.style.zIndex = '30';
 
         this.scrubber.oninput = () => {
             this.scrubberInteracted = true;
@@ -66,7 +74,6 @@ export class TimelineEngine {
         if (this.updateInterval) clearInterval(this.updateInterval);
         this.updateInterval = setInterval(() => {
             if (!this.scrubberInteracted) {
-                // Відновлюємо затінення для поточного часу щохвилини
                 this.renderTimeline();
                 this.updateToCurrentTime();
             }
@@ -88,12 +95,9 @@ export class TimelineEngine {
 
     checkIsOffAtHour(h) {
         if (this.isAllClearDay) return false;
-
-        // Use the actual schedule string data if available instead of math formula
         if (this.scheduleString && this.scheduleString.length === 24) {
             return this.scheduleString[Math.floor(h)] === '0';
         }
-
         const groupIndex = this.groups.indexOf(this.selectedGroup);
         if (this.demoMode) {
             return ((Math.floor(h) + groupIndex) % 10 < 5);
@@ -108,8 +112,8 @@ export class TimelineEngine {
         this.rail.innerHTML = '';
         this.rail.style.background = 'transparent';
         this.rail.style.display = 'flex';
-        this.rail.style.gap = '0'; // Забираємо gap, щоб кожен блок займав рівно 1/24 ширини без зсувів
-        this.rail.style.height = '55px'; // Дводоріжковий таймлайн
+        this.rail.style.gap = '0'; 
+        this.rail.style.height = '55px'; 
         this.rail.style.borderRadius = '0';
         
         let transitions = []; 
@@ -121,7 +125,6 @@ export class TimelineEngine {
             block.className = 'hour-block';
             block.dataset.hour = h;
             
-            // Фіксуємо години зміни стану (для бейджів та сходинок)
             if (h > 0) {
                 const prevIsOff = this.checkIsOffAtHour(h - 1);
                 if (isOff !== prevIsOff) {
@@ -129,19 +132,17 @@ export class TimelineEngine {
                 }
             }
 
-            // Затінення графіка минулого часу (застосовується до всієї колонки)
             if (!this.isTomorrowView && h < currentHour && !this.isAllClearDay) {
                 block.classList.add('past');
             }
 
-            // Рендер верхньої та нижньої доріжок
             const topTrack = document.createElement('div');
             topTrack.className = 'top-track';
-            topTrack.style.width = 'calc(100% - 2px)'; // Візуальний зазор
+            topTrack.style.width = 'calc(100% - 2px)';
 
             const bottomTrack = document.createElement('div');
             bottomTrack.className = 'bottom-track';
-            bottomTrack.style.width = 'calc(100% - 2px)'; // Візуальний зазор
+            bottomTrack.style.width = 'calc(100% - 2px)';
 
             if (this.isAllClearDay) {
                 topTrack.style.backgroundColor = '#FF9500';
@@ -159,7 +160,6 @@ export class TimelineEngine {
             this.rail.appendChild(block);
         }
 
-        // 2. Дрібні зарубки для кожної години
         this.ticksContainer.innerHTML = '';
         for (let h = 0; h <= 24; h++) {
             const notch = document.createElement('div');
@@ -168,49 +168,36 @@ export class TimelineEngine {
             this.ticksContainer.appendChild(notch);
         }
 
-        // 3. Текстові позначки та бейджі
         const labelIntervals = [0, 3, 6, 9, 12, 15, 18, 21, 24];
         const transitionHours = transitions.map(t => t.hour);
 
-        // А. Стандартні інтервали (глухі)
         labelIntervals.forEach(h => {
-            if (transitionHours.includes(h)) return; // Пропускаємо, якщо тут є бейдж
-
+            if (transitionHours.includes(h)) return;
             const tick = document.createElement('div');
             tick.className = 'tick hour-mark';
             tick.style.background = 'transparent'; 
-            
             tick.innerHTML = `<span class="tick-label">${h}:00</span>`;
             tick.style.left = `${(h / 24) * 100}%`;
-            
             if (h === 0) tick.querySelector('.tick-label').style.transform = 'translate(0, -50%)';
             if (h === 24) tick.querySelector('.tick-label').style.transform = 'translate(-100%, -50%)';
-
             this.ticksContainer.appendChild(tick);
         });
 
-        // Б. Семантичні бейджі переходів та сходинки
         transitions.forEach(t => {
             const h = t.hour;
-            
-            // Сходинка (вертикальна лінія)
             const step = document.createElement('div');
             step.className = `transition-step step-${t.type}`;
             step.style.left = `${(h / 24) * 100}%`;
             this.ticksContainer.appendChild(step);
 
-            // Бейдж
             const badgeContainer = document.createElement('div');
             badgeContainer.className = 'tick hour-mark';
             badgeContainer.style.background = 'transparent';
-            
             badgeContainer.innerHTML = `<span class="transition-badge badge-${t.type}">${h}:00</span>`;
             badgeContainer.style.left = `${(h / 24) * 100}%`;
-            
             this.ticksContainer.appendChild(badgeContainer);
         });
 
-        // 4. Додаємо неонову вертикальну лінію поточного часу
         if (!this.isTomorrowView && !this.isAllClearDay && !this.demoMode) {
             this.nowLine = document.createElement('div');
             this.nowLine.id = 'current-time-line';
@@ -224,12 +211,11 @@ export class TimelineEngine {
         const now = new Date();
         const totalMins = now.getHours() * 60 + now.getMinutes();
 
-        // Оновлюємо лінію "Зараз"
         if (this.nowLine) {
             this.nowLine.style.left = `${(totalMins / 1440) * 100}%`;
         }
 
-        this.scrubber.value = Math.floor(totalMins / 5);
+        this.scrubber.value = totalMins;
         this.updateScrubberPreview();
     }
 
@@ -237,27 +223,49 @@ export class TimelineEngine {
         if (!this.scrubber || !this.preview) return;
 
         const val = parseInt(this.scrubber.value);
-        const totalMins = val * 5;
-        const h = Math.floor(totalMins / 60);
-        const m = Math.floor(totalMins % 60);
+        const h = Math.floor(val / 60);
+        const m = val % 60;
         const timeStr = `${h}:${m.toString().padStart(2, '0')}`;
 
         const isOff = this.checkIsOffAtHour(h);
 
-        this.preview.classList.remove('preview-on', 'preview-off');
-        this.preview.classList.add(isOff ? 'preview-off' : 'preview-on');
+        if (this.isTomorrowView) {
+            this.preview.classList.remove('preview-on', 'preview-off');
+            this.preview.classList.add(isOff ? 'preview-off' : 'preview-on');
+            const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" fill="currentColor" style="width:100%; height:100%;"><path d="M292.9 384c7.3-22.3 21.9-42.5 38.4-59.9 32.7-34.4 52.7-80.9 52.7-132.1 0-106-86-192-192-192S0 86 0 192c0 51.2 20 97.7 52.7 132.1 16.5 17.4 31.2 37.6 38.4 59.9l201.7 0zM288 432l-192 0 0 16c0 44.2 35.8 80 80 80l32 0c44.2 0 80-35.8 80-80l0-16zM184 112c-39.8 0-72 32.2-72 72 0 13.3-10.7 24-24 24s-24-10.7-24-24c0-66.3 53.7-120 120-120 13.3 0 24 10.7 24 24s-10.7 24-24 24z"/></svg>`;
+            this.preview.innerHTML = `
+                <div class="preview-status-icon">${svgIcon}</div>
+                <div class="preview-details">
+                    <div class="preview-time">${timeStr}</div>
+                    <div class="preview-msg">${isOff ? 'Світла немає' : 'Світло є'}</div>
+                </div>
+            `;
+        } else {
+            this.preview.classList.remove('preview-on', 'preview-off');
+            this.preview.classList.add(isOff ? 'preview-off' : 'preview-on');
+            const scrubberColor = isOff ? '#8E8E93' : '#FF9500';
+            this.scrubber.style.setProperty('--scrubber-color', scrubberColor);
 
-        const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" fill="currentColor" style="width:100%; height:100%;"><path d="M292.9 384c7.3-22.3 21.9-42.5 38.4-59.9 32.7-34.4 52.7-80.9 52.7-132.1 0-106-86-192-192-192S0 86 0 192c0 51.2 20 97.7 52.7 132.1 16.5 17.4 31.2 37.6 38.4 59.9l201.7 0zM288 432l-192 0 0 16c0 44.2 35.8 80 80 80l32 0c44.2 0 80-35.8 80-80l0-16zM184 112c-39.8 0-72 32.2-72 72 0 13.3-10.7 24-24 24s-24-10.7-24-24c0-66.3 53.7-120 120-120 13.3 0 24 10.7 24 24s-10.7 24-24 24z"/></svg>`;
+            let endHour = h + 1;
+            while (endHour < 24 && this.checkIsOffAtHour(endHour) === isOff) {
+                endHour++;
+            }
+            const stateUntil = endHour < 24 ? `${endHour}:00` : 'кінця дня';
+            const msg = isOff ? `Світла немає до ${stateUntil}` : `Світло є до ${stateUntil}`;
 
-        this.preview.innerHTML = `
-            <div class="preview-status-icon">${svgIcon}</div>
-            <div class="preview-details">
-                <div class="preview-time">${timeStr}</div>
-                <div class="preview-msg">${isOff ? 'Світла немає' : 'Світло є'}</div>
-            </div>
-        `;
+            // Використання оригінальних PNG іконок з папки assets
+            const iconOn = `<img src="assets/bulb_on.png" alt="Light On" style="width:100%; height:100%; object-fit:contain;">`;
+            const iconOff = `<img src="assets/bulb_off.png" alt="Light Off" style="width:100%; height:100%; object-fit:contain;">`;
 
-        // Магнетизм / Підсвітка активного блоку при скрубінгу
+            this.preview.innerHTML = `
+                <div class="preview-status-icon">${isOff ? iconOff : iconOn}</div>
+                <div class="preview-details">
+                    <div class="preview-time" id="preview-time">${timeStr}</div>
+                    <div class="preview-msg" id="preview-msg">${msg}</div>
+                </div>
+            `;
+        }
+
         if (this.scrubberInteracted) {
             Array.from(this.rail.children).forEach(child => {
                 if (child.classList.contains('hour-block')) {
@@ -272,10 +280,7 @@ export class TimelineEngine {
                         child.style.transform = 'scale(1) translateY(0)';
                         child.style.zIndex = '1';
                         child.style.boxShadow = '';
-                        // Зберігаємо затінення для минулого
-                        if (child.classList.contains('past')) {
-                            // no inline filter needed as it's handled by !important in CSS
-                        } else {
+                        if (!child.classList.contains('past')) {
                             child.style.filter = 'none';
                         }
                     }
