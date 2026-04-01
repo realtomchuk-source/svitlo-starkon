@@ -5,7 +5,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Світло-Старкон | Коли буде світло?</title>
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=Tektur:wght@400..900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?t=1774634927">
+    <link rel="stylesheet" href="css/home.css?v=1.0.0">
+    <link rel="stylesheet" href="css/tech-ui.css">
+    <style>
+        /* Inline fail-safe styles for v1.0.10 */
+        .schedule-header {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            margin-bottom: 12px !important;
+            padding: 0 4px !important;
+        }
+        .home-bottom-controls {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            margin-top: 20px !important;
+            width: 100% !important;
+            gap: 12px !important;
+        }
+        .home-bottom-controls .scrubber-preview {
+            height: 52px !important; /* Explicitly set to match button */
+            display: flex !important;
+            align-items: center !important;
+            margin: 0 !important;
+            border-radius: 14px !important;
+        }
+        .controls-spacer { flex: 1 !important; }
+        .schedule-header {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: flex-end !important;
+            margin-bottom: 12px !important;
+            min-height: 32px !important;
+        }
+        .btn-tomorrow-header {
+            background: rgba(255, 149, 0, 0.2) !important;
+            color: #FF9500 !important;
+            border: 1px solid rgba(255, 149, 0, 0.3) !important;
+            padding: 6px 14px !important;
+            border-radius: 10px !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+        }
+        .btn-tomorrow-header:hover { background: rgba(255, 149, 0, 0.3) !important; }
+    </style>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#D77727">
     <link rel="apple-touch-icon" href="assets/icon-180.png">
@@ -15,96 +63,154 @@
     <!-- Full Screen Loading Splash -->
     <div id="loading-screen" class="loading-screen" style="display: none !important;">
         <div class="loading-bulb-container">
-            <svg style="display: none;"
-                <!-- Silhouette -->
-                <path d="M171.91 356H244.66V278.23C204.38 270.82 189.03 233.61 193.14 195.47C179.44 195.42 179.44 174.57 193.14 174.52H214.09V143.09C214.09 137.3 218.77 132.61 224.57 132.61C230.37 132.61 235.05 137.29 235.05 143.09V174.52H276.95V143.09C276.95 137.3 281.63 132.61 287.43 132.61C293.23 132.61 297.91 137.29 297.91 143.09V174.52H318.86C332.56 174.57 332.56 195.42 318.86 195.47C322.98 233.61 307.59 270.84 267.34 278.23V356H340.09C346.17 337.42 358.34 320.58 372.09 306.08C468.46 211.41 393.29 31.22 256.01 36C118.69 31.25 43.56 211.41 139.92 306.09C153.66 320.59 165.91 337.42 171.91 356Z" 
-                    stroke="#D1D5DB" stroke-width="4" stroke-opacity="1" fill="none"/>
-                <!-- Base -->
-                <path d="M336 409.33C334.83 508.55 159.82 495.2 176 396H336V409.33Z" 
-                    stroke="#D1D5DB" stroke-width="4" stroke-linecap="round" fill="none"/>
-                <!-- Spark -->
-                <path id="loading-spark" d="M267.34 356H340.09C346.17 337.42 358.34 320.58 372.09 306.08C468.46 211.41 393.29 31.22 256.01 36C118.69 31.25 43.56 211.41 139.92 306.09C153.66 320.59 165.91 337.42 171.91 356H244.66V278.23C204.38 270.82 189.03 233.61 193.14 195.47C179.44 195.42 179.44 174.57 193.14 174.52H214.09V143.09C214.09 137.3 218.77 132.61 224.57 132.61C230.37 132.61 235.05 137.29 235.05 143.09V174.52H276.95V143.09C276.95 137.3 281.63 132.61 287.43 132.61C293.23 132.61 297.91 137.29 297.91 143.09V174.52H318.86C332.56 174.57 332.56 195.42 318.86 195.47C322.98 233.61 307.59 270.84 267.34 278.23V356" 
-                    stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-            </svg>
+            <div class="loader-content">
+                <div class="spinner"></div>
+                <div class="loading-text">Svitlo-Starkon v1.0.7</div>
+            </div>
         </div>
     </div>
 
     <div id="app">
-        <div class="glass-header">
-            <h1 class="headline-hero">Світло-Старкон</h1>
-        </div>
+        <!-- Removed glass-header as per user request for Native PWA look -->
+
 
 
         <main class="content-area">
             <!-- Home Section -->
             <section id="home-section">
-                <div id="group-carousel" class="group-carousel fade-in">
-                    <!-- Dynamic pills will be injected here -->
-                </div>
+                <!-- Removed Legacy Group Carousel (Pills) as per user request -->
+
 
                 <!-- Removed Date Badge as per user request to integrate into hero -->
 
-                <!-- Smart Hero Section -->
-                <div id="smart-hero" class="hero-section glass-card fade-in" style="margin-top: 60px; margin-bottom: 40px; padding: 24px 16px; border-radius: 24px; margin-left: 20px; margin-right: 20px;">
+                <div class="swipe-hint" style="text-align: center; color: #888; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; margin-top: 16px; margin-bottom: 16px;">
+— свайп для зміни підчерги —</div>
 
-                    <!-- Current Date -->
-                    <div style="text-align: center; margin-bottom: 24px;">
-                        <span id="current-date-display" style="display: inline-block; padding: 6px 16px; border-radius: 20px; background: rgba(128, 128, 128, 0.1); border: 1px solid rgba(128, 128, 128, 0.15); font-size: 12px; font-weight: 700; color: var(--system-text-neutral); text-transform: uppercase; letter-spacing: 1px; backdrop-filter: blur(5px);"></span>
-                    </div>
+                <!-- Smart Hero Section (The Main Visual Anchor) -->
+                <div id="smart-hero" class="hero-section status-on">
+                    <img id="hero-icon-3d" src="assets/power_off.png" alt="Status" class="hero-flat-icon">
                     
-                    <img id="hero-icon-3d" src="assets/power_off.png" alt="Status" class="hero-3d-icon" style="margin: 0 auto; display: block;">
-
-                    <!-- Texts aligned to screenshot -->
-                    <h2 class="hero-group-title" id="hero-group-title">ЧЕРГА 5.2</h2>
-                    <p class="hero-status-text" id="hero-title">Світла немає</p>
+                    <div id="hero-title" class="hero-status-title">Світло є</div>
                     
-                    <div style="margin-top: 24px; margin-bottom: 16px; display: flex; flex-direction: column; align-items: center;">
-                        <p class="hero-countdown" id="hero-countdown">--:--</p>
-                        <p class="body-neutral" id="hero-subtitle" style="font-size: 13px;">Оновлення даних</p>
+                    <div id="subQueueText" class="hero-subqueue-text">
+                        Підчерга <span id="active-queue-val">--</span>
                     </div>
 
-                    <div class="swipe-hint">— свайп для зміни черги —</div>
+                    <div id="hero-countdown" class="hero-main-timer">--:--</div>
+
+                    <div id="hero-subtitle" class="hero-description-text">
+                        до вимкнення о --:--
+                    </div>
+
+                    <div class="hero-progress-container">
+                        <div id="hero-progress-fill" class="hero-progress-fill"></div>
+                    </div>
                 </div>
 
-                <div class="section-container" style="padding: 0 20px; margin-top: 48px;">
-                    <div id="schedule-container" class="glass-card fade-in" style="animation-delay: 0.1s; padding: 16px; position: relative;">
-                        
-                        <!-- Date title and tomorrow button removed from view as per screenshot (hidden or relocated) -->
-                        <div style="display: none; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                            <h2 class="subheadline" id="schedule-date-title" style="margin-bottom: 0;"></h2>
-                        </div>
-
-                        <!-- Top Controls: Preview Bubble (Left) and Tomorrow Button (Right) -->
-                        <div style="display: flex; justify-content: flex-end; align-items: flex-end; margin-bottom: 24px; width: 100%;">
-                            <!-- Tomorrow Button -->
-                            <button id="btn-show-tomorrow" class="btn-tomorrow fade-in hidden"
-                                onclick="window.location.href='full_schedule.html'"
-                                style="margin: 0; margin-right: auto; padding: 10px 16px; font-size: 13px; border-radius: 16px; backdrop-filter: blur(5px); pointer-events: auto;">
-                                Графік на завтра
-                            </button>
-
-                            <!-- Scrubber Preview (існуюча кулька - Праворуч) -->
-                            <div id="scrubber-preview" class="scrubber-preview fade-in preview-off" style="margin: 0; margin-left: auto;">
-                                <div class="preview-status-icon">
-                                    <!-- Initial empty state or default SVG off -->
+                     <div class="section-container" style="padding: 0 20px; margin-top: 0px;">
+                        <div id="schedule-container" class="glass-card fade-in" style="animation-delay: 0.1s; padding: 16px 0; position: relative; overflow: visible !important;">
+                            <div id="ruler-wrapper" class="ruler-wrapper">
+                                <div id="ruler-rail" class="ruler-rail"></div>
+                                <div id="ruler-ticks" class="ruler-ticks"></div>
+                                <!-- Industrial Scrubber Handle (Custom Visual Layer) -->
+                                <div id="scrubber-industrial-handle" class="scrubber-industrial-handle">
+                                    <div class="scrubber-line"></div>
+                                    <div class="scrubber-body"></div>
                                 </div>
-                                <div class="preview-details">
-                                    <div class="preview-time" id="preview-time">--:--</div>
-                                    <div class="preview-msg" id="preview-msg">Завантаження...</div>
-                                </div>
+                                <input type="range" id="timeline-scrubber" class="timeline-scrubber" min="0" max="287" value="0">
                             </div>
+                        </div> <!-- End of schedule-container -->
+                    </div> <!-- End of section-container -->
+
+                <!-- NEW: Solid Bottom Area (No padding, full width background) -->
+                <div style="position: relative; width: 100%; margin-top: 12px; padding-bottom: 300px;">
+                    <!-- The Solid Bottom Foundation -->
+                    <div id="bottom-foundation" class="bottom-foundation tablo-off" style="position: absolute; top:0; left:0; right:0; bottom:0; padding-bottom: 300px; width: 100%;"></div>
+
+                <!-- NEW: Modular Dashboard Area (Stacked Rows) -->
+                <div id="top-content-spacer" style="min-height: 280px; width: 100%; position: relative; display: flex; flex-direction: column;">
+                    
+                    <!-- LAYER 1: NEW TECH DASHBOARD (Top Row: Discreet 80px) -->
+                    <div id="tech-ui-layer-new" style="height: 80px; position: relative; width: 100%;">
+                        <!-- Left: Date Display Component (Contextual) -->
+                        <div class="date-card light tech-ui-font">
+                            <div id="tech-date-main" class="date-main">--·--·----</div>
+                            <div id="tech-date-day" class="date-day">--------</div>
                         </div>
 
-                        <div id="ruler-wrapper" class="ruler-wrapper">
-                            <div id="ruler-rail" class="ruler-rail"></div>
-                            <div id="ruler-ticks" class="ruler-ticks"></div>
-                            <input type="range" id="timeline-scrubber" class="timeline-scrubber" min="0" max="287"
-                                value="0">
+                        <!-- Center: Power Status Card (Dynamic Centerpiece) -->
+                        <div class="status-card light tech-ui-font" id="tech-status-card">
+                            <img src="assets/dashboard_off.svg" alt="Power" class="status-icon" id="tech-status-icon">
+                            <div class="status-text" id="tech-status-text">--:--</div>
+                        </div>
+
+                        <!-- Right: Clock Display Component (Active Signal) -->
+                        <div class="clock-card light tech-ui-font">
+                            <div id="tech-clock-display" class="clock-text">--<span class="separator">:</span>--<span class="seconds">--</span></div>
+                        </div>
+                    </div>
+
+                    <!-- LAYER 2: LEGACY DASHBOARD (Bottom Row - Physically below Section 1) -->
+                    <div id="legacy-tablo-layer-old" style="width: 100%; padding-top: 20px;">
+                        <div class="home-dashboard-bar" id="home-dashboard-bar" style="box-sizing: border-box; width: 100%; margin: 0 auto; padding: 0 40px; position: relative; z-index: 50;">
+                            <!-- Center: Unified Info Tablo (Autonomous) -->
+                            <div class="dashboard-tablo tablo-off fade-in" id="dashboard-tablo">
+                                 <!-- LEFT GROUP: Split Boxed Date -->
+                                 <div class="tablo-date-split" id="tablo-date-split">
+                                     <div class="date-square" id="date-sq-d">--</div>
+                                     <div class="date-square" id="date-sq-m">--</div>
+                                     <div class="date-square" id="date-sq-y">----</div>
+                                 </div>
+                                 
+                                 <!-- MAIN CLOCK DISPLAY -->
+                                 <div class="tablo-display-box main-clock-box">
+                                     <div class="tablo-hero-clock" id="tablo-real-time">--:--</div>
+                                 </div>
+
+                                 <!-- RIGHT GROUP: Bulb + "ДО" + Boxed Clock -->
+                                 <div class="tablo-right-group">
+                                      <div id="tablo-status-msg" class="tablo-status-msg"></div>
+                                      <div class="tablo-display-box until-clock-display">
+                                          <div id="tablo-status-label" class="tablo-until-prefix">ДО</div>
+                                          <div id="tablo-status-until" class="tablo-hero-clock">--:--</div>
+                                      </div>
+                                 </div>
+                             </div>
                         </div>
                     </div>
                 </div>
 
+                    <!-- QUEUE WHEEL PICKER MOVED HERE -->
+                     <div style="padding: 0 16px; margin-top: 8px; margin-bottom: 32px;">
+                          <div class="queue-control-strip fade-in" style="animation-delay: 0.2s; position: relative; margin: 0; width: 100%;">
+                               <div class="drum-selection-lens"></div> <!-- The Optical Lens -->
+                               
+                               <!-- Mechanical Mounts for the Lens -->
+                               <div class="lens-mount-bracket lens-mount-top"></div>
+                               <div class="lens-mount-bracket lens-mount-bottom"></div>
 
+                               <div class="queue-control-center">
+                                  <div class="drum-fade-mask-left"></div>
+                                  <div class="drum-fade-mask-right"></div>
+                                  
+                                  <div id="queue-wheel-picker" class="queue-wheel-picker">
+                                      <div id="wheel-track" class="wheel-track">
+                                          <!-- Dynamic items generated via JS -->
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                         <div class="tech-label-under-drum">ОБЕРІТЬ ПІДЧЕРГУ</div>
+                    </div>
+
+                    <!-- NEW: Clean Content Plate Below Drum (Industrial Standard) -->
+                    <div class="section-container" style="padding: 0 20px; margin-top: 0px; margin-bottom: 60px;">
+                        <div id="bottom-content-plate" class="glass-card fade-in" style="min-height: 180px; animation-delay: 0.3s; position: relative;">
+                            <!-- 3D Sub-Queue Carousel Mount Point -->
+                            <div id="subqueue-carousel-container" class="subqueue-carousel-wrap"></div>
+                        </div>
+                    </div>
+                </div>
 
             </section>
 
@@ -122,7 +228,7 @@
                 <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="24" height="24" fill="currentColor"><path d="M224 64C241.7 64 256 78.3 256 96L256 128L384 128L384 96C384 78.3 398.3 64 416 64C433.7 64 448 78.3 448 96L448 128L480 128C515.3 128 544 156.7 544 192L544 480C544 515.3 515.3 544 480 544L160 544C124.7 544 96 515.3 96 480L96 192C96 156.7 124.7 128 160 128L192 128L192 96C192 78.3 206.3 64 224 64zM160 304L160 336C160 344.8 167.2 352 176 352L208 352C216.8 352 224 344.8 224 336L224 304C224 295.2 216.8 288 208 288L176 288C167.2 288 160 295.2 160 304zM288 304L288 336C288 344.8 295.2 352 304 352L336 352C344.8 352 352 344.8 352 336L352 304C352 295.2 344.8 288 336 288L304 288C295.2 288 288 295.2 288 304zM432 288C423.2 288 416 295.2 416 304L416 336C416 344.8 423.2 352 432 352L464 352C472.8 352 480 344.8 480 336L480 304C480 295.2 472.8 288 464 288L432 288zM160 432L160 464C160 472.8 167.2 480 176 480L208 480C216.8 480 224 472.8 224 464L224 432C224 423.2 216.8 416 208 416L176 416C167.2 416 160 423.2 160 432zM304 416C295.2 416 288 423.2 288 432L288 464C288 472.8 295.2 480 304 480L336 480C344.8 480 352 472.8 352 464L352 432C352 423.2 344.8 416 336 416L304 416zM416 432L416 464C416 472.8 423.2 480 432 480L464 480C472.8 480 480 472.8 480 464L480 432C480 423.2 472.8 416 464 416L432 416C423.2 416 416 423.2 416 432z"/></svg></span>
                 <span class="nav-text">Archive</span>
             </button>
-            <button class="nav-item  focus-ring" onclick="window.location.href='javascript:void(0)'">
+            <button class="nav-item  focus-ring" onclick="window.location.href='apps.html'">
                 <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="18" height="24" fill="currentColor"><path d="M64 0C28.7 0 0 28.7 0 64L0 480c0 11.5 6.2 22.2 16.2 27.8s22.3 5.5 32.2-.4L192 421.3 335.5 507.4c9.9 5.9 22.2 6.1 32.2 .4S384 491.5 384 480l0-416c0-35.3-28.7-64-64-64L64 0z"/></svg></span>
                 <span class="nav-text">App</span>
             </button>
@@ -133,21 +239,37 @@
         </nav>
     </div>
 
-    <!-- Bottom Sheet Menu -->
+    <!-- Queue Picker Overlay -->
+    <div id="home-queue-picker-overlay" class="overlay" onclick="if(event.target===this) document.getElementById('home-queue-picker-overlay').classList.remove('active')">
+        <div class="picker-container fade-in-up">
+            <div class="picker-header" style="margin-bottom: 20px;">
+                <h2 class="picker-title">Оберіть підчергу</h2>
+                <div class="picker-close" onclick="document.getElementById('home-queue-picker-overlay').classList.remove('active')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+            </div>
+            <div class="group-grid" id="home-queue-buttons">
+                <!-- Group buttons injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Legacy Group Selector (kept for now as requested) -->
     <div id="overlay" class="overlay">
-        <div id="bottom-sheet" class="glass-card bottom-sheet">
-            <div class="sheet-handle"></div>
+        <div class="picker-container">
             <h2 class="subheadline">Оберіть вашу чергу</h2>
             <div class="group-grid" id="group-buttons">
                 <!-- Group buttons injected here -->
             </div>
             <button id="btn-close-sheet" class="close-btn">Готово</button>
-        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-client.js"></script>
-    <script type="module" src="js/pages/home.js"></script>
+    <script src="js/pages/home-tablo.js?v=1.0.0"></script>
+    <script src="js/tech-ui.js"></script>
+    <script type="module" src="js/pages/home.js?v=1.0.10"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {

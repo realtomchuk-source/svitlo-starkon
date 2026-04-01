@@ -14,9 +14,11 @@ export class TimelineEngine {
         this.rail = document.getElementById('ruler-rail');
         this.ticksContainer = document.getElementById('ruler-ticks');
         this.scrubber = document.getElementById('timeline-scrubber');
-        this.preview = document.getElementById('scrubber-preview');
+        this.industrialHandle = document.getElementById('scrubber-industrial-handle');
+        this.preview = document.getElementById('dashboard-tablo');
         
         this.scrubberInteracted = false;
+        this.lastVibrationTime = 0; // Prevent constant vibration
         this.updateInterval = null;
         this.demoMode = config.demoMode || false;
         this.isAllClearDay = config.isAllClearDay || false;
@@ -60,9 +62,10 @@ export class TimelineEngine {
              clearTimeout(this.scrubberTimeout);
              this.scrubberTimeout = setTimeout(() => {
                  this.scrubberInteracted = false;
+                 window.isTimelineScrubbing = false; // Reset global scrubbing flag
                  this.updateToCurrentTime();
                  this.clearActiveBlocks();
-             }, 30000); 
+             }, 15000); // Повернення до реальності через 15 секунд бездії
         });
 
         this.renderTimeline();
@@ -216,76 +219,202 @@ export class TimelineEngine {
         }
 
         this.scrubber.value = totalMins;
+        window.isTimelineScrubbing = false; 
         this.updateScrubberPreview();
     }
 
     updateScrubberPreview() {
-        if (!this.scrubber || !this.preview) return;
+        if (!this.scrubber) return;
 
         const val = parseInt(this.scrubber.value);
         const h = Math.floor(val / 60);
         const m = val % 60;
-        const timeStr = `${h}:${m.toString().padStart(2, '0')}`;
-
         const isOff = this.checkIsOffAtHour(h);
 
-        if (this.isTomorrowView) {
-            this.preview.classList.remove('preview-on', 'preview-off');
-            this.preview.classList.add(isOff ? 'preview-off' : 'preview-on');
-            const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" fill="currentColor" style="width:100%; height:100%;"><path d="M292.9 384c7.3-22.3 21.9-42.5 38.4-59.9 32.7-34.4 52.7-80.9 52.7-132.1 0-106-86-192-192-192S0 86 0 192c0 51.2 20 97.7 52.7 132.1 16.5 17.4 31.2 37.6 38.4 59.9l201.7 0zM288 432l-192 0 0 16c0 44.2 35.8 80 80 80l32 0c44.2 0 80-35.8 80-80l0-16zM184 112c-39.8 0-72 32.2-72 72 0 13.3-10.7 24-24 24s-24-10.7-24-24c0-66.3 53.7-120 120-120 13.3 0 24 10.7 24 24s-10.7 24-24 24z"/></svg>`;
-            this.preview.innerHTML = `
-                <div class="preview-status-icon">${svgIcon}</div>
-                <div class="preview-details">
-                    <div class="preview-time">${timeStr}</div>
-                    <div class="preview-msg">${isOff ? 'Світла немає' : 'Світло є'}</div>
-                </div>
-            `;
-        } else {
-            this.preview.classList.remove('preview-on', 'preview-off');
-            this.preview.classList.add(isOff ? 'preview-off' : 'preview-on');
-            const scrubberColor = isOff ? '#8E8E93' : '#FF9500';
-            this.scrubber.style.setProperty('--scrubber-color', scrubberColor);
+        // 1.1.15: Synchronize Industrial Handle Position
+        if (this.industrialHandle) {
+            // Position math: starts at 10px, maps 0-1440 to 0% - 100% of the active area (Total - 20px)
+            const percentage = (val / 1440);
+            this.industrialHandle.style.left = `calc(10px + ${percentage * 100}% - ${percentage * 20}px)`;
+            
+            // Check for Real Time Match
+            const now = new Date();
+            const nowTotal = now.getHours() * 60 + now.getMinutes();
+            const IS_AT_REAL_TIME = Math.abs(val - nowTotal) <= 1; // 2-min tolerance for snap/feel
 
-            let endHour = h + 1;
-            while (endHour < 24 && this.checkIsOffAtHour(endHour) === isOff) {
-                endHour++;
+            if (IS_AT_REAL_TIME) {
+                if (!this.industrialHandle.classList.contains('at-real-time')) {
+                    this.industrialHandle.classList.add('at-real-time');
+                    // Vibrate 15ms exactly once per transition to real-time
+                    if (navigator.vibrate) navigator.vibrate(15);
+                }
+            } else {
+                this.industrialHandle.classList.remove('at-real-time');
             }
-            const stateUntil = endHour < 24 ? `${endHour}:00` : 'кінця дня';
-            const msg = isOff ? `Світла немає до ${stateUntil}` : `Світло є до ${stateUntil}`;
-
-            // Використання оригінальних PNG іконок з папки assets
-            const iconOn = `<img src="assets/bulb_on.png" alt="Light On" style="width:100%; height:100%; object-fit:contain;">`;
-            const iconOff = `<img src="assets/bulb_off.png" alt="Light Off" style="width:100%; height:100%; object-fit:contain;">`;
-
-            this.preview.innerHTML = `
-                <div class="preview-status-icon">${isOff ? iconOff : iconOn}</div>
-                <div class="preview-details">
-                    <div class="preview-time" id="preview-time">${timeStr}</div>
-                    <div class="preview-msg" id="preview-msg">${msg}</div>
-                </div>
-            `;
         }
 
-        if (this.scrubberInteracted) {
+        // Common components for content (Supporting both new tablo and legacy preview)
+        const previewTime = document.getElementById('preview-time') || document.getElementById('tablo-real-time');
+        const previewMsg = document.getElementById('preview-msg') || document.getElementById('tablo-status-msg');
+        const previewUntil = document.getElementById('preview-until') || document.getElementById('tablo-status-until');
+
+        const now = new Date();
+        const nowTotal = now.getHours() * 60 + now.getMinutes();
+        const isPast = val < nowTotal && !this.isTomorrowView; // Перевіряємо чи ми в минулому (окрім сторінки Завтра)
+
+        // Керування видимістю правого табло (ДО...)
+        const untilContainer = document.querySelector('.until-clock-display');
+        if (untilContainer) {
+            if (isPast) untilContainer.classList.add('is-hidden');
+            else untilContainer.classList.remove('is-hidden');
+        }
+
+        const timeString = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+
+        if (previewTime) {
+            previewTime.textContent = timeString;
+            
+            // Apply neon glow if this is the real-time tablo AND we are in real-time mode
+            if (previewTime.id === 'tablo-real-time') {
+                const dateSquares = document.querySelectorAll('.date-square');
+                if (!this.scrubberInteracted) {
+                    previewTime.classList.add('neon-glow-time');
+                    dateSquares.forEach(sq => sq.classList.add('neon-glow-date'));
+                } else {
+                    previewTime.classList.remove('neon-glow-time');
+                    dateSquares.forEach(sq => sq.classList.remove('neon-glow-date'));
+                }
+            }
+        }
+
+        // NEW: Sync Top Tech Clock
+        const techClockEl = document.getElementById('tech-clock-display');
+        if (techClockEl && this.scrubberInteracted) {
+            window.isTimelineScrubbing = true;
+            // Display HH:MM without seconds during scrubbing
+            techClockEl.innerHTML = `${h.toString().padStart(2, '0')}<span class="separator">:</span>${m.toString().padStart(2, '0')}<span class="seconds"></span>`;
+        }
+
+        if (previewMsg) {
+            if (previewMsg.id === 'tablo-status-msg') {
+                const iconSrc = !isOff ? 'assets/dashboard_on.svg' : 'assets/dashboard_off.svg';
+                const altText = !isOff ? 'СВІТЛО Є' : 'СВІТЛА НЕМАЄ';
+                previewMsg.innerHTML = `<img src="${iconSrc}" alt="${altText}" class="tablo-status-icon">`;
+            } else {
+                previewMsg.textContent = isOff ? 'СВІТЛА НЕМАЄ' : 'СВІТЛО Є';
+            }
+        }
+
+        // Логіка "ДО"
+        const techStatusText = document.getElementById('tech-status-text');
+        const techStatusIcon = document.getElementById('tech-status-icon');
+        
+        if (previewUntil) {
+            const nextTransition = this.getNextTransitionTime(h, m);
+            if (nextTransition) {
+                if (previewUntil.id === 'tablo-status-until') {
+                    // Нове Табло: "ДО" окремо від цифр
+                    const label = document.getElementById('tablo-status-label');
+                    if (label) label.textContent = 'ДО';
+                    previewUntil.textContent = nextTransition;
+                } else {
+                    // Класичне прев'ю (наприклад, на сторінці Завтра)
+                    previewUntil.textContent = `ДО ${nextTransition}`;
+                }
+                
+                // Update new Tech Status Card
+                if (techStatusText) techStatusText.textContent = `- до ${nextTransition}`;
+                
+                previewUntil.style.display = 'block';
+            } else {
+                previewUntil.textContent = "—";
+                if (techStatusText) techStatusText.textContent = "—";
+            }
+        }
+        
+        if (techStatusIcon) {
+            techStatusIcon.src = !isOff ? 'assets/dashboard_on.svg' : 'assets/dashboard_off.svg';
+        }
+
+        // Оновлюємо стани контейнерів (Табло або Прев'ю)
+        this.updateTabloState(isOff);
+
+        // Оновлюємо колір повзунка (тільки для Home, де є CSS змінні)
+        const scrubberColor = isOff ? '#8E8E93' : '#FF9500';
+        this.scrubber.style.setProperty('--scrubber-color', scrubberColor);
+
+        // Візуальний відгук на шкалі (hour-blocks)
+        if (this.scrubberInteracted && this.rail) {
             Array.from(this.rail.children).forEach(child => {
                 if (child.classList.contains('hour-block')) {
                     if (parseInt(child.dataset.hour) === h) {
                         child.classList.add('active-block');
-                        child.style.transform = 'scale(1.15) translateY(-3px)';
-                        child.style.zIndex = '15';
-                        child.style.boxShadow = '0 6px 16px rgba(0,0,0,0.4)';
-                        child.style.filter = 'brightness(1.3)';
                     } else {
                         child.classList.remove('active-block');
-                        child.style.transform = 'scale(1) translateY(0)';
-                        child.style.zIndex = '1';
-                        child.style.boxShadow = '';
-                        if (!child.classList.contains('past')) {
-                            child.style.filter = 'none';
-                        }
                     }
                 }
             });
         }
+    }
+
+    updateTabloState(isOff) {
+        const tablo = document.getElementById('dashboard-tablo');
+        const legacyPreview = document.getElementById('scrubber-preview');
+        const foundation = document.getElementById('bottom-foundation');
+
+        // New Tech UI Layer (Clock, Date, Status)
+        const techCards = document.querySelectorAll('.date-card, .clock-card, .status-card');
+        techCards.forEach(card => {
+            if (isOff) {
+                // SSSK State: Off (Gray BG) -> Tech UI: Light (High contrast on dark)
+                card.classList.add('light');
+                card.classList.remove('dark');
+            } else {
+                // SSSK State: On (Orange BG) -> Tech UI: Dark (High contrast on bright)
+                card.classList.add('dark');
+                card.classList.remove('light');
+            }
+        });
+
+        // Dashboard (Old) and Foundation
+        if (tablo) {
+            if (isOff) {
+                tablo.classList.remove('tablo-on');
+                tablo.classList.add('tablo-off');
+                if (foundation) {
+                    foundation.classList.remove('tablo-on');
+                    foundation.classList.add('tablo-off');
+                }
+            } else {
+                tablo.classList.remove('tablo-off');
+                tablo.classList.add('tablo-on');
+                if (foundation) {
+                    foundation.classList.remove('tablo-off');
+                    foundation.classList.add('tablo-on');
+                }
+            }
+        }
+
+        // Legacy Preview (Tomorrow Page)
+        if (legacyPreview) {
+            if (isOff) {
+                legacyPreview.classList.remove('preview-on');
+                legacyPreview.classList.add('preview-off');
+            } else {
+                legacyPreview.classList.remove('preview-off');
+                legacyPreview.classList.add('preview-on');
+            }
+        }
+    }
+
+    getNextTransitionTime(hour, min) {
+        // Проста логіка пошуку першої зміни стану після поточного часу
+        const currentIsOff = this.checkIsOffAtHour(hour);
+        for (let h = hour + 1; h < 24; h++) {
+            if (this.checkIsOffAtHour(h) !== currentIsOff) {
+                return `${h}:00`;
+            }
+        }
+        return "00:00"; 
     }
 }

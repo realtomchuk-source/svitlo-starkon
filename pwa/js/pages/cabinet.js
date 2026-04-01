@@ -617,14 +617,14 @@ async function renderStartCard() {
         <!-- Main Content Area -->
         <div style="flex: 1; display: flex; flex-direction: column; height: 116px; position: relative;">
             <!-- Top Segment: Stats -->
-            <div id="start-card-stats" style="display: flex; flex-direction: column; gap: 6px;">
+            <div id="start-card-stats" style="display: flex; flex-direction: column; justify-content: space-evenly; flex: 1;">
                 <div class="loading-spinner" style="width: 14px; height: 14px; border-width: 2px;"></div>
             </div>
             
             <!-- Bottom Segment: Info (AlignedText to Button) -->
             <div style="margin-top: auto; display: flex; align-items: center; justify-content: flex-end; gap: 12px; padding-bottom: 4px;">
                 <p style="margin: 0; font-size: 13px; font-weight: 800; color: var(--system-text); opacity: 0.7; text-align: right; white-space: nowrap; letter-spacing: -0.4px;">
-                    Додаток стартує з черги
+                    Стартує з
                 </p>
             </div>
         </div>
@@ -632,8 +632,9 @@ async function renderStartCard() {
         <!-- Right Segment: Interaction -->
         <div style="flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
             <button id="start-queue-btn" onclick="openQueuePicker()" class="mirror-avatar-btn">
+                <span class="btn-top-label">змінити</span>
                 <span class="queue-num">${savedGroup}</span>
-                <span class="btn-label">змінити</span>
+                <span class="btn-label">черга</span>
             </button>
         </div>
     `;
@@ -675,12 +676,16 @@ async function updateStartCardStats(queueId) {
     }
 
     statsContainer.innerHTML = `
-        <div style="display: flex; align-items: center; font-size: 14px; font-weight: 800; color: var(--system-text); letter-spacing: -0.4px;">
-            <span class="status-dot on"></span>
+        <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 800; color: var(--system-text); letter-spacing: -0.4px;">
+            <div style="width: 36px; height: 36px; border-radius: 10px; background: #FF9500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 3px 10px rgba(255,149,0,0.5);">
+                <img src="/SSSK/pwa/assets/bulb_on.png" alt="on" style="width: 22px; height: 22px; object-fit: contain; filter: brightness(0) invert(1);">
+            </div>
             <span>${on} год зі світлом</span>
         </div>
-        <div style="display: flex; align-items: center; font-size: 14px; font-weight: 800; color: var(--system-text); letter-spacing: -0.4px;">
-            <span class="status-dot off"></span>
+        <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 800; color: var(--system-text); letter-spacing: -0.4px;">
+            <div style="width: 36px; height: 36px; border-radius: 10px; background: #8E8E93; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 3px 10px rgba(142,142,147,0.4);">
+                <img src="/SSSK/pwa/assets/bulb_off.png" alt="off" style="width: 22px; height: 22px; object-fit: contain; filter: brightness(0) invert(1);">
+            </div>
             <span>${off} год без світла</span>
         </div>
     `;

@@ -1,23 +1,19 @@
-const DATA_URL = './data/unified_schedules.json';
+const DATA_URL = './data/today.json';
 
-// Fetch the full JSON schedule and map it by date
+/**
+ * Fetch the today's schedule data
+ * Returns a single object with queues, date, message and mode
+ */
 export async function fetchScheduleData() {
     try {
-        const response = await fetch(DATA_URL);
-        if (!response.ok) throw new Error('Data not found');
+        const response = await fetch(`data/today.json?t=${new Date().getTime()}`);
+        if (!response.ok) throw new Error('Schedule data not found');
         
-        const fullData = await response.json();
-        const scheduleData = {};
-        
-        fullData.forEach(entry => {
-            const d = entry.target_date;
-            if (d) scheduleData[d] = entry;
-        });
-
-        return scheduleData;
+        const data = await response.json();
+        return data; 
     } catch (error) {
         console.error('Fetch error:', error);
-        return null; // Return null to trigger fallback in the UI controllers
+        return null;
     }
 }
 

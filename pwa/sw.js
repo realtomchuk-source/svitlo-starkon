@@ -1,11 +1,16 @@
-const CACHE_NAME = 'sssk-pwa-v1';
+const CACHE_NAME = 'sssk-pwa-v1.1.0';
 const ASSETS = [
   'index.html',
   'style.css',
   'js/pages/home.js',
+  'js/pages/home-tablo.js',
+  'js/modules/TimelineEngine.js',
+  'js/tech-ui.js',
   'assets/logo.png',
   'assets/power_on.png',
-  'assets/power_off.png'
+  'assets/power_off.png',
+  'assets/dashboard_on.svg',
+  'assets/dashboard_off.svg'
 ];
 
 self.addEventListener('install', (event) => {

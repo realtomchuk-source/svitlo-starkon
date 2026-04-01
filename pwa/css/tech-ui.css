@@ -1,0 +1,313 @@
+:root {
+  --green-primary: #00FF85;
+  --green-dim: rgba(0, 255, 133, 0.6);
+  --gray-100: #F3F4F6;
+  --gray-200: #E5E7EB;
+  --gray-400: #9CA3AF;
+  --dark-bg: #0B0B0C;
+  --dark-card: #1C1C1E;
+  --orange-bg: #F97316;
+  
+  /* NEW Design Tokens for Hero Redesign */
+  --hero-bg: #FFFFFF;
+  --hero-text-primary: #111111;
+  --hero-text-secondary: #777777;
+  --accent-on: #FF7A00;
+  --accent-off: #4D565F; /* Darker graphite to match the actual bulb icon */
+  --color-track: #EEEEEE;
+  --radius-lg: 20px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --font-family-hero: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Arial, sans-serif;
+
+  /* Glass backgrounds (Legacy) */
+  --glass-light: rgba(255, 255, 255, 0.06);
+  --glass-border-light: rgba(255, 255, 255, 0.08);
+  --glass-dark: rgba(0, 0, 0, 0.25);
+  --glass-border-dark: rgba(255, 255, 255, 0.1);
+  --glass-milky: rgba(255, 255, 255, 0.45);
+  --glass-border-milky: rgba(255, 255, 255, 0.5);
+  --status-icon-size: 16px;
+}
+
+/* Scope the font ban strictly to the Hero section (Industrial Rule 7.4) */
+#smart-hero, 
+#smart-hero * {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    -webkit-text-stroke: 0 !important;
+    text-shadow: none !important;
+}
+
+.tech-ui-font {
+  font-family: "JetBrains Mono", "IBM Plex Mono", monospace;
+}
+
+/* Base Card Style (Discreet Industrial) - Compact 26px Height */
+.clock-card, .date-card, .status-card {
+  position: absolute;
+  top: 12px;
+  display: inline-flex;
+  border-radius: 8px; /* Slightly tighter radius for smaller height */
+  padding: 4px 10px;  /* Vertical padding reduced for 26px target */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid transparent;
+  transition: none; /* INSTANT switching as requested */
+  z-index: 10;
+  align-items: center;
+  height: 26px; /* Explicit height to ensure uniformity */
+  box-sizing: border-box;
+}
+
+/* Status Card overrides - Fully Transparent as requested */
+.status-card {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+/* Themes per TZ */
+.clock-card.light, .date-card.light {
+  background: var(--glass-light);
+  border-color: var(--glass-border-light);
+}
+
+/* Separate background styles for Date vs Clock when on orange BG */
+.clock-card.dark {
+  background: var(--glass-dark);
+  border-color: var(--glass-border-dark);
+}
+
+.date-card.dark {
+  background: var(--glass-milky);
+  border-color: var(--glass-border-milky);
+}
+
+.status-card.light, .status-card.dark {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Clock Display (Active Signal) */
+.clock-card {
+  right: 16px;
+  justify-content: center;
+  align-items: center;
+}
+
+.clock-text {
+  font-size: 16px; /* Compact size */
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--green-primary);
+  display: flex;
+  align-items: center;
+}
+
+.clock-text .separator {
+  animation: tech-blink 1s steps(1) infinite;
+  margin: 0 1px;
+}
+
+@keyframes tech-blink {
+  50% { opacity: 0; }
+}
+
+.clock-text .seconds {
+  font-size: 1em; /* Same size as hours/mins */
+  font-weight: 400;
+  color: var(--green-primary);
+  opacity: 0.3; /* Paler/dimmed as requested */
+  margin-left: 2px;
+}
+
+/* Date Display (Single Line) */
+.date-card {
+  left: 16px;
+  flex-direction: row; /* Single line */
+  align-items: center;
+  gap: 8px;
+}
+
+.date-main {
+  font-size: 14px; /* Compact size */
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.date-day {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--green-primary); /* Colored day as requested */
+  text-transform: uppercase;
+}
+
+/* Variant Specific Date Colors */
+.date-card.light .date-main { color: var(--gray-200); }
+.date-card.light .date-day { color: var(--gray-400); }
+
+.date-card.dark .date-main { color: #000; } /* Pure black for maximum contrast on milky glass */
+.date-card.dark .date-day { color: #000; opacity: 0.8; }
+
+/* Status Card (Centerpiece) */
+.status-card {
+  left: 50%;
+  transform: translateX(-50%);
+  gap: 6px;
+  min-width: 90px;
+  justify-content: center;
+}
+
+.status-icon {
+  width: var(--status-icon-size);
+  height: var(--status-icon-size);
+  object-fit: contain;
+}
+
+.status-text {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.status-card.light .status-text { color: #fff; }
+.status-card.dark .status-text { color: #fff; }
+
+/* Responsive (Discreet bases) */
+@media (max-width: 480px) {
+  .clock-text { font-size: 28px; }
+  .date-main { font-size: 16px; }
+  .date-day { font-size: 12px; }
+  .clock-card, .date-card { padding: 6px 10px; }
+}
+
+@media (max-width: 320px) {
+  .clock-text { font-size: 22px; }
+  .date-main { font-size: 14px; }
+  .date-day { display: none; }
+  .clock-card, .date-card { padding: 4px 8px; }
+}
+
+/* ==========================================================================
+   NEW INDUSTRIAL HERO REDESIGN (FLAT STYLE)
+   ========================================================================== */
+
+#smart-hero {
+  background: var(--hero-bg) !important;
+  border-radius: var(--hero-radius) !important;
+  padding: 32px 24px !important; /* Symmetrical top/bottom padding */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center !important;
+  position: relative !important;
+  border: 1px solid #F0F0F0 !important;
+  margin: 0 20px 24px 20px !important;
+  transition: all 0.3s ease !important;
+  overflow: hidden !important;
+}
+
+/* Icon */
+.hero-flat-icon {
+  width: 140px !important;
+  height: 140px !important;
+  object-fit: contain !important;
+  margin-top: 0 !important; /* Managed by card padding now */
+  margin-bottom: 16px !important;
+  filter: none !important; /* Flat style, no shadows */
+}
+
+/* Texts */
+.hero-status-title {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  color: var(--hero-text-primary) !important;
+  margin: 0 !important;
+  line-height: 1.2 !important;
+}
+
+.hero-subqueue-text {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: var(--hero-text-secondary) !important;
+  margin-top: 4px !important;
+}
+
+.hero-main-timer {
+  font-size: 48px !important;
+  font-weight: 700 !important;
+  color: var(--hero-text-primary) !important;
+  margin-top: 16px !important;
+  font-variant-numeric: tabular-nums !important;
+  letter-spacing: 1px !important;
+  line-height: 1 !important;
+}
+
+.hero-description-text {
+  font-size: 14px !important;
+  color: var(--hero-text-secondary) !important;
+  margin-top: 8px !important;
+}
+
+/* Progress bar */
+.hero-progress-container {
+  margin-top: 24px !important;
+  height: 8px !important;
+  width: 100% !important;
+  background: var(--color-track) !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+}
+
+.hero-progress-fill {
+  height: 100% !important;
+  width: 0%;
+  transition: width 0.5s ease;
+}
+
+/* Accent Mapping */
+#smart-hero.status-on .hero-progress-fill { background: var(--accent-on) !important; }
+#smart-hero.status-off .hero-progress-fill { background: var(--accent-off) !important; }
+
+/* Subqueue Value - Dynamic Industrial Badge (ON/OFF States) */
+#active-queue-val {
+  font-size: 22px !important;
+  font-weight: 900 !important;
+  display: inline-block !important;
+  padding: 4px 14px !important;
+  border-radius: 8px !important;
+  line-height: normal !important;
+  z-index: 10 !important;
+  position: relative !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Color logic based on Hero Statuses */
+#smart-hero.status-on #active-queue-val {
+  background: var(--accent-on) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 12px rgba(255, 122, 0, 0.2) !important;
+}
+
+#smart-hero.status-off #active-queue-val {
+  background: var(--accent-off) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Perfect Horizontal Centering */
+.hero-subqueue-text {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  margin: 0 auto 16px auto !important;
+  gap: 8px !important;
+}

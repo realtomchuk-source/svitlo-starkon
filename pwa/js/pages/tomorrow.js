@@ -19,6 +19,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     initUI(selectedGroup);
     await loadAndRender(selectedGroup);
 
+    // Запуск спостереження за переходом через північ (00:00)
+    initDateWatcher();
+
     // Initialise Global Auth Functions
     if (typeof window.initSupabase === 'function') window.initSupabase();
     if (typeof window.updateAuthState === 'function') window.updateAuthState();
@@ -47,6 +50,7 @@ function initUI(selectedGroup) {
         () => swipeToGroup(-1)
     );
 
+    // Оновлення поточної дати
     updateDateDisplay();
 
     // Синхронізуємо Радар з рухом скрабера (один раз при ініціалізації)

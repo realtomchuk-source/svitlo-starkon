@@ -5,11 +5,21 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 let supabaseClient = null;
 
 function initSupabase() {
-    if (typeof supabase !== 'undefined') {
-        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    if (supabaseClient) return supabaseClient;
+
+    // Standard CDN export is window.supabase.createClient
+    const creator = (typeof supabase !== 'undefined' && supabase.createClient) 
+                  ? supabase.createClient 
+                  : (window.supabase && window.supabase.createClient);
+
+    if (typeof creator === 'function') {
+        supabaseClient = creator(SUPABASE_URL, SUPABASE_KEY);
         // Attach to window for modular services
         window.supabase = supabaseClient;
+        console.log("Supabase initialized successfully");
         return supabaseClient;
+    } else {
+        console.warn("Supabase library not found or already overwritten. Current window.supabase type:", typeof window.supabase);
     }
     return null;
 }

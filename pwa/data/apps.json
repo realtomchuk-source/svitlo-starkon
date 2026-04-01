@@ -1,0 +1,41 @@
+[
+  {
+    "id": "svitlo-starkon",
+    "name": "Світло-Старкон",
+    "description": "PWA-додаток для моніторингу графіків відключень електроенергії у Старокостянтинові. Показує поточний стан, зворотній відлік та розклад на завтра з push-сповіщеннями.",
+    "status": "active",
+    "image": "assets/app_starkon.png",
+    "order": 1,
+    "links": [
+      { "label": "Відкрити", "icon": "launch", "url": "#" },
+      { "label": "GitHub", "icon": "github", "url": "#" },
+      { "label": "Поділитись", "icon": "share", "url": "#" }
+    ]
+  },
+  {
+    "id": "zzsk-lost-found",
+    "name": "Загубив / Знайшов",
+    "description": "Telegram-платформа для пошуку загублених і знайдених речей у Старокостянтинівській громаді. Два боти з модерацією, автопублікацією та PostgreSQL базою даних.",
+    "status": "active",
+    "image": "assets/app_zzsk.png",
+    "order": 2,
+    "links": [
+      { "label": "Telegram-канал", "icon": "launch", "url": "#" },
+      { "label": "GitHub", "icon": "github", "url": "#" },
+      { "label": "Поділитись", "icon": "share", "url": "#" }
+    ]
+  },
+  {
+    "id": "interactive-map",
+    "name": "Інтерактивна карта Громади",
+    "description": "Цифрова карта інфраструктури, сервісів та подій Старокостянтинівської міської громади. Дозволить швидко знаходити заклади, маршрути та актуальні новини.",
+    "status": "development",
+    "image": "assets/app_map.png",
+    "order": 3,
+    "links": [
+      { "label": "Переглянути", "icon": "launch", "url": "#" },
+      { "label": "GitHub", "icon": "github", "url": "#" },
+      { "label": "Поділитись", "icon": "share", "url": "#" }
+    ]
+  }
+]
