@@ -48,7 +48,7 @@ const correctUpdateHeroUIAndRenderUI = `function updateHeroUI(isCurrentlyOn, nex
 
         const color = isCurrentlyOn ? '#FF9500' : '#8E8E93'; // System Orange / Gray
         const glow = isCurrentlyOn ? 'rgba(255, 149, 0, 0.15)' : 'rgba(142, 142, 147, 0.15)';
-        const statusIcon = isCurrentlyOn ? 'assets/bulb_on.png' : 'assets/bulb_off.png';
+        const statusIcon = isCurrentlyOn ? 'assets/power_on.png' : 'assets/power_off.png';
         const title = isCurrentlyOn ? 'Світло є' : 'Світла немає';
 
         if (heroCard) {

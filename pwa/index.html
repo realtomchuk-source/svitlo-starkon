@@ -5,10 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Світло-Старкон | Коли буде світло?</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=Tektur:wght@400..900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Premium Typography: Inter for Apple-level UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css?t=1774634927">
     <link rel="stylesheet" href="css/home.css?v=1.0.0">
     <link rel="stylesheet" href="css/tech-ui.css">
+    <link rel="stylesheet" href="css/selector.css">
+    <link rel="stylesheet" href="css/timeline-v2.css">
     <style>
         /* Inline fail-safe styles for v1.0.10 */
         .schedule-header {
@@ -78,138 +83,73 @@
         <main class="content-area">
             <!-- Home Section -->
             <section id="home-section">
+                <div class="swipe-hint" style="text-align: center; color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 3px; margin-top: -10px; margin-bottom: 20px; font-family: 'Inter', sans-serif; font-weight: 600;">
+Starkon Світло</div>
                 <!-- Removed Legacy Group Carousel (Pills) as per user request -->
 
 
                 <!-- Removed Date Badge as per user request to integrate into hero -->
+                <!-- Hero Card below -->
 
-                <div class="swipe-hint" style="text-align: center; color: #888; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; margin-top: 16px; margin-bottom: 16px;">
-— свайп для зміни підчерги —</div>
-
-                <!-- Smart Hero Section (The Main Visual Anchor) -->
+                <!-- Apple-Level Smart Hero Card (Restructured v2.0) -->
                 <div id="smart-hero" class="hero-section status-on">
-                    <img id="hero-icon-3d" src="assets/power_off.png" alt="Status" class="hero-flat-icon">
+                    <!-- Smaller 3D Asset (52px via CSS) -->
+                    <img id="hero-icon-3d" src="assets/power_off.png" alt="Status Icon" data-status="on">
                     
-                    <div id="hero-title" class="hero-status-title">Світло є</div>
+                    <!-- Calm Status Title -->
+                    <div id="hero-title">Світло є</div>
                     
-                    <div id="subQueueText" class="hero-subqueue-text">
-                        Підчерга <span id="active-queue-val">--</span>
+                    <!-- HERO: Timer (52px) -->
+                    <div id="hero-countdown">0:00</div>
+                    
+                    <!-- Details: Sub-queue & Description -->
+                    <div class="hero-details-row">
+                        <div id="active-queue-val">Підчерга 1.1</div>
+                        <div id="hero-subtitle">завантаження...</div>
                     </div>
-
-                    <div id="hero-countdown" class="hero-main-timer">--:--</div>
-
-                    <div id="hero-subtitle" class="hero-description-text">
-                        до вимкнення о --:--
-                    </div>
-
-                    <div class="hero-progress-container">
-                        <div id="hero-progress-fill" class="hero-progress-fill"></div>
+                    
+                    <!-- Premium 8px Progress Bar (Exact User Spec) -->
+                    <div class="progress">
+                        <div id="hero-progress-fill" class="progress-fill" style="width: 0%;"></div>
                     </div>
                 </div>
 
-                     <div class="section-container" style="padding: 0 20px; margin-top: 0px;">
-                        <div id="schedule-container" class="glass-card fade-in" style="animation-delay: 0.1s; padding: 16px 0; position: relative; overflow: visible !important;">
-                            <div id="ruler-wrapper" class="ruler-wrapper">
-                                <div id="ruler-rail" class="ruler-rail"></div>
-                                <div id="ruler-ticks" class="ruler-ticks"></div>
-                                <!-- Industrial Scrubber Handle (Custom Visual Layer) -->
-                                <div id="scrubber-industrial-handle" class="scrubber-industrial-handle">
-                                    <div class="scrubber-line"></div>
-                                    <div class="scrubber-body"></div>
+                <!-- MAIN INDUSTRIAL TIMELINE V2 -->
+                <div class="section-container" style="padding: 0 20px; margin-top: 16px;">
+                    <div id="main-timeline-v2" class="fade-in" style="animation-delay: 0.1s; position: relative;"></div>
+                </div>
+
+                <!-- Solid Bottom Area (No padding, full width background) -->
+                <div style="position: relative; width: 100%; margin-top: 52px; padding-top: 2px; padding-bottom: 80px;">
+                    <div id="bottom-foundation" class="bottom-foundation tablo-off"></div>
+
+                    <!-- WRAPPER to keep content stationary while background lowers -->
+                    <div id="stationary-content-wrapper" style="position: relative; top: -20px;">
+                        
+                        <!-- NEW TECH DASHBOARD -->
+                        <div id="top-content-spacer" style="min-height: 49px; width: 100%; position: relative; display: flex; flex-direction: column;">
+                            <div id="tech-ui-layer-new" style="height: 49px; position: relative; width: 100%;">
+                                <div class="date-card light tech-ui-font">
+                                    <div id="tech-date-main" class="date-main">--·--·----</div>
+                                    <div id="tech-date-day" class="date-day">--------</div>
                                 </div>
-                                <input type="range" id="timeline-scrubber" class="timeline-scrubber" min="0" max="287" value="0">
+                                <div class="status-card transparent tech-ui-font" id="tech-status-card">
+                                    <img src="assets/dashboard_off.svg" alt="Power" class="status-icon" id="tech-status-icon">&thinsp;
+                                    <span class="status-separator">-</span>&thinsp;
+                                    <div class="status-text" id="tech-status-text">до&thinsp;--:--</div>
+                                </div>
+                                <div class="clock-card light tech-ui-font">
+                                    <div id="tech-clock-display" class="clock-text">--<span class="separator">:</span>--<span class="seconds">--</span></div>
+                                </div>
                             </div>
-                        </div> <!-- End of schedule-container -->
-                    </div> <!-- End of section-container -->
-
-                <!-- NEW: Solid Bottom Area (No padding, full width background) -->
-                <div style="position: relative; width: 100%; margin-top: 12px; padding-bottom: 300px;">
-                    <!-- The Solid Bottom Foundation -->
-                    <div id="bottom-foundation" class="bottom-foundation tablo-off" style="position: absolute; top:0; left:0; right:0; bottom:0; padding-bottom: 300px; width: 100%;"></div>
-
-                <!-- NEW: Modular Dashboard Area (Stacked Rows) -->
-                <div id="top-content-spacer" style="min-height: 280px; width: 100%; position: relative; display: flex; flex-direction: column;">
-                    
-                    <!-- LAYER 1: NEW TECH DASHBOARD (Top Row: Discreet 80px) -->
-                    <div id="tech-ui-layer-new" style="height: 80px; position: relative; width: 100%;">
-                        <!-- Left: Date Display Component (Contextual) -->
-                        <div class="date-card light tech-ui-font">
-                            <div id="tech-date-main" class="date-main">--·--·----</div>
-                            <div id="tech-date-day" class="date-day">--------</div>
                         </div>
 
-                        <!-- Center: Power Status Card (Dynamic Centerpiece) -->
-                        <div class="status-card light tech-ui-font" id="tech-status-card">
-                            <img src="assets/dashboard_off.svg" alt="Power" class="status-icon" id="tech-status-icon">
-                            <div class="status-text" id="tech-status-text">--:--</div>
+                        <!-- Subqueue Selector -->
+                        <div id="subqueue-selector" style="margin-top: 2px; position: relative;">
                         </div>
 
-                        <!-- Right: Clock Display Component (Active Signal) -->
-                        <div class="clock-card light tech-ui-font">
-                            <div id="tech-clock-display" class="clock-text">--<span class="separator">:</span>--<span class="seconds">--</span></div>
-                        </div>
-                    </div>
+                    </div> <!-- End of stationary-content-wrapper -->
 
-                    <!-- LAYER 2: LEGACY DASHBOARD (Bottom Row - Physically below Section 1) -->
-                    <div id="legacy-tablo-layer-old" style="width: 100%; padding-top: 20px;">
-                        <div class="home-dashboard-bar" id="home-dashboard-bar" style="box-sizing: border-box; width: 100%; margin: 0 auto; padding: 0 40px; position: relative; z-index: 50;">
-                            <!-- Center: Unified Info Tablo (Autonomous) -->
-                            <div class="dashboard-tablo tablo-off fade-in" id="dashboard-tablo">
-                                 <!-- LEFT GROUP: Split Boxed Date -->
-                                 <div class="tablo-date-split" id="tablo-date-split">
-                                     <div class="date-square" id="date-sq-d">--</div>
-                                     <div class="date-square" id="date-sq-m">--</div>
-                                     <div class="date-square" id="date-sq-y">----</div>
-                                 </div>
-                                 
-                                 <!-- MAIN CLOCK DISPLAY -->
-                                 <div class="tablo-display-box main-clock-box">
-                                     <div class="tablo-hero-clock" id="tablo-real-time">--:--</div>
-                                 </div>
-
-                                 <!-- RIGHT GROUP: Bulb + "ДО" + Boxed Clock -->
-                                 <div class="tablo-right-group">
-                                      <div id="tablo-status-msg" class="tablo-status-msg"></div>
-                                      <div class="tablo-display-box until-clock-display">
-                                          <div id="tablo-status-label" class="tablo-until-prefix">ДО</div>
-                                          <div id="tablo-status-until" class="tablo-hero-clock">--:--</div>
-                                      </div>
-                                 </div>
-                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                    <!-- QUEUE WHEEL PICKER MOVED HERE -->
-                     <div style="padding: 0 16px; margin-top: 8px; margin-bottom: 32px;">
-                          <div class="queue-control-strip fade-in" style="animation-delay: 0.2s; position: relative; margin: 0; width: 100%;">
-                               <div class="drum-selection-lens"></div> <!-- The Optical Lens -->
-                               
-                               <!-- Mechanical Mounts for the Lens -->
-                               <div class="lens-mount-bracket lens-mount-top"></div>
-                               <div class="lens-mount-bracket lens-mount-bottom"></div>
-
-                               <div class="queue-control-center">
-                                  <div class="drum-fade-mask-left"></div>
-                                  <div class="drum-fade-mask-right"></div>
-                                  
-                                  <div id="queue-wheel-picker" class="queue-wheel-picker">
-                                      <div id="wheel-track" class="wheel-track">
-                                          <!-- Dynamic items generated via JS -->
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                         <div class="tech-label-under-drum">ОБЕРІТЬ ПІДЧЕРГУ</div>
-                    </div>
-
-                    <!-- NEW: Clean Content Plate Below Drum (Industrial Standard) -->
-                    <div class="section-container" style="padding: 0 20px; margin-top: 0px; margin-bottom: 60px;">
-                        <div id="bottom-content-plate" class="glass-card fade-in" style="min-height: 180px; animation-delay: 0.3s; position: relative;">
-                            <!-- 3D Sub-Queue Carousel Mount Point -->
-                            <div id="subqueue-carousel-container" class="subqueue-carousel-wrap"></div>
-                        </div>
-                    </div>
                 </div>
 
             </section>
@@ -217,7 +157,6 @@
         </main>
         
         <!-- Push nav to bottom safely -->
-        <div style="height: 100px;"></div>
 
         <nav class="glass-nav">
             <button class="nav-item active focus-ring" onclick="window.location.href='index.html'">
@@ -269,7 +208,7 @@
 
     <script src="js/pages/home-tablo.js?v=1.0.0"></script>
     <script src="js/tech-ui.js"></script>
-    <script type="module" src="js/pages/home.js?v=1.0.10"></script>
+    <script type="module" src="js/pages/home.js?v=1.0.11"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {

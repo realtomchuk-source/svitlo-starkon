@@ -70,13 +70,30 @@ body {
     line-height: 1.4;
     overflow-x: hidden;
     padding-bottom: 80px;
+    background-color: #FAFAFA; /* Base neutral */
+    position: relative;
 }
 
-/* Layout Utilities */
-.content {
+/* State-based Global Backgrounds */
+body.tablo-on { background-color: #ee7221 !important; }
+body.tablo-off { background-color: #374151 !important; }
+
+/* The Top 'Shield' - Keeps the upper section light */
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 557px; /* Adjusted: Lowered by 48px to keep standard gap from chart */
+    background: #FAFAFA; /* Matches --system-bg-light */
+    z-index: -1;
+}
+
+.content-area {
     max-width: 600px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 20px 0; /* Removing side padding to allow blocks to align with the Nav Bar at 20px */
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -154,14 +171,14 @@ body {
     text-align: center;
     font-size: 13px;
     font-weight: 600;
-    color: var(--system-text);
-    background: rgba(128, 128, 128, 0.1);
+    color: rgba(255, 255, 255, 0.95) !important; /* Made white for contrast on foundation */
+    background: rgba(255, 255, 255, 0.15);
     padding: 6px 16px;
     border-radius: 20px;
     width: fit-content;
     margin: 0 auto 16px;
     backdrop-filter: blur(4px);
-    border: 1px solid var(--glass-border-dark);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .btn-tomorrow {
@@ -1367,49 +1384,75 @@ body {
 }
 
 .tick.hour-mark {
+    top: 0;
+    width: 1px;
+    height: 100%;
+    transform: none;
+    background: rgba(255, 255, 255, 0.15); /* The 'Thread' Line */
+}
+
+/* Static anchors for 0:00 and 24:00 */
+.tick.hour-mark.is-static {
+    background: rgba(255, 255, 255, 0.4);
+    height: 35px;
     top: 50%;
     transform: translateY(-50%);
-    width: 1px;
-    height: 20px;
-    background: transparent;
 }
 
 .tick-label {
     position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 12px;
-    font-weight: 600;
-    opacity: 0.5;
+    font-size: 11px;
+    font-weight: 700;
     white-space: nowrap;
     color: var(--system-text-neutral);
     z-index: 5;
-    background: transparent;
+    opacity: 0.7;
+    transition: all 0.3s ease;
 }
 
-/* Transition Markers (Semantic State Changes) */
-.transition-badge {
-    position: absolute;
+/* Positioning based on state */
+.is-on .tick-label {
+    top: -14px;
+    transform: translateX(-50%);
+    color: #FF9500;
+    opacity: 1;
+}
+
+.is-off .tick-label {
+    bottom: -14px;
+    transform: translateX(-50%);
+}
+
+.is-static .tick-label {
     top: 50%;
     transform: translate(-50%, -50%);
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-size: 13px;
-    font-weight: 800;
+    opacity: 0.5;
+}
+
+/* Transition Markers (Simplified for Thread Look) */
+.transition-badge {
+    position: absolute;
+    padding: 3px 6px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 900;
     z-index: 10;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
 }
 
 .badge-on {
+    top: -14px;
+    transform: translateX(-50%);
     background: #FF9500;
     color: #FFFFFF;
-    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .badge-off {
+    bottom: -14px;
+    transform: translateX(-50%);
     background: #8E8E93;
     color: #FFFFFF;
-    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .transition-step {

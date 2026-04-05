@@ -6,9 +6,10 @@
 
 import { fetchScheduleData } from '../modules/api.js';
 import { updateDashboardTablo } from './home-tablo.js';
-import { TimelineEngine } from '../modules/TimelineEngine.js';
+import { TimelineEngineV2 } from '../modules/TimelineEngineV2.js';
 import { openSheet, closeSheet, initHeroSwipes } from '../modules/ui-utils.js';
 import { SubQueueCarousel } from '../modules/SubQueueCarousel.js';
+import { SelectorEngine } from '../modules/SelectorEngine.js';
 
 const groups = ['1.1', '1.2', '2.1', '2.2', '3.1', '3.2', '4.1', '4.2', '5.1', '5.2', '6.1', '6.2'];
 
@@ -17,32 +18,30 @@ let savedScrubberValue = null;
 let hasInteractedWithScrubber = false;
 let globalScrubberTimeout = null;
 let cachedScheduleData = null; // 1.0.10: Cache for instant UI updates
+let selectorInstance = null; // Pill-селектор підчерг
 
-// --- NEW SHARED CONSTANTS FOR THE INDUSTRIAL DRUM ---
-const middleBufferIndex = 7;
-const itemWidth = 80; // --- 1.2.6: HIGHEST DENSITY (from 90 to 80) ---
+// --- INITIALIZATION --- (v1.0.13)
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('Home Page Module Initialized');
 
-    // 1. Отримання збереженої черги (пріоритет: зафіксована для старту -> поточна сесія)
-    let selectedGroup = localStorage.getItem('sssk_start_group') || localStorage.getItem('sssk_group') || '1.1';
-    
-    // Оновлюємо поточну сесію, щоб вона відповідала стартовій
+    // 1. Старт завжди з черги 1.1
+    let selectedGroup = '1.1';
     localStorage.setItem('sssk_group', selectedGroup);
 
     // 2. Ініціалізація UI
     initUI(selectedGroup);
-    initQueueWheelController(selectedGroup);
 
-    // Ініціалізація нової 3D-каруселі підчерг у нижній підкладці
-    new SubQueueCarousel('subqueue-carousel-container', {
-        activeColor: '#bbcf00',
+
+    // Ініціалізація Pill-селектора підчерг
+    selectorInstance = new SelectorEngine('subqueue-selector', {
         onSelect: (val) => {
-            console.log('Sub-queue selected via 3D Carousel:', val);
-            // Тут ми зможемо додати логіку зміни даних, коли будемо готові
+            console.log('Sub-queue selected via Selector:', val);
+            handleGroupChange(val, 'selector');
         }
     });
+    // Центрування на поточній підчерзі (без анімації при старті)
+    setTimeout(() => selectorInstance.scrollTo(selectedGroup, false), 100);
 
     // 3. Завантаження даних та малювання графіка
     await loadAndRender(selectedGroup);
@@ -100,24 +99,9 @@ function initUI(selectedGroup) {
         () => swipeToGroup(-1)   // Right
     );
 
-    // Зберігаємо позицію повзунка (якщо користувач вручну тягне)
-    const scrubber = document.getElementById('timeline-scrubber');
-    if (scrubber) {
-        scrubber.addEventListener('input', (e) => {
-            hasInteractedWithScrubber = true;
-            savedScrubberValue = parseInt(e.target.value);
-            if (globalScrubberTimeout) clearTimeout(globalScrubberTimeout);
-        });
-
-        // Після відпускання пальця, скидаємо "ручний" стан через 2 секунди, щоб движок міг повернутися до Now
-        scrubber.addEventListener('change', () => {
-            if (globalScrubberTimeout) clearTimeout(globalScrubberTimeout);
-            globalScrubberTimeout = setTimeout(() => {
-                hasInteractedWithScrubber = false;
-                savedScrubberValue = null;
-            }, 2100); // Синхронізуємо з таймаутом TimelineEngine
-        });
-    }
+    // Scrubber interaction logic moved to TimelineEngineV2
+    // We only need local state for high-level UI if really needed, 
+    // but the engine handles its own auto-return logic.
 
     // Оновлення поточної дати
     updateDateDisplay();
@@ -367,6 +351,11 @@ function handleGroupChange(newGroup, source) {
     if (typeof window.syncQueueWheel === 'function' && source !== 'drum-scroll') {
         window.syncQueueWheel(newGroup);
     }
+
+    // Синхронізація Pill-селектора (якщо зміна НЕ з нього)
+    if (selectorInstance && source !== 'selector') {
+        selectorInstance.scrollTo(newGroup);
+    }
     
     // Перемалювати графік для нової черги
     loadAndRender(newGroup);
@@ -502,13 +491,14 @@ async function loadAndRender(selectedGroup) {
         else btnTomorrow.classList.add('hidden');
     }
 
-    // Зупиняємо старий 엔진, щоб не накопичувати інтервали автооновлення
-    if (window.activeEngine) {
-        window.activeEngine.stopAutoUpdate();
+    // 1.0.12: Зупиняємо старий движок (якщо він був)
+    if (window.activeEngineV2) {
+        window.activeEngineV2.stopAutoUpdate();
     }
 
-    // Створюємо 엔진 і відмальовуємо графік
-    const engine = new TimelineEngine({
+    // 2. Створюємо основний індустріальний движок V2
+    const engineV2 = new TimelineEngineV2({
+        containerId: 'main-timeline-v2',
         scheduleData: data,
         scheduleString: isAllClearDay ? "1".repeat(24) : (isNoPowerDay ? "0".repeat(24) : scheduleString),
         selectedGroup: selectedGroup,
@@ -516,23 +506,8 @@ async function loadAndRender(selectedGroup) {
         demoMode: demoMode,
         isAllClearDay: isAllClearDay
     });
-    
-    engine.init();
-    window.activeEngine = engine; 
-
-    // Якщо користувач під час свайпу вже тримає певну годину, примусово відновлюємо її
-    setTimeout(() => {
-        if (hasInteractedWithScrubber && savedScrubberValue !== null) {
-            const scrubber = document.getElementById('timeline-scrubber');
-            if (scrubber) {
-                engine.stopAutoUpdate(); // Зупиняємо автострибок до Now
-                scrubber.value = savedScrubberValue;
-                engine.scrubberInteracted = true;
-                if (engine.preview) engine.preview.classList.remove('preview-off');
-                engine.updateScrubberPreview();
-            }
-        }
-    }, 50);
+    engineV2.init();
+    window.activeEngineV2 = engineV2;
 
     // Оновлення Hero UI (колір картки, таймер)
     updateHeroUI(selectedGroup, now, isAllClearDay, isNoPowerDay, demoMode, scheduleString);
@@ -546,7 +521,7 @@ function updateHeroUI(selectedGroup, now, isAllClear, isNoPower, demoMode, sched
     const progressFill = document.getElementById('hero-progress-fill');
     
     const activeQueueVal = document.getElementById('active-queue-val');
-    if (activeQueueVal) activeQueueVal.textContent = selectedGroup;
+    if (activeQueueVal) activeQueueVal.textContent = `Підчерга ${selectedGroup}`;
 
     // Helper for interval duration (Total block length in minutes)
     const getIntervalDuration = (schedule, hour, isOn) => {
@@ -574,6 +549,7 @@ function updateHeroUI(selectedGroup, now, isAllClear, isNoPower, demoMode, sched
         
         // Розрахунок стану (Світло є / немає)
         let isCurrentlyOn = activeSchedule[currentHour] === '1';
+        if (isAllClear) isCurrentlyOn = true; // "Green" mode is visually "ON"
         if (demoMode && !isAllClear && !isNoPower) {
              isCurrentlyOn = !((currentHour + groupIndex) % 10 < 5);
         }
@@ -587,56 +563,53 @@ function updateHeroUI(selectedGroup, now, isAllClear, isNoPower, demoMode, sched
         let statusIconFile = 'assets/power_off.png';
 
         if (isAllClear) {
-            glow = 'rgba(52, 199, 89, 0.15)';
             statusString = 'Відключень немає 🎉';
-            statusIconFile = 'assets/power_off.png'; // Inactive state
+            statusIconFile = 'assets/power_off.png'; 
+            isCurrentlyOn = true; // Ensure visual parity
         } else if (isNoPower) {
             color = foundationGrey; 
             glow = 'rgba(113, 128, 150, 0.15)';
             statusString = 'Аварійне відключення';
-            statusIconFile = 'assets/power_on.png'; // Active event
+            statusIconFile = 'assets/power_on.png'; // Visual: Grey with Minus (OFF)
         } else {
             if (!isCurrentlyOn) {
                 color = foundationGrey;
                 glow = 'rgba(113, 128, 150, 0.15)';
                 statusString = 'Світла немає';
-                statusIconFile = 'assets/power_on.png'; // Active event
+                statusIconFile = 'assets/power_on.png'; // Visual: Grey with Minus (OFF)
             } else {
                 statusString = 'Світло є';
-                statusIconFile = 'assets/power_off.png'; // Inactive state
+                statusIconFile = 'assets/power_off.png'; // Visual: Orange with Plus (ON)
             }
         }
 
-        // Apply Text
-        if (heroTitle) heroTitle.textContent = statusString;
+        // 2. Apply Text & Card States (Strictly synced with statusString)
+        const currentHeroTitle = document.getElementById('hero-title');
+        const currentHeroCard = document.getElementById('smart-hero');
+        const currentHeroIconImg = document.getElementById('hero-icon-3d');
 
-        // Apply Card States (Dual-State Design System)
-        if (heroCard) {
-            // Mapping Status to UI classes per TS 7.4
-            if (isCurrentlyOn) {
-                heroCard.classList.add('status-on');
-                heroCard.classList.remove('status-off');
-            } else {
-                heroCard.classList.add('status-off');
-                heroCard.classList.remove('status-on');
-            }
+        if (currentHeroTitle) currentHeroTitle.textContent = statusString;
+        if (currentHeroCard) {
+            currentHeroCard.classList.toggle('status-on', isCurrentlyOn);
+            currentHeroCard.classList.toggle('status-off', !isCurrentlyOn);
         }
 
-        // Apply Icon (Strictly synced with statusString)
-        const heroIconImg = document.getElementById('hero-icon-3d');
-        if (heroIconImg) {
-            if (heroIconImg.getAttribute('src') !== statusIconFile) {
-                heroIconImg.src = statusIconFile;
-                
-                // Animate ONLY on actual status change (transition)
-                heroIconImg.animate([
+        if (currentHeroIconImg) {
+            const lastStatus = currentHeroIconImg.dataset.status;
+            const newStatus = isCurrentlyOn ? 'on' : 'off';
+
+            if (lastStatus !== newStatus) {
+                // Change the icon file according to the NEW determined status
+                currentHeroIconImg.src = statusIconFile;
+                currentHeroIconImg.dataset.status = newStatus;
+
+                // Animate transition
+                currentHeroIconImg.animate([
                     { transform: 'scale(1)', opacity: 0.8 },
-                    { transform: 'scale(0.95)', opacity: 1 },
                     { transform: 'scale(1.1)', opacity: 1 },
                     { transform: 'scale(1)', opacity: 1 }
-                ], { duration: 500, easing: 'ease-out' });
+                ], { duration: 400, easing: 'ease-out' });
             }
-            heroIconImg.dataset.status = isCurrentlyOn ? 'on' : 'off';
         }
 
         // 3. Розрахунок наступної зміни та таймера
@@ -683,16 +656,18 @@ function updateHeroUI(selectedGroup, now, isAllClear, isNoPower, demoMode, sched
                     heroSubtitle.textContent = `до ${actionText} о ${nextChangeHour}:00`;
                 }
 
-                // Update Progress Bar (TS 8.2: 1 - (remaining / duration))
+                // Update Progress Bar (TS 8.2: 1 - (remaining_sec / duration_sec))
                 if (progressFill) {
-                    const progress = 1 - (minutesRemaining / totalBlockDuration);
+                    const diffSeconds = Math.max(0, Math.floor(diffMs / 1000));
+                    const totalBlockSeconds = totalBlockDuration * 60;
+                    const progress = 1 - (diffSeconds / totalBlockSeconds);
                     progressFill.style.width = `${Math.max(0, Math.min(1, progress)) * 100}%`;
                 }
             }
         }
         // 4. Оновлення Інфо-Табло (Dashboard Tablo) через автономний контролер
-        const tabloEl = document.getElementById('dashboard-tablo');
-        if (tabloEl && (!window.activeEngine || !window.activeEngine.scrubberInteracted)) {
+        // Тільки якщо користувач НЕ взаємодіє з повзунком
+        if (!window.isTimelineScrubbing) {
             updateDashboardTablo(now, isCurrentlyOn, nextChangeHour);
         }
 
@@ -712,5 +687,5 @@ function updateHeroUI(selectedGroup, now, isAllClear, isNoPower, demoMode, sched
     // Запуск та очищення інтервалів
     if (window.heroTimer) clearInterval(window.heroTimer);
     updateInner();
-    window.heroTimer = setInterval(updateInner, 10000);
+    window.heroTimer = setInterval(updateInner, 1000);
 }

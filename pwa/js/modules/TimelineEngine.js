@@ -175,14 +175,21 @@ export class TimelineEngine {
         const transitionHours = transitions.map(t => t.hour);
 
         labelIntervals.forEach(h => {
-            if (transitionHours.includes(h)) return;
+            if (transitionHours.includes(h)) return; // Prevent double labels
+            const isOff = this.checkIsOffAtHour(h);
             const tick = document.createElement('div');
-            tick.className = 'tick hour-mark';
+            tick.className = `tick hour-mark ${isOff ? 'is-off' : 'is-on'}`;
             tick.style.background = 'transparent'; 
             tick.innerHTML = `<span class="tick-label">${h}:00</span>`;
             tick.style.left = `${(h / 24) * 100}%`;
-            if (h === 0) tick.querySelector('.tick-label').style.transform = 'translate(0, -50%)';
-            if (h === 24) tick.querySelector('.tick-label').style.transform = 'translate(-100%, -50%)';
+            
+            // 0:00 and 24:00 stay centered, no vertical shift
+            if (h === 0 || h === 24) {
+                tick.className = 'tick hour-mark is-static';
+                if (h === 0) tick.querySelector('.tick-label').style.transform = 'translate(0, -50%)';
+                if (h === 24) tick.querySelector('.tick-label').style.transform = 'translate(-100%, -50%)';
+            }
+            
             this.ticksContainer.appendChild(tick);
         });
 
@@ -194,7 +201,7 @@ export class TimelineEngine {
             this.ticksContainer.appendChild(step);
 
             const badgeContainer = document.createElement('div');
-            badgeContainer.className = 'tick hour-mark';
+            badgeContainer.className = `tick hour-mark is-${t.type}`; // Added is-on/is-off
             badgeContainer.style.background = 'transparent';
             badgeContainer.innerHTML = `<span class="transition-badge badge-${t.type}">${h}:00</span>`;
             badgeContainer.style.left = `${(h / 24) * 100}%`;
@@ -305,35 +312,37 @@ export class TimelineEngine {
             }
         }
 
-        // Логіка "ДО"
+        // Логіка "ДО" (Дашборд)
+        const nextTransition = this.getNextTransitionTime(h, m);
         const techStatusText = document.getElementById('tech-status-text');
         const techStatusIcon = document.getElementById('tech-status-icon');
-        
+        const techStatusCard = document.getElementById('tech-status-card');
+
+        if (techStatusText) {
+            techStatusText.textContent = nextTransition ? `до\u2009${nextTransition}` : "—";
+        }
+        if (techStatusIcon) {
+            techStatusIcon.src = !isOff ? 'assets/dashboard_on.svg' : 'assets/dashboard_off.svg';
+        }
+        if (techStatusCard) {
+            techStatusCard.classList.toggle('status-on', !isOff);
+            techStatusCard.classList.toggle('status-off', isOff);
+        }
+
+        // Логіка спливаючої підказки над повзунком (Scrubber Preview)
         if (previewUntil) {
-            const nextTransition = this.getNextTransitionTime(h, m);
             if (nextTransition) {
                 if (previewUntil.id === 'tablo-status-until') {
-                    // Нове Табло: "ДО" окремо від цифр
                     const label = document.getElementById('tablo-status-label');
                     if (label) label.textContent = 'ДО';
                     previewUntil.textContent = nextTransition;
                 } else {
-                    // Класичне прев'ю (наприклад, на сторінці Завтра)
                     previewUntil.textContent = `ДО ${nextTransition}`;
                 }
-                
-                // Update new Tech Status Card
-                if (techStatusText) techStatusText.textContent = `- до ${nextTransition}`;
-                
                 previewUntil.style.display = 'block';
             } else {
                 previewUntil.textContent = "—";
-                if (techStatusText) techStatusText.textContent = "—";
             }
-        }
-        
-        if (techStatusIcon) {
-            techStatusIcon.src = !isOff ? 'assets/dashboard_on.svg' : 'assets/dashboard_off.svg';
         }
 
         // Оновлюємо стани контейнерів (Табло або Прев'ю)
@@ -362,19 +371,19 @@ export class TimelineEngine {
         const legacyPreview = document.getElementById('scrubber-preview');
         const foundation = document.getElementById('bottom-foundation');
 
-        // New Tech UI Layer (Clock, Date, Status)
-        const techCards = document.querySelectorAll('.date-card, .clock-card, .status-card');
-        techCards.forEach(card => {
+        // New Tech UI Layer: Only update Status Card (Center) during scrubber updates
+        const techStatusCard = document.getElementById('tech-status-card');
+        if (techStatusCard) {
             if (isOff) {
-                // SSSK State: Off (Gray BG) -> Tech UI: Light (High contrast on dark)
-                card.classList.add('light');
-                card.classList.remove('dark');
+                // SSSK State: Off -> Tech UI: Light (High contrast on dark)
+                techStatusCard.classList.add('light');
+                techStatusCard.classList.remove('dark');
             } else {
-                // SSSK State: On (Orange BG) -> Tech UI: Dark (High contrast on bright)
-                card.classList.add('dark');
-                card.classList.remove('light');
+                // SSSK State: On -> Tech UI: Dark (High contrast on bright)
+                techStatusCard.classList.add('dark');
+                techStatusCard.classList.remove('light');
             }
-        });
+        }
 
         // Dashboard (Old) and Foundation
         if (tablo) {

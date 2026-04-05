@@ -9,16 +9,15 @@
   --orange-bg: #F97316;
   
   /* NEW Design Tokens for Hero Redesign */
-  --hero-bg: #FFFFFF;
+  --hero-bg: rgba(255, 255, 255, 0.92);
   --hero-text-primary: #111111;
-  --hero-text-secondary: #777777;
-  --accent-on: #FF7A00;
-  --accent-off: #4D565F; /* Darker graphite to match the actual bulb icon */
-  --color-track: #EEEEEE;
-  --radius-lg: 20px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --font-family-hero: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Arial, sans-serif;
+  --hero-text-secondary: #666666;
+  --hero-text-dim: #888888;
+  --accent-on: linear-gradient(90deg, #FF7A00, #FF9A3D);
+  --accent-off: linear-gradient(90deg, #9AA0A6, #C2C5CA);
+  --color-track: rgba(0, 0, 0, 0.08);
+  --hero-radius: 24px;
+  --font-family-hero: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
   /* Glass backgrounds (Legacy) */
   --glass-light: rgba(255, 255, 255, 0.06);
@@ -33,7 +32,7 @@
 /* Scope the font ban strictly to the Hero section (Industrial Rule 7.4) */
 #smart-hero, 
 #smart-hero * {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    font-family: var(--font-family-hero) !important;
     -webkit-text-stroke: 0 !important;
     text-shadow: none !important;
 }
@@ -45,7 +44,7 @@
 /* Base Card Style (Discreet Industrial) - Compact 26px Height */
 .clock-card, .date-card, .status-card {
   position: absolute;
-  top: 12px;
+  top: 6px; /* Offset for compact 49px layer height */
   display: inline-flex;
   border-radius: 8px; /* Slightly tighter radius for smaller height */
   padding: 4px 10px;  /* Vertical padding reduced for 26px target */
@@ -80,7 +79,7 @@
 }
 
 .date-card.dark {
-  background: var(--glass-milky);
+  background: rgba(255, 255, 255, 0.90);
   border-color: var(--glass-border-milky);
 }
 
@@ -91,7 +90,7 @@
 
 /* Clock Display (Active Signal) */
 .clock-card {
-  right: 16px;
+  right: 20px;
   justify-content: center;
   align-items: center;
 }
@@ -123,12 +122,11 @@
   margin-left: 2px;
 }
 
-/* Date Display (Single Line) */
 .date-card {
-  left: 16px;
+  left: 20px;
   flex-direction: row; /* Single line */
   align-items: center;
-  gap: 8px;
+  gap: 6px; /* Harmonized distance as requested */
 }
 
 .date-main {
@@ -141,23 +139,29 @@
 .date-day {
   font-size: 14px;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--green-primary); /* Colored day as requested */
+  letter-spacing: 0.05em;
+  color: #ee7221 !important; /* Industrial Orange */
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Variant Specific Date Colors */
 .date-card.light .date-main { color: var(--gray-200); }
-.date-card.light .date-day { color: var(--gray-400); }
-
 .date-card.dark .date-main { color: #000; } /* Pure black for maximum contrast on milky glass */
-.date-card.dark .date-day { color: #000; opacity: 0.8; }
+
+/* Day text colors for high contrast */
+.date-day { color: #ee7221 !important; } /* Default: Industrial Orange */
+.date-card.dark .date-day { color: #ee7221 !important; } /* Unified: same Industrial Orange as on dark BG */
 
 /* Status Card (Centerpiece) */
 .status-card {
+  position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  gap: 6px;
+  display: flex !important;
+  align-items: center;
   min-width: 90px;
   justify-content: center;
 }
@@ -173,6 +177,12 @@
   font-weight: 500;
   letter-spacing: 0.02em;
   white-space: nowrap;
+}
+
+.status-separator {
+  color: #FFFFFF !important;
+  opacity: 0.8 !important;
+  font-weight: 400 !important;
 }
 
 .status-card.light .status-text { color: #fff; }
@@ -194,120 +204,97 @@
 }
 
 /* ==========================================================================
-   NEW INDUSTRIAL HERO REDESIGN (FLAT STYLE)
+   APPLE-LEVEL HERO REDESIGN (GLASS STYLE v2.0)
    ========================================================================== */
 
 #smart-hero {
   background: var(--hero-bg) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
   border-radius: var(--hero-radius) !important;
-  padding: 32px 24px !important; /* Symmetrical top/bottom padding */
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05) !important;
+  padding: 28px 20px 24px 20px !important; 
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
   text-align: center !important;
   position: relative !important;
-  border: 1px solid #F0F0F0 !important;
-  margin: 0 20px 24px 20px !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  margin: 0 20px 12px 20px !important; 
   transition: all 0.3s ease !important;
   overflow: hidden !important;
 }
 
-/* Icon */
-.hero-flat-icon {
-  width: 140px !important;
-  height: 140px !important;
+/* Compact Icon 💡 (Resized to 88px per user request) */
+#hero-icon-3d {
+  width: 88px !important;
+  height: 88px !important;
   object-fit: contain !important;
-  margin-top: 0 !important; /* Managed by card padding now */
-  margin-bottom: 16px !important;
-  filter: none !important; /* Flat style, no shadows */
+  margin-bottom: 10px !important;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.05)) !important;
 }
 
-/* Texts */
-.hero-status-title {
-  font-size: 24px !important;
+/* Status: "Світло є" */
+#hero-title {
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  color: var(--hero-text-primary) !important;
+  margin-bottom: 12px !important;
+  letter-spacing: -0.2px !important;
+}
+
+/* Timer: HERO element 52px */
+#hero-countdown {
+  font-size: 52px !important;
   font-weight: 700 !important;
   color: var(--hero-text-primary) !important;
-  margin: 0 !important;
-  line-height: 1.2 !important;
-}
-
-.hero-subqueue-text {
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  color: var(--hero-text-secondary) !important;
-  margin-top: 4px !important;
-}
-
-.hero-main-timer {
-  font-size: 48px !important;
-  font-weight: 700 !important;
-  color: var(--hero-text-primary) !important;
-  margin-top: 16px !important;
+  margin-bottom: 12px !important;
   font-variant-numeric: tabular-nums !important;
-  letter-spacing: 1px !important;
+  letter-spacing: -1.5px !important;
   line-height: 1 !important;
 }
 
-.hero-description-text {
-  font-size: 14px !important;
-  color: var(--hero-text-secondary) !important;
-  margin-top: 8px !important;
+/* Sub-queue & Description Details */
+.hero-details-row {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  margin-bottom: 16px !important;
 }
 
-/* Progress bar */
-.hero-progress-container {
-  margin-top: 24px !important;
-  height: 8px !important;
+#active-queue-val {
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  color: var(--hero-text-secondary) !important;
+  margin-bottom: 4px !important;
+}
+
+#hero-subtitle {
+  font-size: 13px !important;
+  color: var(--hero-text-dim) !important;
+}
+
+/* Progress-bar (Exact User Spec) */
+.progress {
   width: 100% !important;
-  background: var(--color-track) !important;
+  height: 8px !important;
+  background: rgba(0, 0, 0, 0.08) !important;
   border-radius: 999px !important;
   overflow: hidden !important;
 }
 
-.hero-progress-fill {
+.progress-fill {
   height: 100% !important;
   width: 0%;
-  transition: width 0.5s ease;
+  border-radius: 999px !important;
+  transition: width 1s linear !important; /* Smooth slow movement */
 }
 
-/* Accent Mapping */
-#smart-hero.status-on .hero-progress-fill { background: var(--accent-on) !important; }
-#smart-hero.status-off .hero-progress-fill { background: var(--accent-off) !important; }
-
-/* Subqueue Value - Dynamic Industrial Badge (ON/OFF States) */
-#active-queue-val {
-  font-size: 22px !important;
-  font-weight: 900 !important;
-  display: inline-block !important;
-  padding: 4px 14px !important;
-  border-radius: 8px !important;
-  line-height: normal !important;
-  z-index: 10 !important;
-  position: relative !important;
-  transition: all 0.3s ease !important;
+/* Status Colors Mapping (Linked to smart-hero status) */
+#smart-hero.status-on .progress-fill {
+  background: linear-gradient(90deg, #FF7A00, #FF9A3D) !important;
 }
 
-/* Color logic based on Hero Statuses */
-#smart-hero.status-on #active-queue-val {
-  background: var(--accent-on) !important;
-  color: #FFFFFF !important;
-  box-shadow: 0 4px 12px rgba(255, 122, 0, 0.2) !important;
-}
-
-#smart-hero.status-off #active-queue-val {
-  background: var(--accent-off) !important;
-  color: #FFFFFF !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-}
-
-/* Perfect Horizontal Centering */
-.hero-subqueue-text {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 100% !important;
-  margin: 0 auto 16px auto !important;
-  gap: 8px !important;
+#smart-hero.status-off .progress-fill {
+  background: linear-gradient(90deg, #9AA0A6, #C2C5CA) !important;
 }

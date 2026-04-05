@@ -110,13 +110,7 @@
 
 /* Glass Overlay (Light) */
 /* --- BOTTOM FOUNDATION --- */
-.bottom-foundation {
-    position: absolute;
-    width: 100vw;
-    height: 100vh; /* Stretch way down past the bottom of the screen */
-    z-index: -1;
-    transition: background-color 0.1s ease; /* Fast transition */
-}
+
 
 /* Base state for tablo container itself - completely transparent */
 .dashboard-tablo.tablo-on,
@@ -124,13 +118,15 @@
     background: transparent;
 }
 
-/* Foundation colors */
-.bottom-foundation.tablo-on {
-    background-color: #ee7221; /* Matte Bulb Orange */
+.bottom-foundation {
+    display: none; /* No longer needed with the body-sync approach */
 }
 
+/* Color logic handled at body level */
+.bottom-foundation.tablo-on,
 .bottom-foundation.tablo-off {
-    background-color: #374151; /* Matte Dark Grey */
+    background: transparent !important;
+    box-shadow: none !important;
 }
 
 /* --- TABLO GROUPS --- */
@@ -373,7 +369,7 @@
     text-transform: uppercase;
     letter-spacing: 0.15em;
     opacity: 0.4;
-    margin-top: 16px;
+    margin-top: 12px;
 }
 
 /* --- QUEUE PICKER OVERLAY (Cabinet Style) --- */

@@ -183,12 +183,26 @@ export class SubQueueCarousel {
             const rotateY = theta * (180 / Math.PI);
             const rotateX = 0; // Removing card tilt to prevent trapezoidal distortion
 
-            // Natural Light/Depth Shading (Enhanced for background cards)
-            const normalizedZ = (z + radius) / (2 * radius); 
-            const brightness = 0.1 + (normalizedZ * 1.0); // 0.1 back, 1.1 front
-            const opacity = 0.15 + (normalizedZ * 0.85);  // 0.15 back (nearly invisible), 1.0 front
+            // Visual Attributes based on hierarchy
+            const isHighlighted = absDiff < 1.5; // active or secondary
+            
+            let opacity = 1.0;
+            let brightness = 1.0;
 
-            // Apply 3D Transformation (Including translate -50% to ensure true centering)
+            if (!isHighlighted) {
+                // GREY CARDS: Darker in the back, Lighter on the sides
+                // normalizedZ: 0 (back) to 1 (front)
+                const normalizedZ = (z + radius) / (2 * radius); 
+                // We want: back=dark (0.3), front-side=light (0.8)
+                brightness = 0.3 + (normalizedZ * 0.5); 
+                opacity = 0.7 + (normalizedZ * 0.3); // Solid enough to stay dark
+            } else {
+                // HIGHLIGHTED (Lime/Orange): Always Bright and Solid
+                opacity = 1.0;
+                brightness = 1.0;
+            }
+
+            // Apply 3D Transformation
             card.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${y}px, ${z}px) rotateY(${rotateY}deg) rotateX(${rotateX}deg)`;
             card.style.opacity = opacity;
             card.style.filter = `brightness(${brightness})`;
