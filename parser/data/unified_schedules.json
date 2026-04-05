@@ -169,5 +169,14 @@
     "is_update": false,
     "processed": false,
     "raw_text_summary": ""
+  },
+  {
+    "timestamp": "2026-04-02T20:49:52.031396+03:00",
+    "target_date": "03.04",
+    "source": "site",
+    "raw_path": "/home/runner/work/svitlo-starkon/svitlo-starkon/parser/data/raw_site/20260402_204950.png",
+    "is_update": false,
+    "processed": false,
+    "raw_text_summary": "Графік погодинних відключень на 03.04.2026\n\n00: 01: 02:\n\nЧерга/ 90 00 | 00\n\nпідчерга 01:\n\n02: 03:\n00 00 00\n\n1.1.\n\n1.2.\n\n2.1.\n\n2.2.\n\n3.1.\n\n3.2.\n\n4.1.\n\n4.2.\n\n5.1.\n\n5.2.\n\n6.1.\n\n6.2.\n\nЕлектроенергія розподіляється\n\nОпубліковано 02.04.2026\n\n03:\n00\n\n04:\n\n00\n\n05:\n\n00\n\n05:\n\n00\n\n06:\n\n00\n\n07:\n\n00\n\n07:\n\n00\n\n08:\n00\n\n10:\n\n00\n\n11:\n\n00\n\n12:\n\n00\n\n12:\n\n00\n\n13:\n\n00\n\n| Електроенергія відсутня\n\n13:\n00\n\n14:\n00\n\n14:\n00\n\n15:\n00\n\n15:\n\n00\n\n16:\n\n00\n\n16:\n\n00\n\n17:\n\n00\n\n17:\n\n00\n\n18:\n\n00\n\n18:\n\n00\n\n19:\n\n00\n\n19:\n\n00\n\n20:\n\n00\n\n"
   }
 ]
