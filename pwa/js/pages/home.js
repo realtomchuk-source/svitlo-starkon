@@ -341,12 +341,6 @@ function handleGroupChange(newGroup, source) {
     const activeVal = document.getElementById('active-queue-val');
     if (activeVal) {
         activeVal.textContent = newGroup;
-        // 1.0.12: Тимчасовий апдейт стану (колір) при зміні групи
-        const tablo = activeVal.parentElement;
-        if (tablo && tablo.classList.contains('active-queue-tablo')) {
-            // Миттєвий апдейт відбудеться через updateHeroUI, але для плавності 
-            // можна додати логіку і сюди, або просто дочекатися виклику нижче.
-        }
     }
     if (typeof window.syncQueueWheel === 'function' && source !== 'drum-scroll') {
         window.syncQueueWheel(newGroup);
@@ -357,17 +351,43 @@ function handleGroupChange(newGroup, source) {
         selectorInstance.scrollTo(newGroup);
     }
     
-    // Перемалювати графік для нової черги
-    loadAndRender(newGroup);
-    
-    // 1.0.10: Швидке оновлення Hero UI (миттєве, якщо дані вже є в кеші)
+    // Перемалювати графік для нової черги (1.0.14 CORE FIX)
     if (cachedScheduleData) {
-        const now = new Date();
-        const scheduleString = cachedScheduleData.queues ? cachedScheduleData.queues[newGroup] : null;
-        const isAllClearDay = cachedScheduleData.mode === 'all_clear';
-        const isNoPowerDay = cachedScheduleData.mode === 'no_power';
-        updateHeroUI(newGroup, now, isAllClearDay, isNoPowerDay, false, scheduleString);
+        // Миттєвий апдейт без запиту до сервера
+        renderTimelineV2(newGroup, cachedScheduleData);
+    } else {
+        // Фоллбек, якщо даних ще немає
+        loadAndRender(newGroup);
     }
+}
+
+/**
+ * Логіка швидкого перемальовування Timeline V2 без повторного запиту даних (v1.0.14)
+ */
+function renderTimelineV2(selectedGroup, data) {
+    if (window.activeEngineV2 && typeof window.activeEngineV2.stopAutoUpdate === 'function') {
+        window.activeEngineV2.stopAutoUpdate();
+    }
+
+    const scheduleString = data && data.queues ? data.queues[selectedGroup] : null;
+    const isAllClearDay = data.mode === 'all_clear';
+    const isNoPowerDay = data.mode === 'no_power';
+    const now = new Date();
+
+    const engineV2 = new TimelineEngineV2({
+        containerId: 'main-timeline-v2',
+        scheduleData: data,
+        scheduleString: isAllClearDay ? "1".repeat(24) : (isNoPowerDay ? "0".repeat(24) : scheduleString),
+        selectedGroup: selectedGroup,
+        groups: groups,
+        demoMode: !data, 
+        isAllClearDay: isAllClearDay
+    });
+    engineV2.init();
+    window.activeEngineV2 = engineV2;
+
+    // Оновлення Hero UI (колір картки, таймер)
+    updateHeroUI(selectedGroup, now, isAllClearDay, isNoPowerDay, !data, scheduleString);
 }
 
 function renderPickerButtons(containerId, selectedGroup) {
@@ -491,26 +511,8 @@ async function loadAndRender(selectedGroup) {
         else btnTomorrow.classList.add('hidden');
     }
 
-    // 1.0.12: Зупиняємо старий движок (якщо він був)
-    if (window.activeEngineV2) {
-        window.activeEngineV2.stopAutoUpdate();
-    }
-
-    // 2. Створюємо основний індустріальний движок V2
-    const engineV2 = new TimelineEngineV2({
-        containerId: 'main-timeline-v2',
-        scheduleData: data,
-        scheduleString: isAllClearDay ? "1".repeat(24) : (isNoPowerDay ? "0".repeat(24) : scheduleString),
-        selectedGroup: selectedGroup,
-        groups: groups,
-        demoMode: demoMode,
-        isAllClearDay: isAllClearDay
-    });
-    engineV2.init();
-    window.activeEngineV2 = engineV2;
-
-    // Оновлення Hero UI (колір картки, таймер)
-    updateHeroUI(selectedGroup, now, isAllClearDay, isNoPowerDay, demoMode, scheduleString);
+    // 1.0.14: Використовуємо уніфікований рендер-хелпер
+    renderTimelineV2(selectedGroup, data);
 }
 
 function updateHeroUI(selectedGroup, now, isAllClear, isNoPower, demoMode, scheduleString) {

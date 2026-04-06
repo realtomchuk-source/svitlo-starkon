@@ -5,6 +5,8 @@
 :root {
   --tl-v2-on: #EE7221;
   --tl-v2-off: #374151;
+  --tl-v2-on-badge: #FB923C; /* Softer orange for badges */
+  --tl-v2-off-badge: #64748B; /* Slate-500 for badges (lighter than #374151) */
   --tl-v2-on-past: rgba(238, 114, 33, 0.35);
   --tl-v2-off-past: rgba(55, 65, 81, 0.35);
   --tl-v2-scale-bg: #F3F4F6;
@@ -85,34 +87,28 @@
 }
 .tl-v2-tick.major {
   width: 2px;
-  height: 10px;
-  background: #6B7280;
-  opacity: 0.9;
+  height: 14px; /* Taller for strong structural base */
+  background: #374151; /* Darker, high contrast */
+  opacity: 1;
 }
 .tl-v2-tick.minor {
   width: 1px;
-  height: 6px;
-  background: #9CA3AF;
-  opacity: 0.6;
+  height: 10px; /* Taller to be 'more visible' despite lighter color */
+  background: #D1D5DB; /* Lighter but clean */
+  opacity: 0.8;
 }
 
 .tl-v2-tick-label {
   position: absolute;
-  top: 2px; /* Top aligned inside scale as per TZ */
+  top: 50%; /* Pure vertical center */
   font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
   color: #6B7280;
-  transform: translateX(-50%);
+  transform: translate(-50%, -46%); /* Centered both ways, -46% for visual optical center of font */
   white-space: nowrap;
-}
-.tl-v2-tick-label.is-start {
-  transform: translateX(0);
-}
-.tl-v2-tick-label.is-end {
-  transform: translateX(-100%);
 }
 
 /* Z-INDEX 1: Segments (Below Scale) */
@@ -171,24 +167,25 @@
 
 .tl-v2-badge {
   position: absolute;
-  padding: 2px 6px;
+  padding: 1px 5px; /* Tighter padding for lightness */
   border-radius: 6px;
   font-family: 'Inter', sans-serif;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 500; /* Cleaner numbers */
   font-variant-numeric: tabular-nums;
   transform: translateX(-50%);
   white-space: nowrap;
+  opacity: 0.8; /* Further reduced visual weight */
 }
 .tl-v2-badge.type-on {
-  bottom: calc(50% + 40px); /* 50% + 32(segment edge) + 8(gap) */
-  background: var(--tl-v2-on);
+  bottom: calc(50% + 40px);
+  background: var(--tl-v2-on-badge);
   color: #fff;
   z-index: 5;
 }
 .tl-v2-badge.type-off {
-  top: calc(50% + 40px); /* 50% + 32(segment edge) + 8(gap) */
-  background: var(--tl-v2-off);
+  top: calc(50% + 40px);
+  background: var(--tl-v2-off-badge);
   color: #fff;
   z-index: 5;
 }

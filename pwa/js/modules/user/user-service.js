@@ -16,6 +16,18 @@ export class UserService {
         this.user = user;
         if (user) {
             await this.syncProfile();
+
+            // Auto-migrate local storage subscriptions to cloud if missing in user_metadata
+            if (!user.user_metadata?.sssk_subscriptions) {
+                const localData = localStorage.getItem('sssk_subscriptions');
+                if (localData) {
+                    try {
+                        const parsed = JSON.parse(localData);
+                        console.log('Migrating local push settings to cloud...');
+                        await this.updatePushSubscriptions(parsed);
+                    } catch (e) { console.error('Migration failed:', e); }
+                }
+            }
         }
         return user;
     }
@@ -46,5 +58,31 @@ export class UserService {
             user: this.user,
             profile: this.profile
         };
+    }
+
+    async updatePushSubscriptions(subs) {
+        if (!this.supabase || !this.user) return;
+        
+        // Save to user_metadata for reliable sync across devices
+        const { data, error } = await this.supabase.auth.updateUser({
+            data: { sssk_subscriptions: subs }
+        });
+        
+        if (error) {
+            console.error('Error updating subscriptions:', error);
+            throw error;
+        }
+        
+        this.user = data.user;
+        return data.user;
+    }
+
+    getPushSubscriptions() {
+        // Fallback to localStorage if guest, or metadata if logged in
+        if (!this.user) {
+            const saved = localStorage.getItem('sssk_subscriptions');
+            return saved ? JSON.parse(saved) : [null, null];
+        }
+        return this.user.user_metadata?.sssk_subscriptions || [null, null];
     }
 }

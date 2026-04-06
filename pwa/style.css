@@ -93,12 +93,27 @@ body::before {
 .content-area {
     max-width: 600px;
     margin: 0 auto;
-    padding: 20px 0; /* Removing side padding to allow blocks to align with the Nav Bar at 20px */
+    padding: 10px 0 20px 0; /* Standardized top padding for consistency */
     display: flex;
     flex-direction: column;
     gap: 16px;
     min-height: 80vh;
-    justify-content: center;
+    justify-content: flex-start; /* Changed from center to align top consistently */
+}
+
+/* PWA Page Labels (Unified Header System) */
+.pwa-page-label {
+    margin: 0;
+    padding: 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: #888;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-align: center;
+    width: 100%;
+    line-height: 1.2;
+    font-family: 'Inter', sans-serif;
 }
 
 /* Glassmorphism Components */
@@ -1161,8 +1176,8 @@ body::before {
 
 /* Feedback Form Pulse */
 #feedback-text:focus {
-    border-color: rgba(0, 122, 255, 0.5) !important;
-    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+    border-color: rgba(255, 149, 0, 0.5) !important;
+    box-shadow: 0 0 0 4px rgba(255, 149, 0, 0.1);
 }
 
 #btn-send-feedback:active {

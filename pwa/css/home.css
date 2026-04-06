@@ -363,14 +363,8 @@
     text-shadow: 0 0 15px var(--hero-glow);
 }
 
-.swipe-hint {
-    font-size: 9px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    opacity: 0.4;
-    margin-top: 12px;
-}
+/* --- HERO SECTION REFINEMENTS --- */
+.hero-countdown {
 
 /* --- QUEUE PICKER OVERLAY (Cabinet Style) --- */
 #home-queue-picker-overlay {
@@ -1078,4 +1072,3 @@
     z-index: 30;
     pointer-events: none;
 }
-

@@ -24,6 +24,7 @@ export class TimelineEngineV2 {
         this.segments = [];
         this.scrubberInteracted = false;
         this.scrubberTimeout = null;
+        this.timerId = null; // Track time update interval
     }
 
     init() {
@@ -31,6 +32,13 @@ export class TimelineEngineV2 {
         this.renderDOM();
         this.setupScrubber();
         this.startTick();
+    }
+
+    stopAutoUpdate() {
+        if (this.timerId) clearInterval(this.timerId);
+        if (this.scrubberTimeout) clearTimeout(this.scrubberTimeout);
+        this.timerId = null;
+        this.scrubberTimeout = null;
     }
 
     checkIsOffAtHour(h) {
@@ -122,12 +130,8 @@ export class TimelineEngineV2 {
             `;
             
             if (isMajor) {
-                let labelClass = "";
-                if (h === 0) labelClass = "is-start";
-                if (h === 24) labelClass = "is-end";
-
                 ticksContainer.innerHTML += `
-                    <div class="tl-v2-tick-label ${labelClass}" style="left: ${leftPerc}%;">
+                    <div class="tl-v2-tick-label" style="left: ${leftPerc}%;">
                         ${h.toString().padStart(2, '0')}:00
                     </div>
                 `;
@@ -306,7 +310,8 @@ export class TimelineEngineV2 {
     }
 
     startTick() {
-        setInterval(() => this.updateTime(), 60000);
+        this.stopAutoUpdate(); // Ensure no duplicate timers
+        this.timerId = setInterval(() => this.updateTime(), 60000);
     }
 
     setupScrubber() {
