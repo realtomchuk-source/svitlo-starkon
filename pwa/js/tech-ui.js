@@ -14,12 +14,6 @@ function initTechUI() {
 }
 
 function updateTechUI() {
-    const clockEl = document.getElementById('tech-clock-display');
-    const dateMainEl = document.getElementById('tech-date-main');
-    const dateDayEl = document.getElementById('tech-date-day');
-
-    if (!clockEl || !dateMainEl || !dateDayEl) return;
-
     // 0. Skip update if user is interacting with timeline
     if (window.isTimelineScrubbing) return;
 
@@ -30,18 +24,25 @@ function updateTechUI() {
     const mm = String(now.getMinutes()).padStart(2, '0');
     const ss = String(now.getSeconds()).padStart(2, '0');
 
-    // SS same size but pale via CSS opacity
-    clockEl.innerHTML = `${hh}<span class="separator">:</span>${mm}<span class="seconds">${ss}</span>`;
+    const clockContent = `${hh}<span class="separator">:</span>${mm}<span class="seconds">${ss}</span>`;
+    
+    // Update NEW Capsule Clock
+    const capsuleClockEl = document.getElementById('capsule-clock-display');
+    if (capsuleClockEl) capsuleClockEl.innerHTML = clockContent;
 
     // 2. Date Logic (СР 14.03.2026)
     const day = String(now.getDate()).padStart(2, '0');
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const year = now.getFullYear();
-    
-    // Full date string with dots
-    dateMainEl.textContent = `${day}.${month}.${year}`;
+    const dateStr = `${day}.${month}.${year}`;
+
+    // Update NEW Capsule Date
+    const capDateMain = document.getElementById('capsule-date-main');
+    const capDateDay = document.getElementById('capsule-date-day');
+    if (capDateMain) capDateMain.textContent = dateStr;
 
     // Short Day Name (Colored via CSS)
     const weekdaysShort = ['НД', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'];
-    dateDayEl.textContent = weekdaysShort[now.getDay()];
+    const currentDayName = weekdaysShort[now.getDay()];
+    if (capDateDay) capDateDay.textContent = currentDayName;
 }

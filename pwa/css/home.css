@@ -11,6 +11,137 @@
     height: 60px;
 }
 
+/* --- NEW DYNAMIC DASHBOARD BLOCK --- */
+.dynamic-info-block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    height: 52px;
+    border-radius: 18px;
+    position: relative;
+    overflow: hidden;
+    margin: 8px 16px 16px 16px;
+    transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 5;
+    box-sizing: border-box;
+}
+
+/* State-based backgrounds for the block itself */
+.dynamic-info-block.tablo-on { background-color: #ee7221 !important; }
+.dynamic-info-block.tablo-off { background-color: #374151 !important; }
+
+/* --- Date Capsule (Left - Absolute) --- */
+.capsule-date-card {
+    position: absolute;
+    left: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 10px;
+    background: rgba(255, 255, 255, 0.9); /* Milky Industrial glass */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 0.5px solid rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+}
+
+.capsule-date-card .date-day {
+    font-family: "JetBrains Mono", monospace !important;
+    font-size: 13px;
+    font-weight: 800;
+    color: #ee7221 !important; /* Industrial Orange */
+    text-transform: uppercase;
+}
+
+.capsule-date-card .date-main {
+    font-family: "JetBrains Mono", monospace !important;
+    font-size: 13px;
+    font-weight: 500;
+    color: #111111 !important; /* High contrast dark text */
+    letter-spacing: 0.05em;
+}
+
+/* --- Status Capsule (Center) --- */
+.status-glass-capsule {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 28px; /* Fixed height to match clock */
+    padding: 0 12px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 0.5px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px; /* Fixed radius to match clock */
+    color: #FFFFFF !important;
+    font-family: 'Inter', -apple-system, sans-serif !important;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* --- Clock Capsule (Right - Absolute) --- */
+.capsule-clock-card {
+    position: absolute;
+    right: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+    padding: 0 10px;
+    background: rgba(0, 0, 0, 0.2); /* Discreet dark glass from legacy */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 0.5px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+.capsule-clock-card .clock-text {
+    font-family: "JetBrains Mono", "IBM Plex Mono", monospace !important;
+    font-size: 15px;
+    font-weight: 600;
+    color: #00FF85 !important; /* Neon Green */
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+}
+
+.capsule-clock-card .seconds {
+    opacity: 0.35;
+    margin-left: 2px;
+}
+
+/* Status: ON (Orange) */
+.dynamic-info-block.status-on {
+    background-color: #ee7221;
+    box-shadow: 0 8px 20px rgba(238, 114, 33, 0.2);
+}
+
+/* Status: OFF (Grey) */
+.dynamic-info-block.status-off {
+    background-color: #374151;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Premium Inner Glow Effect */
+.dynamic-info-block::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+/* Subtle Bottom Shine */
+.dynamic-info-block::after {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 0; right: 0; height: 1px;
+    background: rgba(255, 255, 255, 0.05);
+    pointer-events: none;
+}
+
 /* --- Queue Selector (Active Toggle) --- */
 .home-queue-btn {
     display: flex !important;
@@ -1071,4 +1202,5 @@
     opacity: 0.9;
     z-index: 30;
     pointer-events: none;
+}
 }

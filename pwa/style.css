@@ -70,24 +70,8 @@ body {
     line-height: 1.4;
     overflow-x: hidden;
     padding-bottom: 80px;
-    background-color: #FAFAFA; /* Base neutral */
+    background-color: #FAFAFA !important; /* Unified clean Apple-style background */
     position: relative;
-}
-
-/* State-based Global Backgrounds */
-body.tablo-on { background-color: #ee7221 !important; }
-body.tablo-off { background-color: #374151 !important; }
-
-/* The Top 'Shield' - Keeps the upper section light */
-body::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 557px; /* Adjusted: Lowered by 48px to keep standard gap from chart */
-    background: #FAFAFA; /* Matches --system-bg-light */
-    z-index: -1;
 }
 
 .content-area {

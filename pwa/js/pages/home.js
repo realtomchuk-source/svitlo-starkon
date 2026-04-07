@@ -596,6 +596,13 @@ function updateHeroUI(selectedGroup, now, isAllClear, isNoPower, demoMode, sched
             currentHeroCard.classList.toggle('status-off', !isCurrentlyOn);
         }
 
+        // --- Update the NEW Dynamic Dashboard Block Foundation ---
+        const dynamicBlock = document.getElementById('dynamic-info-block');
+        if (dynamicBlock) {
+            dynamicBlock.classList.toggle('status-on', isCurrentlyOn);
+            dynamicBlock.classList.toggle('status-off', !isCurrentlyOn);
+        }
+
         if (currentHeroIconImg) {
             const lastStatus = currentHeroIconImg.dataset.status;
             const newStatus = isCurrentlyOn ? 'on' : 'off';

@@ -1,14 +1,46 @@
 /* ===== SUBQUEUE PILL SELECTOR — REDESIGN 2026 ===== */
 
 #subqueue-selector {
-  --accent-on: #FF7A00;
-  --accent-off: #9AA0A6;
+  --accent-on: #FF5C00;   /* Electric Amber */
+  --accent-off: #475569;  /* Deep Slate Blue */
   --selector-accent: var(--accent-on); /* Default */
+  --selector-glass-bg: rgba(255, 255, 255, 0.95);
 }
 
-/* Sync with Tablo state */
-#subqueue-selector.dark  { --selector-accent: var(--accent-on); }  /* Light is ON */
-#subqueue-selector.light { --selector-accent: var(--accent-off); } /* Light is OFF */
+/* Sync with Tablo state — Advanced Palette 2026 */
+#subqueue-selector.dark  { 
+  --selector-accent: var(--accent-on); 
+  --selector-glass-bg: rgba(255, 248, 240, 0.98); /* Faint Amber Tint */
+}
+#subqueue-selector.light { 
+  --selector-accent: var(--accent-off); 
+  --selector-glass-bg: rgba(241, 245, 248, 0.98); /* Faint Slate Tint */
+}
+
+/* Background "Aura" — Maximum Saturation Glow (20%) */
+#subqueue-selector::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  bottom: 48px;
+  border-radius: 20px;
+  z-index: -1;
+  filter: blur(40px);
+  opacity: 0;
+  transition: background 0.6s ease, opacity 0.6s ease;
+}
+
+#subqueue-selector.dark::before {
+  background: radial-gradient(circle, rgba(255, 92, 0, 0.2) 0%, rgba(255, 92, 0, 0) 70%);
+  opacity: 1;
+}
+
+#subqueue-selector.light::before {
+  background: radial-gradient(circle, rgba(71, 85, 105, 0.2) 0%, rgba(71, 85, 105, 0) 70%);
+  opacity: 1;
+}
 
 .selector-wrap {
   position: relative;
@@ -17,18 +49,39 @@
 
 /* Glass Container — Final Optimized Design */
 .selector-container {
-  margin: 0 20px;
+  margin: 0 20px 48px 20px;
   padding: 14px 0;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.88);
+  background: var(--selector-glass-bg);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   
-  border: 1px solid rgba(0, 0, 0, 0.05); /* Soft border for light background */
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+  /* Industrial Border */
+  border: 2px solid var(--selector-accent); 
+  
+  /* Layered Shadow: Neutral + Inset Color Tint + Vivid Outer Glow */
+  box-shadow: 
+    0 8px 30px rgba(0, 0, 0, 0.08),
+    inset 0 0 12px rgba(255, 255, 255, 0.5); /* Surface reflection */
   
   overflow: hidden;
   position: relative;
+  transition: all 0.4s ease;
+}
+
+/* State-specific Shadow Overrides for better vibrancy */
+#subqueue-selector.dark .selector-container {
+  box-shadow: 
+    0 12px 35px rgba(0, 0, 0, 0.1),
+    0 0 25px rgba(255, 92, 0, 0.2),
+    inset 0 0 15px rgba(255, 92, 0, 0.05); /* Inner tint */
+}
+
+#subqueue-selector.light .selector-container {
+  box-shadow: 
+    0 12px 35px rgba(0, 0, 0, 0.1),
+    0 0 25px rgba(71, 85, 105, 0.15),
+    inset 0 0 15px rgba(71, 85, 105, 0.05); /* Inner tint */
 }
 
 /* Edge fade — left/right */

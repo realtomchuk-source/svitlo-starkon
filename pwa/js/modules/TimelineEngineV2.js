@@ -249,55 +249,37 @@ export class TimelineEngineV2 {
         const activeSeg = this.segments.find(s => currentH >= s.start && currentH < s.end);
         const isOff = activeSeg ? activeSeg.type === 'off' : false;
 
-        // 1. Годинник (tech-clock-display)
-        const techClockEl = document.getElementById('tech-clock-display');
-        if (techClockEl) {
+        // 1. Годинник (capsule-clock-display)
+        const capsuleClockEl = document.getElementById('capsule-clock-display');
+        
+        if (capsuleClockEl) {
             const hStr = h.toString().padStart(2, '0');
             const mStr = m.toString().padStart(2, '0');
-            
+            const clockContent = `${hStr}<span class="separator">:</span>${mStr}<span class="seconds"></span>`;
+
             if (this.scrubberInteracted) {
                 // В режимі скраббінгу ховаємо секунди
-                techClockEl.innerHTML = `${hStr}<span class="separator">:</span>${mStr}<span class="seconds"></span>`;
-                techClockEl.classList.remove('neon-glow-time');
-            } else {
-                // В режимі реального часу повертаємо секунди (секунди будуть оновлюватися головним таймером системи)
-                // Ми лише готуємо структуру
-                techClockEl.classList.add('neon-glow-time');
+                capsuleClockEl.innerHTML = clockContent;
             }
         }
 
-        // 2. Статус-картка (Центр - логіка "ДО")
-        const statusCard = document.getElementById('tech-status-card');
-        const statusText = document.getElementById('tech-status-text');
-        const statusIcon = document.getElementById('tech-status-icon');
+        // --- NEW Capsule Status sync ---
+        const capStatusCard = document.getElementById('capsule-status-card');
+        const capStatusText = document.getElementById('capsule-status-text');
+        const capStatusIcon = document.getElementById('capsule-status-icon');
 
-        if (statusCard) {
+        if (capStatusCard) {
             if (isPast) {
-                // Режим історії: приховуємо блок "ДО..."
-                statusCard.style.opacity = '0';
-                statusCard.style.pointerEvents = 'none';
+                capStatusCard.style.opacity = '0';
+                capStatusCard.style.pointerEvents = 'none';
             } else {
-                // Режим прогнозу: показуємо і оновлюємо дані
-                statusCard.style.opacity = '1';
-                statusCard.style.pointerEvents = 'auto';
+                capStatusCard.style.opacity = '1';
+                capStatusCard.style.pointerEvents = 'auto';
                 
                 const nextTime = this.getNextTransitionTime(mins);
-                if (statusText) statusText.textContent = nextTime ? `до\u2009${nextTime}` : "—";
-                if (statusIcon) {
-                    statusIcon.src = isOff ? 'assets/dashboard_off.svg' : 'assets/dashboard_on.svg';
-                }
-                
-                // Оновлення кольорових станів
-                statusCard.classList.toggle('status-on', !isOff);
-                statusCard.classList.toggle('status-off', isOff);
-                
-                // Перемикання теми тексту (Light/Dark)
-                if (isOff) {
-                    statusCard.classList.add('light'); 
-                    statusCard.classList.remove('dark');
-                } else {
-                    statusCard.classList.add('dark'); 
-                    statusCard.classList.remove('light');
+                if (capStatusText) capStatusText.textContent = nextTime ? `до\u2009${nextTime}` : "—";
+                if (capStatusIcon) {
+                    capStatusIcon.src = isOff ? 'assets/dashboard_off.svg' : 'assets/dashboard_on.svg';
                 }
             }
         }

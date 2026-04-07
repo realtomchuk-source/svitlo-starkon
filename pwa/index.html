@@ -16,13 +16,6 @@
     <link rel="stylesheet" href="css/timeline-v2.css">
     <style>
         /* Inline fail-safe styles for v1.0.10 */
-        .schedule-header {
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-            margin-bottom: 12px !important;
-            padding: 0 4px !important;
-        }
         .home-bottom-controls {
             display: flex !important;
             justify-content: space-between !important;
@@ -32,32 +25,13 @@
             gap: 12px !important;
         }
         .home-bottom-controls .scrubber-preview {
-            height: 52px !important; /* Explicitly set to match button */
+            height: 52px !important; 
             display: flex !important;
             align-items: center !important;
             margin: 0 !important;
             border-radius: 14px !important;
         }
         .controls-spacer { flex: 1 !important; }
-        .schedule-header {
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: flex-end !important;
-            margin-bottom: 12px !important;
-            min-height: 32px !important;
-        }
-        .btn-tomorrow-header {
-            background: rgba(255, 149, 0, 0.2) !important;
-            color: #FF9500 !important;
-            border: 1px solid rgba(255, 149, 0, 0.3) !important;
-            padding: 6px 14px !important;
-            border-radius: 10px !important;
-            font-size: 13px !important;
-            font-weight: 600 !important;
-            cursor: pointer !important;
-            transition: all 0.2s ease !important;
-        }
-        .btn-tomorrow-header:hover { background: rgba(255, 149, 0, 0.3) !important; }
     </style>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#D77727">
@@ -66,12 +40,17 @@
 
 <body class="page-home">
     <!-- Full Screen Loading Splash -->
-    <div id="loading-screen" class="loading-screen" style="display: none !important;">
+    <div id="loading-screen" class="loading-screen">
         <div class="loading-bulb-container">
-            <div class="loader-content">
-                <div class="spinner"></div>
-                <div class="loading-text">Svitlo-Starkon v1.0.7</div>
-            </div>
+            <svg width="240" height="240" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Static Background Path -->
+                <path d="M171.91 356H244.66V278.23C204.38 270.82 189.03 233.61 193.14 195.47C179.44 195.42 179.44 174.57 193.14 174.52H214.09V143.09C214.09 137.3 218.77 132.61 224.57 132.61C230.37 132.61 235.05 137.29 235.05 143.09V174.52H276.95V143.09C276.95 137.3 281.63 132.61 287.43 132.61C293.23 132.61 297.91 137.29 297.91 143.09V174.52H318.86C332.56 174.57 332.56 195.42 318.86 195.47C322.98 233.61 307.59 270.84 267.34 278.23V356H340.09C346.17 337.42 358.34 320.58 372.09 306.08C468.46 211.41 393.29 31.22 256.01 36C118.69 31.25 43.56 211.41 139.92 306.09C153.66 320.59 165.91 337.42 171.91 356ZM336 409.33C334.83 508.55 159.82 495.2 176 396H336V409.33Z" 
+                    stroke="rgba(255,255,255,0.08)" stroke-width="4" fill="none"/>
+                
+                <!-- Animated Spark Path -->
+                <path id="loading-spark" d="M267.34 356H340.09C346.17 337.42 358.34 320.58 372.09 306.08C468.46 211.41 393.29 31.22 256.01 36C118.69 31.25 43.56 211.41 139.92 306.09C153.66 320.59 165.91 337.42 171.91 356H244.66V278.23C204.38 270.82 189.03 233.61 193.14 195.47C179.44 195.42 179.44 174.57 193.14 174.52H214.09V143.09C214.09 137.3 218.77 132.61 224.57 132.61C230.37 132.61 235.05 137.29 235.05 143.09V174.52H276.95V143.09C276.95 137.3 281.63 132.61 287.43 132.61C293.23 132.61 297.91 137.29 297.91 143.09V174.52H318.86C332.56 174.57 332.56 195.42 318.86 195.47C322.98 233.61 307.59 270.84 267.34 278.23V356" 
+                    stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
         </div>
     </div>
 
@@ -115,42 +94,41 @@
                         <div id="hero-progress-fill" class="progress-fill" style="width: 0%;"></div>
                     </div>
                 </div>
+                
+                <!-- Dynamic Dashboard Status Block (Pushed by Hero Redesign) -->
+                <div id="dynamic-info-block" class="dynamic-info-block status-off">
+                    <!-- Left: Date Capsule (Standardized Tech UI) -->
+                    <div class="capsule-date-card">
+                        <span id="capsule-date-day" class="date-day tech-ui-font">--</span>
+                        <span id="capsule-date-main" class="date-main tech-ui-font">--.--.----</span>
+                    </div>
+
+                    <!-- Center: Status Capsule -->
+                    <div id="capsule-status-card" class="status-glass-capsule">
+                        <img id="capsule-status-icon" src="assets/dashboard_off.svg" width="16" height="16">
+                        <span class="status-dash">—</span>
+                        <span id="capsule-status-text" class="status-time-text">до&thinsp;00:00</span>
+                    </div>
+
+                    <!-- Right: Clock Capsule (Standardized Tech UI) -->
+                    <div class="capsule-clock-card">
+                        <div id="capsule-clock-display" class="clock-text tech-ui-font">
+                            00<span class="separator">:</span>00<span class="seconds">00</span>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- MAIN INDUSTRIAL TIMELINE V2 -->
                 <div class="section-container" style="padding: 0 20px; margin-top: 16px;">
                     <div id="main-timeline-v2" class="fade-in" style="animation-delay: 0.1s; position: relative;"></div>
                 </div>
 
-                <!-- Solid Bottom Area (No padding, full width background) -->
-                <div style="position: relative; width: 100%; margin-top: 52px; padding-top: 2px; padding-bottom: 80px;">
-                    <div id="bottom-foundation" class="bottom-foundation tablo-off"></div>
-
-                    <!-- WRAPPER to keep content stationary while background lowers -->
-                    <div id="stationary-content-wrapper" style="position: relative; top: -20px;">
-                        
-                        <!-- NEW TECH DASHBOARD -->
-                        <div id="top-content-spacer" style="min-height: 49px; width: 100%; position: relative; display: flex; flex-direction: column;">
-                            <div id="tech-ui-layer-new" style="height: 49px; position: relative; width: 100%;">
-                                <div class="date-card light tech-ui-font">
-                                    <div id="tech-date-main" class="date-main">--·--·----</div>
-                                    <div id="tech-date-day" class="date-day">--------</div>
-                                </div>
-                                <div class="status-card transparent tech-ui-font" id="tech-status-card">
-                                    <img src="assets/dashboard_off.svg" alt="Power" class="status-icon" id="tech-status-icon">&thinsp;
-                                    <span class="status-separator">-</span>&thinsp;
-                                    <div class="status-text" id="tech-status-text">до&thinsp;--:--</div>
-                                </div>
-                                <div class="clock-card light tech-ui-font">
-                                    <div id="tech-clock-display" class="clock-text">--<span class="separator">:</span>--<span class="seconds">--</span></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Subqueue Selector -->
-                        <div id="subqueue-selector" style="margin-top: 2px; position: relative;">
-                        </div>
-
-                    </div> <!-- End of stationary-content-wrapper -->
+                <!-- Solid Bottom Area (Spaced for Subqueue Selector) -->
+                <div style="position: relative; width: 100%; margin-top: 60px; margin-bottom: 48px;">
+                    
+                    <!-- Subqueue Selector -->
+                    <div id="subqueue-selector" style="position: relative;">
+                    </div>
 
                 </div>
 
@@ -198,15 +176,6 @@
         </div>
     </div>
 
-    <!-- Legacy Group Selector (kept for now as requested) -->
-    <div id="overlay" class="overlay">
-        <div class="picker-container">
-            <h2 class="subheadline">Оберіть вашу чергу</h2>
-            <div class="group-grid" id="group-buttons">
-                <!-- Group buttons injected here -->
-            </div>
-            <button id="btn-close-sheet" class="close-btn">Готово</button>
-    </div>
 
     <script src="js/pages/home-tablo.js?v=1.0.0"></script>
     <script src="js/tech-ui.js"></script>
