@@ -60,7 +60,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install Pillow requests pytz beautifulsoup4 lxml pytesseract
+          pip install -r SSSK/parser/requirements.txt
+          playwright install chromium --with-deps
 
       - name: Run parser
         env:
