@@ -20,13 +20,25 @@ let scheduleData  = [];
 let todayData     = null;
 let githubToken   = localStorage.getItem('sssk_admin_token') || '';
 let currentSection = 'dashboard';
-let dataSource    = 'remote'; // default to remote for admin dashboard
+let dataSource    = localStorage.getItem('sssk_data_source') || 'remote';
 
 const ALL_GROUPS = ["1.1", "1.2", "2.1", "2.2", "3.1", "3.2", "4.1", "4.2", "5.1", "5.2", "6.1", "6.2"];
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Local Data Toggle
+    const localToggle = document.getElementById('local-data-toggle');
+    if (localToggle) {
+        localToggle.checked = (dataSource === 'local');
+        localToggle.addEventListener('change', (e) => {
+            dataSource = e.target.checked ? 'local' : 'remote';
+            localStorage.setItem('sssk_data_source', dataSource);
+            appendLog(`🔄 Джерело змінено на: ${dataSource.toUpperCase()}`, 'info');
+            refreshAll();
+        });
+    }
+
     // Token UI
     const tokenInput = document.getElementById('token-input');
     if (tokenInput) {
@@ -67,16 +79,29 @@ function switchSection(name) {
 
 async function fetchFile(path) {
     // If remote, use GitHub Raw with cache busting
-    // If local, use relative path (only works if opened from same origin or local server)
-    const baseUrl = dataSource === 'remote' ? RAW_BASE : '.';
-    const url = `${baseUrl}/${path}?t=${Date.now()}`;
+    if (dataSource === 'remote') {
+        return await fetch(`${RAW_BASE}/${path}?t=${Date.now()}`).then(r => r.json());
+    }
+    
+    // In local mode, we need to handle cases where the server is started from the project root 
+    // or one level above (e.g. from the Antigravity folder).
+    // We'll use relative paths to be safer, or detect the prefix.
+    
+    // Determine the base path prefix (e.g. '/SSSK/' or empty)
+    const currentPath = window.location.pathname; // e.g. '/SSSK/pwa/admin.html'
+    const pwaIndex = currentPath.indexOf('/pwa/');
+    const projectPrefix = pwaIndex !== -1 ? currentPath.substring(0, pwaIndex) : '';
+    
+    // Construct the local URL: Prefix + Path (e.g. '/SSSK/' + 'pwa/data/today.json')
+    const localUrl = `${projectPrefix}/${path}?t=${Date.now()}`;
     
     try {
-        const resp = await fetch(url);
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        console.log(`[Local Fetch] Requesting: ${localUrl}`);
+        const resp = await fetch(localUrl);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${localUrl}`);
         return await resp.json();
     } catch (e) {
-        console.warn(`Failed to fetch ${path} from ${dataSource}:`, e);
+        console.warn(`Failed to fetch ${path} locally from ${localUrl}:`, e);
         throw e;
     }
 }
@@ -85,7 +110,7 @@ async function refreshAll() {
     try {
         updateHeaderStatus('loading');
         
-        // Fetch core data
+        // Fetch core data (Respects Local/Remote toggle)
         const results = await Promise.allSettled([
             fetchFile('parser/data/state.json'),
             fetchFile('parser/data/unified_schedules.json'),
@@ -94,25 +119,63 @@ async function refreshAll() {
 
         parserState = results[0].status === 'fulfilled' ? results[0].value : parserState;
         scheduleData = results[1].status === 'fulfilled' ? results[1].value : scheduleData;
+        
+        const todayDateStr = getFormattedDate(0);
+        const tomorrowDateStr = getFormattedDate(1);
+
+        // 1. Identify Today's Data
         todayData = results[2].status === 'fulfilled' ? results[2].value : null;
 
-        // Auto-fallback: if todayData is missing or stale, use the latest processed from scheduleData
-        if ((!todayData || todayData.date === '27.03') && scheduleData.length > 0) {
-            const latestValid = [...scheduleData].reverse().find(e => e.processed && e.queues);
-            if (latestValid) {
-                console.log('Today data is missing/stale. Falling back to latest processed in database:', latestValid.target_date);
+        // Auto-fallback for Today: if todayData is missing/stale, use scheduleData
+        if ((!todayData || todayData.date !== todayDateStr) && scheduleData.length > 0) {
+            const matchToday = [...scheduleData].reverse().find(e => e.processed && (e.target_date === todayDateStr || e.date === todayDateStr));
+            if (matchToday) {
+                console.log('Today match found in history:', matchToday.target_date);
                 todayData = {
-                    date: latestValid.target_date,
-                    mode: latestValid.mode || 'schedule',
-                    queues: latestValid.queues,
-                    message: latestValid.message || 'Останній відомий графік (з бази)'
+                    date: matchToday.target_date,
+                    mode: matchToday.mode || 'schedule',
+                    queues: matchToday.queues,
+                    message: matchToday.message || `Графік на ${matchToday.target_date}`
                 };
             }
         }
 
-        renderDashboard();
-        renderScheduleGrid();
+        // 2. Identify Tomorrow's Data
+        let tomorrowData = null;
+        const matchTomorrow = [...scheduleData].reverse().find(e => e.processed && (e.target_date === tomorrowDateStr || e.date === tomorrowDateStr));
+        if (matchTomorrow) {
+            console.log('Tomorrow match found in history:', matchTomorrow.target_date);
+            tomorrowData = {
+                date: matchTomorrow.target_date,
+                mode: matchTomorrow.mode || 'schedule',
+                queues: matchTomorrow.queues,
+                message: matchTomorrow.message || `Графік на ${matchTomorrow.target_date}`
+            };
+        }
+
+        renderDashboard(tomorrowData);
+        renderScheduleGrid(todayData, 'schedule-grid');
+        if (tomorrowData) {
+            renderScheduleGrid(tomorrowData, 'tomorrow-grid');
+        }
         renderHistory();
+
+        // Update Today Card UI
+        const todayTitle = document.getElementById('schedule-card-title');
+        const todayBadge = document.getElementById('schedule-date-badge');
+        if (todayData) {
+            if (todayTitle) todayTitle.textContent = todayData.message || `АКТУАЛЬНИЙ ГРАФІК НА ${todayData.date}`;
+            if (todayBadge) todayBadge.textContent = todayData.date || '—';
+        }
+
+        // Update Tomorrow Card UI
+        const tomorrowTitle = document.getElementById('tomorrow-card-title');
+        const tomorrowBadge = document.getElementById('tomorrow-date-badge');
+        if (tomorrowData) {
+            if (tomorrowTitle) tomorrowTitle.textContent = tomorrowData.message || `ГРАФІК НА ЗАВТРА (${tomorrowData.date})`;
+            if (tomorrowBadge) tomorrowBadge.textContent = tomorrowData.date || '—';
+        }
+
         updateHeaderStatus('ok');
     } catch (e) {
         console.error('Refresh failed:', e);
@@ -139,24 +202,27 @@ function updateHeaderStatus(status) {
 
 // ─── Render: Dashboard ────────────────────────────────────────────────────────
 
-function renderDashboard() {
+function renderDashboard(tomorrowData = null) {
     if (!parserState) return;
 
     // Last run
     setText('stat-last-run', formatRelative(parserState.last_run));
     setText('stat-last-run-sub', formatFull(parserState.last_run));
 
-    // Source mode
+    // Source mode (Unified site-centric)
     const src = parserState.current_source || 'site';
-    setText('stat-source', { both: '🔀 both', site: '🌐 site', telegram: '✈️ telegram' }[src] || src);
+    setText('stat-source', src === 'site' ? '🌐 Сайт' : src);
 
-    // Schedule count
+    // Schedule count & Latest processing status
     setText('stat-schedules', scheduleData.length);
-    const latest = scheduleData[scheduleData.length - 1];
     
-    let subText = latest ? `Останній: ${latest.target_date || '—'}` : 'Немає даних';
-    if (latest && !latest.processed) {
-        subText += ' ⚠️ Не оброблено';
+    // Find the actual latest processed for the main display, even if a newer unprocessed exists
+    const latestProcessed = [...scheduleData].reverse().find(e => e.processed);
+    const latestAny = scheduleData[scheduleData.length - 1];
+    
+    let subText = latestAny ? `Останній: ${latestAny.target_date || '—'}` : 'Немає даних';
+    if (latestAny && !latestAny.processed) {
+        subText += ' ⚠️ OCR Помилка';
     }
     setText('stat-schedules-sub', subText);
 
@@ -167,18 +233,29 @@ function renderDashboard() {
 
     // State details
     setKv('kv-last-site',     parserState.last_success_site, 'muted');
-    setKv('kv-last-telegram', parserState.last_success_telegram || 'Не активний (заглушка)', 'muted');
     setKv('kv-hash-site',     (parserState.last_site_hash || '—').substring(0, 12) + '…', 'muted');
-    setKv('kv-source-mode',   src, src === 'both' ? 'green' : 'amber');
+    setKv('kv-source-mode',   src, 'amber');
     setKv('kv-override-until', parserState.override_until || 'Вимкнено', 'muted');
+
+    // Handle tomorrow card visibility
+    const tomorrowCard = document.getElementById('tomorrow-card');
+    if (tomorrowCard) {
+        tomorrowCard.style.display = tomorrowData ? 'block' : 'none';
+    }
+
+    // Handle reference grid (27.03)
+    const designRef = scheduleData.find(e => e.target_date === '27.03' || e.date === '27.03');
+    if (designRef) {
+        renderScheduleGrid(designRef, 'reference-grid', true);
+    }
 
     // Actions link
     const actionsLink = document.getElementById('actions-link');
     if (actionsLink) actionsLink.href = ACTIONS_URL;
     
-    // Debug info for latest run
-    if (latest && !latest.processed) {
-        showOcrDebug(latest);
+    // Show OCR debug for the LATEST entry if it failed, but don't show it for older ones
+    if (latestAny && !latestAny.processed) {
+        showOcrDebug(latestAny);
     } else {
         hideOcrDebug();
     }
@@ -219,30 +296,37 @@ function showDashboardError(msg) {
 
 // ─── Render: Schedule Grid ─────────────────────────────────────────────────────
 
-function renderScheduleGrid() {
-    const grid = document.getElementById('schedule-grid');
-    const dateEl = document.getElementById('schedule-date');
-    const modeEl = document.getElementById('schedule-mode');
+function renderScheduleGrid(data = todayData, containerId = 'schedule-grid') {
+    const grid = document.getElementById(containerId);
     if (!grid) return;
 
-    if (!todayData || !todayData.queues) {
+    if (!data || !data.queues) {
         grid.innerHTML = '<div class="schedule-loading">Отримання даних...</div>';
         return;
     }
 
-    const mode = todayData.mode || 'schedule';
-    const date = todayData.date || '';
-    const message = todayData.message || '';
-
-    if (dateEl) dateEl.textContent = message || `Графік на ${date}`;
-    if (modeEl) {
-        const labels = { schedule: '📅 Графік', all_clear: '✅ Без відключень', no_power: '🔴 Немає світла' };
-        modeEl.textContent = labels[mode] || mode;
-        modeEl.className = 'mode-badge mode-' + mode;
-    }
-
     grid.innerHTML = '';
 
+    // 1. Add Hour Header Row (00 - 23)
+    const headerRow = document.createElement('div');
+    headerRow.className = 'queue-row header-row';
+    
+    const cornerLabel = document.createElement('span');
+    cornerLabel.className = 'queue-label header';
+    cornerLabel.textContent = 'Год:';
+    headerRow.appendChild(cornerLabel);
+
+    for (let i = 0; i < 24; i++) {
+        const hCell = document.createElement('div');
+        hCell.className = 'hour-header';
+        const startStr = String(i).padStart(2, '0') + ':00';
+        const endStr = String(i + 1).padStart(2, '0') + ':00';
+        hCell.innerHTML = `${startStr}<br>—<br>${endStr}`;
+        headerRow.appendChild(hCell);
+    }
+    grid.appendChild(headerRow);
+
+    // 2. Add Queue Rows
     ALL_GROUPS.forEach(group => {
         const row = document.createElement('div');
         row.className = 'queue-row';
@@ -252,7 +336,7 @@ function renderScheduleGrid() {
         label.textContent = group;
         row.appendChild(label);
 
-        const bits = todayData.queues[group] || '1'.repeat(24);
+        const bits = data.queues[group] || '1'.repeat(24);
         for (let i = 0; i < 24; i++) {
             const cell = document.createElement('div');
             const isOn = bits[i] === '1';
@@ -451,4 +535,12 @@ function formatFull(iso) {
 
 function escHtml(str) {
     return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function getFormattedDate(offsetDays = 0) {
+    const d = new Date();
+    if (offsetDays !== 0) d.setDate(d.getDate() + offsetDays);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    return `${day}.${month}`;
 }

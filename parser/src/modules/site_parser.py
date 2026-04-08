@@ -4,7 +4,7 @@ import logging
 import time
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
-from playwright_stealth import stealth_sync
+from playwright_stealth import Stealth
 from config import OBL_URL, RAW_SITE_DIR
 
 logger = logging.getLogger("SSSK-SiteParser")
@@ -13,22 +13,21 @@ def get_image_hash(image_bytes):
     return hashlib.md5(image_bytes).hexdigest()
 
 def fetch_page_dynamic(url):
-    """Fetches the page content using Playwright to handle dynamic rendering."""
+    """Fetches the page content using Playwright."""
     logger.info(f"Fetching {url} with Playwright...")
     try:
         with sync_playwright() as p:
+            # Using browser with common desktop resolution
             browser = p.chromium.launch(headless=True)
             context = browser.new_context(
+                viewport={'width': 1280, 'height': 800},
                 user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
             )
             page = context.new_page()
-            stealth_sync(page)
+            Stealth().apply_stealth_sync(page)
             
-            # Navigate and wait for content
             page.goto(url, wait_until="networkidle", timeout=60000)
-            
-            # Wait a bit more for potential late scripts
-            time.sleep(2)
+            time.sleep(3) # Wait for images to settle
             
             html = page.content()
             browser.close()
@@ -38,30 +37,17 @@ def fetch_page_dynamic(url):
         return None
 
 def extract_image_url(html):
-    """Extracts the schedule image URL from rendered HTML."""
+    """Broad search for schedule image."""
     soup = BeautifulSoup(html, 'html.parser')
     
-    # Priority 1: Search for image with Uploads pattern inside content area
-    content_areas = soup.find_all(['div', 'article', 'main'], class_=['page-content', 'content', 'main'])
-    for area in content_areas:
-        for img in area.find_all('img'):
-            src = img.get('src', '')
-            if '/Content/Uploads/' in src and ('.png' in src.lower() or '.jpg' in src.lower()):
-                return src
-    
-    # Priority 2: Broad search for any Uploads image that looks like a schedule
+    # Priority: Any image in /Content/Uploads/ with common extensions
     for img in soup.find_all('img'):
         src = img.get('src', '')
-        alt = img.get('alt', '').lower()
-        if '/Content/Uploads/' in src and ('графік' in alt or 'відключень' in alt):
-            return src
-            
-    # Priority 3: First meaningful image in page-content
-    content = soup.find('div', class_='page-content')
-    if content:
-        img = content.find('img')
-        if img: return img.get('src')
-        
+        # Usually it's the only one in Uploads except for the logo (which is typically named logo.png)
+        if '/content/uploads/' in src.lower() and ('logo' not in src.lower()):
+            if src.lower().endswith(('.png', '.jpg', '.jpeg')):
+                return src
+                
     return None
 
 def run_site_parser(state):
@@ -69,13 +55,31 @@ def run_site_parser(state):
     
     html = fetch_page_dynamic(OBL_URL)
     if not html:
-        logger.error("Failed to fetch rendered HTML. Aborting cycle.")
         return None
 
     img_url = extract_image_url(html)
+    
+    # Check for "no outages" text
+    is_empty = False
     if not img_url:
-        logger.warning("Schedule image not found in rendered HTML.")
-        return None
+        soup = BeautifulSoup(html, 'html.parser')
+        text = soup.get_text().lower()
+        if "не прогнозує відключень" in text or "графік не застосовується" in text:
+            logger.info("Official site says: NO OUTAGES predicted.")
+            is_empty = True
+        else:
+            logger.warning("Schedule image not found and no 'No Outage' text detected.")
+            return None
+
+    if is_empty:
+        # Generate an empty "power-on" result
+        return {
+            "changed": True,
+            "is_empty": True,
+            "raw_path": "site_empty",
+            "hash": "empty",
+            "caption": "No outages predicted today"
+        }
 
     if not img_url.startswith("http"):
         from urllib.parse import urljoin
@@ -86,9 +90,7 @@ def run_site_parser(state):
     try:
         import requests
         from config import HEADERS
-        img_resp = requests.get(img_url, timeout=30, headers=HEADERS)
-        img_resp.raise_for_status()
-        img_bytes = img_resp.content
+        img_bytes = requests.get(img_url, timeout=30, headers=HEADERS).content
     except Exception as e:
         logger.error(f"Image download error: {e}")
         return None
@@ -99,21 +101,18 @@ def run_site_parser(state):
     from modules.utils import get_now
     timestamp = get_now().strftime("%Y%m%d_%H%M%S")
     raw_path = os.path.join(RAW_SITE_DIR, f"{timestamp}.png")
-    
     os.makedirs(RAW_SITE_DIR, exist_ok=True)
-    
     with open(raw_path, "wb") as f:
         f.write(img_bytes)
 
     if new_hash == last_hash:
-        logger.info("Image hash match. No changes detected on site.")
+        logger.info("Image hash match. No changes detected.")
         return {"changed": False, "raw_path": raw_path, "hash": new_hash}
     
-    logger.info("NEW schedule image detected and downloaded!")
     return {
         "changed": True,
         "raw_path": raw_path,
         "hash": new_hash,
         "img_bytes": img_bytes,
-        "caption": "Schedule image from site"
+        "caption": "New schedule image from site"
     }

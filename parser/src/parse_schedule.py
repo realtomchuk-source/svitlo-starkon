@@ -4,12 +4,11 @@ import re
 import json
 import logging
 from datetime import datetime, timedelta
-from modules.utils import load_json, save_json, get_now, should_run, send_telegram_alert, cleanup_old_files
+from modules.utils import load_json, save_json, get_now, should_run, cleanup_old_files
 from modules.site_parser import run_site_parser
-from modules.telegram_parser import run_telegram_parser
 from modules.ocr_helper import extract_text_from_image
 from modules.table_parser import parse_schedule_from_text, validate_queues
-from config import STATE_FILE, UNIFIED_DB, SCHEDULE_API_FILE, RAW_SITE_DIR, RAW_TELEGRAM_DIR, LOGS_DIR
+from config import STATE_FILE, UNIFIED_DB, SCHEDULE_API_FILE, RAW_SITE_DIR, LOGS_DIR
 
 logger = logging.getLogger("SSSK-Main")
 
@@ -41,9 +40,7 @@ def main():
     state = load_json(STATE_FILE, default={
         "last_run": None,
         "last_success_site": None,
-        "last_success_telegram": None,
         "last_site_hash": None,
-        "last_telegram_hash": None,
         "current_source": "site",
         "override_until": None,
         "override_interval_minutes": None
@@ -69,29 +66,17 @@ def main():
     logger.info(f"Executing parser run. Mode: {state['current_source']}")
 
     site_res = None
-    tele_res = None
-
     if state["current_source"] in ["both", "site"]:
         site_res = run_site_parser(state)
         if site_res and site_res.get("hash"):
             state["last_site_hash"] = site_res["hash"]
             state["last_success_site"] = get_now().isoformat()
 
-    if state["current_source"] in ["both", "telegram"]:
-        tele_res = run_telegram_parser(state)
-        if tele_res and tele_res.get("hash"):
-            state["last_telegram_hash"] = tele_res["hash"]
-            state["last_success_telegram"] = get_now().isoformat()
-
     final_data = None
     source_used = None
     is_updated = False
 
-    if tele_res and tele_res.get("changed"):
-        final_data = tele_res
-        source_used = "telegram"
-        is_updated = True
-    elif site_res and site_res.get("changed"):
+    if site_res and site_res.get("changed"):
         final_data = site_res
         source_used = "site"
         is_updated = True
@@ -103,7 +88,7 @@ def main():
 
         is_emergency = any(kw in caption for kw in ["оновлено", "оновлен", "термінов"])
 
-        structured = parse_schedule_from_text(raw_text)
+        structured = parse_schedule_from_text(raw_text, final_data["img_bytes"])
 
         date_found = None
         if structured:
@@ -142,13 +127,8 @@ def main():
         generate_today_json_from_db(db)
 
         logger.info(f"!!! SUCCESS: Extracted data from {source_used} schedule !!!")
-        if is_emergency:
-            send_telegram_alert(f"🚨 ВИЯВЛЕНО ОНОВЛЕНИЙ ГРАФІК ({source_used})! Перевірте систему.")
-        else:
-            send_telegram_alert(f"ℹ️ Виявлено новий розклад ({source_used}).")
-
+    
     cleanup_old_files(RAW_SITE_DIR, days=7)
-    cleanup_old_files(RAW_TELEGRAM_DIR, days=7)
     cleanup_old_files(LOGS_DIR, days=30)
 
     state["last_run"] = get_now().isoformat()

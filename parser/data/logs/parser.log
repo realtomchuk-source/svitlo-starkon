@@ -1,0 +1,371 @@
+2026-04-08 18:07:46,309 [INFO] SSSK-Main: Starting SSSK Parser cycle
+2026-04-08 18:07:46,311 [INFO] SSSK-Utils: Override expired.
+2026-04-08 18:07:46,311 [INFO] SSSK-Main: Executing parser run. Mode: site
+2026-04-08 18:07:46,311 [INFO] SSSK-SiteParser: Starting site parser cycle...
+2026-04-08 18:07:46,312 [INFO] SSSK-SiteParser: Fetching https://hoe.com.ua/page/pogodinni-vidkljuchennja with Playwright...
+2026-04-08 18:07:48,277 [ERROR] SSSK-SiteParser: Playwright fetch error: 'module' object is not callable
+2026-04-08 18:07:48,277 [ERROR] SSSK-SiteParser: Failed to fetch rendered HTML. Aborting cycle.
+2026-04-08 18:07:48,279 [INFO] SSSK-Utils: Removed old file: 20260303_205702.png
+2026-04-08 18:07:48,280 [INFO] SSSK-Utils: Removed old file: 20260304_192305.png
+2026-04-08 18:07:48,281 [INFO] SSSK-Utils: Removed old file: 20260304_212723.png
+2026-04-08 18:07:48,282 [INFO] SSSK-Utils: Removed old file: 20260304_225829.png
+2026-04-08 18:07:48,283 [INFO] SSSK-Utils: Removed old file: 20260305_070526.png
+2026-04-08 18:07:48,284 [INFO] SSSK-Utils: Removed old file: 20260305_134938.png
+2026-04-08 18:07:48,285 [INFO] SSSK-Utils: Removed old file: 20260305_213849.png
+2026-04-08 18:07:48,286 [INFO] SSSK-Utils: Removed old file: 20260305_215848.png
+2026-04-08 18:07:48,287 [INFO] SSSK-Utils: Removed old file: 20260306_070141.png
+2026-04-08 18:07:48,288 [INFO] SSSK-Utils: Removed old file: 20260306_130619.png
+2026-04-08 18:07:48,289 [INFO] SSSK-Utils: Removed old file: 20260306_180625.png
+2026-04-08 18:07:48,290 [INFO] SSSK-Utils: Removed old file: 20260306_200539.png
+2026-04-08 18:07:48,291 [INFO] SSSK-Utils: Removed old file: 20260306_215100.png
+2026-04-08 18:07:48,291 [INFO] SSSK-Utils: Removed old file: 20260307_064709.png
+2026-04-08 18:07:48,292 [INFO] SSSK-Utils: Removed old file: 20260307_125135.png
+2026-04-08 18:07:48,293 [INFO] SSSK-Utils: Removed old file: 20260307_194637.png
+2026-04-08 18:07:48,294 [INFO] SSSK-Utils: Removed old file: 20260307_210008.png
+2026-04-08 18:07:48,295 [INFO] SSSK-Utils: Removed old file: 20260307_214322.png
+2026-04-08 18:07:48,296 [INFO] SSSK-Utils: Removed old file: 20260307_225202.png
+2026-04-08 18:07:48,297 [INFO] SSSK-Utils: Removed old file: 20260308_070137.png
+2026-04-08 18:07:48,298 [INFO] SSSK-Utils: Removed old file: 20260308_125401.png
+2026-04-08 18:07:48,299 [INFO] SSSK-Utils: Removed old file: 20260308_195029.png
+2026-04-08 18:07:48,300 [INFO] SSSK-Utils: Removed old file: 20260308_210223.png
+2026-04-08 18:07:48,301 [INFO] SSSK-Utils: Removed old file: 20260308_214825.png
+2026-04-08 18:07:48,301 [INFO] SSSK-Utils: Removed old file: 20260308_225405.png
+2026-04-08 18:07:48,303 [INFO] SSSK-Utils: Removed old file: 20260309_071328.png
+2026-04-08 18:07:48,304 [INFO] SSSK-Utils: Removed old file: 20260309_135134.png
+2026-04-08 18:07:48,304 [INFO] SSSK-Utils: Removed old file: 20260309_193743.png
+2026-04-08 18:07:48,305 [INFO] SSSK-Utils: Removed old file: 20260309_212847.png
+2026-04-08 18:07:48,306 [INFO] SSSK-Utils: Removed old file: 20260309_230145.png
+2026-04-08 18:07:48,307 [INFO] SSSK-Utils: Removed old file: 20260310_070040.png
+2026-04-08 18:07:48,308 [INFO] SSSK-Utils: Removed old file: 20260310_134850.png
+2026-04-08 18:07:48,309 [INFO] SSSK-Utils: Removed old file: 20260310_193518.png
+2026-04-08 18:07:48,310 [INFO] SSSK-Utils: Removed old file: 20260310_212720.png
+2026-04-08 18:07:48,311 [INFO] SSSK-Utils: Removed old file: 20260311_070305.png
+2026-04-08 18:07:48,312 [INFO] SSSK-Utils: Removed old file: 20260311_134819.png
+2026-04-08 18:07:48,312 [INFO] SSSK-Utils: Removed old file: 20260311_193846.png
+2026-04-08 18:07:48,313 [INFO] SSSK-Utils: Removed old file: 20260311_213329.png
+2026-04-08 18:07:48,313 [INFO] SSSK-Utils: Removed old file: 20260312_070744.png
+2026-04-08 18:07:48,314 [INFO] SSSK-Utils: Removed old file: 20260312_134353.png
+2026-04-08 18:07:48,314 [INFO] SSSK-Utils: Removed old file: 20260312_193841.png
+2026-04-08 18:07:48,315 [INFO] SSSK-Utils: Removed old file: 20260312_213155.png
+2026-04-08 18:07:48,315 [INFO] SSSK-Utils: Removed old file: 20260313_070548.png
+2026-04-08 18:07:48,316 [INFO] SSSK-Utils: Removed old file: 20260313_134602.png
+2026-04-08 18:07:48,316 [INFO] SSSK-Utils: Removed old file: 20260313_190506.png
+2026-04-08 18:07:48,317 [INFO] SSSK-Utils: Removed old file: 20260313_200513.png
+2026-04-08 18:07:48,318 [INFO] SSSK-Utils: Removed old file: 20260313_215040.png
+2026-04-08 18:07:48,318 [INFO] SSSK-Utils: Removed old file: 20260314_070242.png
+2026-04-08 18:07:48,319 [INFO] SSSK-Utils: Removed old file: 20260314_125843.png
+2026-04-08 18:07:48,319 [INFO] SSSK-Utils: Removed old file: 20260314_195553.png
+2026-04-08 18:07:48,320 [INFO] SSSK-Utils: Removed old file: 20260314_211736.png
+2026-04-08 18:07:48,320 [INFO] SSSK-Utils: Removed old file: 20260314_215755.png
+2026-04-08 18:07:48,321 [INFO] SSSK-Utils: Removed old file: 20260314_225722.png
+2026-04-08 18:07:48,321 [INFO] SSSK-Utils: Removed old file: 20260315_074445.png
+2026-04-08 18:07:48,322 [INFO] SSSK-Utils: Removed old file: 20260315_130105.png
+2026-04-08 18:07:48,322 [INFO] SSSK-Utils: Removed old file: 20260315_195733.png
+2026-04-08 18:07:48,323 [INFO] SSSK-Utils: Removed old file: 20260315_213922.png
+2026-04-08 18:07:48,323 [INFO] SSSK-Utils: Removed old file: 20260315_220200.png
+2026-04-08 18:07:48,324 [INFO] SSSK-Utils: Removed old file: 20260316_080036.png
+2026-04-08 18:07:48,324 [INFO] SSSK-Utils: Removed old file: 20260316_140316.png
+2026-04-08 18:07:48,325 [INFO] SSSK-Utils: Removed old file: 20260316_201055.png
+2026-04-08 18:07:48,325 [INFO] SSSK-Utils: Removed old file: 20260316_215506.png
+2026-04-08 18:07:48,326 [INFO] SSSK-Utils: Removed old file: 20260317_071454.png
+2026-04-08 18:07:48,326 [INFO] SSSK-Utils: Removed old file: 20260317_135906.png
+2026-04-08 18:07:48,327 [INFO] SSSK-Utils: Removed old file: 20260317_201419.png
+2026-04-08 18:07:48,327 [INFO] SSSK-Utils: Removed old file: 20260317_215650.png
+2026-04-08 18:07:48,328 [INFO] SSSK-Utils: Removed old file: 20260318_072040.png
+2026-04-08 18:07:48,328 [INFO] SSSK-Utils: Removed old file: 20260318_140354.png
+2026-04-08 18:07:48,329 [INFO] SSSK-Utils: Removed old file: 20260318_201132.png
+2026-04-08 18:07:48,330 [INFO] SSSK-Utils: Removed old file: 20260318_213914.png
+2026-04-08 18:07:48,330 [INFO] SSSK-Utils: Removed old file: 20260319_071630.png
+2026-04-08 18:07:48,331 [INFO] SSSK-Utils: Removed old file: 20260319_135239.png
+2026-04-08 18:07:48,331 [INFO] SSSK-Utils: Removed old file: 20260319_200039.png
+2026-04-08 18:07:48,332 [INFO] SSSK-Utils: Removed old file: 20260319_213800.png
+2026-04-08 18:07:48,332 [INFO] SSSK-Utils: Removed old file: 20260320_070753.png
+2026-04-08 18:07:48,333 [INFO] SSSK-Utils: Removed old file: 20260320_134616.png
+2026-04-08 18:07:48,333 [INFO] SSSK-Utils: Removed old file: 20260320_191130.png
+2026-04-08 18:07:48,334 [INFO] SSSK-Utils: Removed old file: 20260320_212613.png
+2026-04-08 18:07:48,334 [INFO] SSSK-Utils: Removed old file: 20260320_225912.png
+2026-04-08 18:07:48,335 [INFO] SSSK-Utils: Removed old file: 20260321_065418.png
+2026-04-08 18:07:48,335 [INFO] SSSK-Utils: Removed old file: 20260321_125638.png
+2026-04-08 18:07:48,336 [INFO] SSSK-Utils: Removed old file: 20260321_195349.png
+2026-04-08 18:07:48,336 [INFO] SSSK-Utils: Removed old file: 20260321_210411.png
+2026-04-08 18:07:48,337 [INFO] SSSK-Utils: Removed old file: 20260321_215005.png
+2026-04-08 18:07:48,337 [INFO] SSSK-Utils: Removed old file: 20260321_225430.png
+2026-04-08 18:07:48,338 [INFO] SSSK-Utils: Removed old file: 20260322_071245.png
+2026-04-08 18:07:48,338 [INFO] SSSK-Utils: Removed old file: 20260322_125708.png
+2026-04-08 18:07:48,338 [INFO] SSSK-Utils: Removed old file: 20260322_195406.png
+2026-04-08 18:07:48,339 [INFO] SSSK-Utils: Removed old file: 20260322_211603.png
+2026-04-08 18:07:48,339 [INFO] SSSK-Utils: Removed old file: 20260322_215534.png
+2026-04-08 18:07:48,340 [INFO] SSSK-Utils: Removed old file: 20260322_225638.png
+2026-04-08 18:07:48,340 [INFO] SSSK-Utils: Removed old file: 20260323_074907.png
+2026-04-08 18:07:48,341 [INFO] SSSK-Utils: Removed old file: 20260323_135806.png
+2026-04-08 18:07:48,341 [INFO] SSSK-Utils: Removed old file: 20260323_200236.png
+2026-04-08 18:07:48,342 [INFO] SSSK-Utils: Removed old file: 20260323_213819.png
+2026-04-08 18:07:48,342 [INFO] SSSK-Utils: Removed old file: 20260324_071552.png
+2026-04-08 18:07:48,343 [INFO] SSSK-Utils: Removed old file: 20260324_140032.png
+2026-04-08 18:07:48,343 [INFO] SSSK-Utils: Removed old file: 20260324_200913.png
+2026-04-08 18:07:48,344 [INFO] SSSK-Utils: Removed old file: 20260324_215604.png
+2026-04-08 18:07:48,344 [INFO] SSSK-Utils: Removed old file: 20260325_071636.png
+2026-04-08 18:07:48,345 [INFO] SSSK-Utils: Removed old file: 20260325_140011.png
+2026-04-08 18:07:48,345 [INFO] SSSK-Utils: Removed old file: 20260325_201028.png
+2026-04-08 18:07:48,345 [INFO] SSSK-Utils: Removed old file: 20260325_213622.png
+2026-04-08 18:07:48,346 [INFO] SSSK-Utils: Removed old file: 20260326_075157.png
+2026-04-08 18:07:48,346 [INFO] SSSK-Utils: Removed old file: 20260326_140732.png
+2026-04-08 18:07:48,347 [INFO] SSSK-Utils: Removed old file: 20260326_201225.png
+2026-04-08 18:07:48,347 [INFO] SSSK-Utils: Removed old file: 20260326_215740.png
+2026-04-08 18:07:48,348 [INFO] SSSK-Utils: Removed old file: 20260327_075213.png
+2026-04-08 18:07:48,348 [INFO] SSSK-Utils: Removed old file: 20260327_135951.png
+2026-04-08 18:07:48,354 [INFO] SSSK-Main: Cycle completed successfully.
+2026-04-08 18:08:38,138 [INFO] SSSK-Main: Starting SSSK Parser cycle
+2026-04-08 18:08:38,139 [INFO] SSSK-Main: Executing parser run. Mode: site
+2026-04-08 18:08:38,139 [INFO] SSSK-SiteParser: Starting site parser cycle...
+2026-04-08 18:08:38,139 [INFO] SSSK-SiteParser: Fetching https://hoe.com.ua/page/pogodinni-vidkljuchennja with Playwright...
+2026-04-08 18:08:39,304 [ERROR] SSSK-SiteParser: Playwright fetch error: 'module' object is not callable
+2026-04-08 18:08:39,304 [ERROR] SSSK-SiteParser: Failed to fetch rendered HTML. Aborting cycle.
+2026-04-08 18:08:39,309 [INFO] SSSK-Main: Cycle completed successfully.
+2026-04-08 18:09:45,938 [INFO] SSSK-Main: Starting SSSK Parser cycle
+2026-04-08 18:09:45,938 [INFO] SSSK-Main: Skipping run (schedule policy says no).
+2026-04-08 18:10:20,581 [INFO] SSSK-Main: Starting SSSK Parser cycle
+2026-04-08 18:10:20,581 [INFO] SSSK-Main: Interval override activated: 1m until 2026-04-08T19:10:20.581672+03:00
+2026-04-08 18:10:20,581 [INFO] SSSK-Main: Executing parser run. Mode: site
+2026-04-08 18:10:20,582 [INFO] SSSK-SiteParser: Starting site parser cycle...
+2026-04-08 18:10:20,582 [INFO] SSSK-SiteParser: Fetching https://hoe.com.ua/page/pogodinni-vidkljuchennja with Playwright...
+2026-04-08 18:10:27,771 [WARNING] SSSK-SiteParser: Schedule image not found in rendered HTML.
+2026-04-08 18:10:27,777 [INFO] SSSK-Main: Cycle completed successfully.
+2026-04-08 18:23:27,723 [INFO] SSSK-Main: Starting SSSK Parser cycle
+2026-04-08 18:23:27,724 [INFO] SSSK-Main: Interval override activated: 1m until 2026-04-08T19:23:27.724504+03:00
+2026-04-08 18:23:27,724 [INFO] SSSK-Main: Executing parser run. Mode: site
+2026-04-08 18:23:27,724 [INFO] SSSK-SiteParser: Starting site parser cycle...
+2026-04-08 18:23:27,724 [INFO] SSSK-SiteParser: Fetching https://hoe.com.ua/page/pogodinni-vidkljuchennja with Playwright...
+2026-04-08 18:23:34,977 [WARNING] SSSK-SiteParser: Schedule image not found in rendered HTML.
+2026-04-08 18:23:34,984 [INFO] SSSK-Main: Cycle completed successfully.
+2026-04-08 18:24:04,137 [INFO] SSSK-Main: Starting SSSK Parser cycle
+2026-04-08 18:24:04,138 [INFO] SSSK-Main: Interval override activated: 1m until 2026-04-08T19:24:04.138074+03:00
+2026-04-08 18:24:04,138 [INFO] SSSK-Main: Skipping run (schedule policy says no).
+2026-04-08 18:24:18,219 [INFO] SSSK-Main: Starting SSSK Parser cycle
+2026-04-08 18:24:18,220 [INFO] SSSK-Main: Executing parser run. Mode: site
+2026-04-08 18:24:18,220 [INFO] SSSK-SiteParser: Starting site parser cycle...
+2026-04-08 18:24:18,221 [INFO] SSSK-SiteParser: Fetching https://hoe.com.ua/page/pogodinni-vidkljuchennja with Playwright...
+2026-04-08 18:24:24,333 [INFO] SSSK-SiteParser: Target image URL: https://hoe.com.ua/Content/Uploads/2026/04/file20260408095429363.png
+2026-04-08 18:24:25,021 [INFO] SSSK-Main: New schedule detected from site. Running OCR processing...
+2026-04-08 18:24:28,755 [INFO] SSSK-GridVision: Grid Lines Solved: 25V, 13H
+2026-04-08 18:24:28,784 [INFO] SSSK-TableParser: Successfully parsed grid using Vision
+2026-04-08 18:24:28,784 [INFO] SSSK-Main: Table parsing successful - structured data saved
+2026-04-08 18:24:28,788 [INFO] SSSK-Main: schedule_api.json exported: 23 entries.
+2026-04-08 18:24:28,814 [INFO] SSSK-GenerateToday: today.json generated: C:\Users\АТом\Desktop\Antigravity\SSSK\pwa\data\today.json
+2026-04-08 18:24:28,815 [INFO] SSSK-Main: !!! SUCCESS: Extracted data from site schedule !!!
+2026-04-08 18:24:28,815 [WARNING] SSSK-Utils: Telegram alert skipped (missing credentials): ℹ️ Виявлено новий розклад (site).
+2026-04-08 18:24:28,821 [INFO] SSSK-Main: Cycle completed successfully.
+2026-04-08 18:40:25,845 [INFO] SSSK-Main: Starting SSSK Parser cycle
+2026-04-08 18:40:25,845 [INFO] SSSK-Main: Skipping run (schedule policy says no).
+2026-04-08 19:00:24,112 [INFO] SSSK-Main: Starting SSSK Parser cycle
+2026-04-08 19:00:24,112 [INFO] SSSK-Main: Source override detected: site
+2026-04-08 19:00:24,113 [INFO] SSSK-Main: Executing parser run. Mode: site
+2026-04-08 19:00:24,113 [INFO] SSSK-SiteParser: Starting site parser cycle...
+2026-04-08 19:00:24,113 [INFO] SSSK-SiteParser: Fetching https://hoe.com.ua/page/pogodinni-vidkljuchennja with Playwright...
+2026-04-08 19:00:34,324 [INFO] SSSK-SiteParser: Target image URL: https://hoe.com.ua/Content/Uploads/2026/04/file20260408095429363.png
+2026-04-08 19:00:35,056 [INFO] SSSK-SiteParser: Image hash match. No changes detected.
+2026-04-08 19:00:35,066 [INFO] SSSK-Main: Cycle completed successfully.
+2026-04-08 19:00:44,331 [INFO] SSSK-GenerateToday: today.json generated: C:\Users\АТом\Desktop\Antigravity\SSSK\pwa\data\today.json
+2026-04-08 19:58:06,291 [INFO] SSSK-HistoryCrawler: Starting history crawler for last 7 days...
+2026-04-08 19:58:06,291 [INFO] SSSK-HistoryCrawler: Fetching news list: https://hoe.com.ua/post/novini-kompaniji?page=1
+2026-04-08 19:58:06,945 [INFO] SSSK-HistoryCrawler: Fetching news list: https://hoe.com.ua/post/novini-kompaniji?page=2
+2026-04-08 19:58:07,598 [INFO] SSSK-HistoryCrawler: Found 0 candidate posts.
+2026-04-08 19:58:07,600 [INFO] SSSK-HistoryCrawler: History update finished. New entries: 0
+2026-04-08 20:05:57,421 [INFO] SSSK-HistoryCrawler: === Starting history crawler (target: last 7 days) ===
+2026-04-08 20:05:57,421 [INFO] SSSK-HistoryCrawler: Fetching news list: https://hoe.com.ua/post/novini-kompaniji
+2026-04-08 20:05:58,117 [INFO] SSSK-HistoryCrawler:   Found: 'Графіки обмежень на 8 квітня (ОНОВЛЕНО)' -> date=08.04, link=https://hoe.com.ua/post/grafiki-obmezhen-na-8-kvitnja.html
+2026-04-08 20:05:58,118 [INFO] SSSK-HistoryCrawler:   Found: 'Оновлено графіки погодинних відключень електроенергії' -> date=None, link=https://hoe.com.ua/post/onovleno-grafiki-pogodinnih-vidkljuchen-elektroenergiji.html
+2026-04-08 20:05:58,118 [INFO] SSSK-HistoryCrawler:   Found: 'Обмеження на 3 квітня' -> date=03.04, link=https://hoe.com.ua/post/obmezhennja-na-3-kvitnja.html
+2026-04-08 20:05:58,119 [INFO] SSSK-HistoryCrawler:   Found: 'Прогноз обмежень на 24 березня' -> date=24.03, link=https://hoe.com.ua/post/prognoz-obmezhen-na-24-bereznja.html
+2026-04-08 20:05:58,120 [INFO] SSSK-HistoryCrawler:   Found: 'Погодинні відключення на 23 березня (ОНОВЛЕНО)' -> date=23.03, link=https://hoe.com.ua/post/pogodinni-vidkljuchennja-na-23-bereznja.html
+2026-04-08 20:05:58,120 [INFO] SSSK-HistoryCrawler:   Found: 'Прогноз обмежень на 21 березня' -> date=21.03, link=https://hoe.com.ua/post/prognoz-obmezhen-na-21-bereznja.html
+2026-04-08 20:05:58,121 [INFO] SSSK-HistoryCrawler:   Found: 'Обмеження на 20 березня' -> date=20.03, link=https://hoe.com.ua/post/obmezhennja-na-20-bereznja.html
+2026-04-08 20:05:58,122 [INFO] SSSK-HistoryCrawler:   Found: 'Прогноз обмежень на 19 березня (ОНОВЛЕНО)' -> date=19.03, link=https://hoe.com.ua/post/prognoz-obmezhen-na-19-bereznja.html
+2026-04-08 20:05:58,122 [INFO] SSSK-HistoryCrawler: Fetching news list: https://hoe.com.ua/post/novini-kompaniji?page=2
+2026-04-08 20:05:58,802 [WARNING] SSSK-HistoryCrawler: No <article class='item'> found on page 2
+2026-04-08 20:05:58,805 [INFO] SSSK-HistoryCrawler: Found 8 schedule-related posts.
+2026-04-08 20:05:58,805 [INFO] SSSK-HistoryCrawler: Already in DB (processed): {'27.03', '08.04'}
+2026-04-08 20:05:58,806 [INFO] SSSK-HistoryCrawler: Skipping 08.04 — already in DB
+2026-04-08 20:05:58,806 [WARNING] SSSK-HistoryCrawler: Skipping 'Оновлено графіки погодинних відключень електроенергії' — could not extract date
+2026-04-08 20:05:58,806 [INFO] SSSK-HistoryCrawler: Processing 03.04 from 'Обмеження на 3 квітня'...
+2026-04-08 20:05:59,580 [INFO] SSSK-HistoryCrawler: Raw image saved: c:\Users\АТом\Desktop\Antigravity\SSSK\parser\data\raw_site\hist_0304_20260408_200559.png
+2026-04-08 20:05:59,580 [INFO] SSSK-HistoryCrawler: Running grid vision analysis...
+2026-04-08 20:05:59,678 [ERROR] SSSK-GridVision: Not enough vertical lines found: 1
+2026-04-08 20:05:59,678 [WARNING] SSSK-HistoryCrawler: ❌ Vision failed for 03.04 — queues invalid
+2026-04-08 20:06:01,179 [INFO] SSSK-HistoryCrawler: Processing 24.03 from 'Прогноз обмежень на 24 березня'...
+2026-04-08 20:06:01,910 [INFO] SSSK-HistoryCrawler: Raw image saved: c:\Users\АТом\Desktop\Antigravity\SSSK\parser\data\raw_site\hist_2403_20260408_200601.png
+2026-04-08 20:06:01,910 [INFO] SSSK-HistoryCrawler: Running grid vision analysis...
+2026-04-08 20:06:01,978 [ERROR] SSSK-GridVision: Not enough vertical lines found: 1
+2026-04-08 20:06:01,978 [WARNING] SSSK-HistoryCrawler: ❌ Vision failed for 24.03 — queues invalid
+2026-04-08 20:06:03,479 [INFO] SSSK-HistoryCrawler: Processing 23.03 from 'Погодинні відключення на 23 березня (ОНОВЛЕНО)'...
+2026-04-08 20:06:04,212 [INFO] SSSK-HistoryCrawler: Raw image saved: c:\Users\АТом\Desktop\Antigravity\SSSK\parser\data\raw_site\hist_2303_20260408_200604.png
+2026-04-08 20:06:04,212 [INFO] SSSK-HistoryCrawler: Running grid vision analysis...
+2026-04-08 20:06:04,285 [ERROR] SSSK-GridVision: Not enough vertical lines found: 1
+2026-04-08 20:06:04,285 [WARNING] SSSK-HistoryCrawler: ❌ Vision failed for 23.03 — queues invalid
+2026-04-08 20:06:05,786 [INFO] SSSK-HistoryCrawler: Processing 21.03 from 'Прогноз обмежень на 21 березня'...
+2026-04-08 20:06:06,547 [INFO] SSSK-HistoryCrawler: Raw image saved: c:\Users\АТом\Desktop\Antigravity\SSSK\parser\data\raw_site\hist_2103_20260408_200606.png
+2026-04-08 20:06:06,547 [INFO] SSSK-HistoryCrawler: Running grid vision analysis...
+2026-04-08 20:06:06,592 [ERROR] SSSK-GridVision: Not enough vertical lines found: 1
+2026-04-08 20:06:06,593 [WARNING] SSSK-HistoryCrawler: ❌ Vision failed for 21.03 — queues invalid
+2026-04-08 20:06:08,093 [INFO] SSSK-HistoryCrawler: Processing 20.03 from 'Обмеження на 20 березня'...
+2026-04-08 20:06:08,810 [INFO] SSSK-HistoryCrawler: Raw image saved: c:\Users\АТом\Desktop\Antigravity\SSSK\parser\data\raw_site\hist_2003_20260408_200608.png
+2026-04-08 20:06:08,810 [INFO] SSSK-HistoryCrawler: Running grid vision analysis...
+2026-04-08 20:06:08,867 [ERROR] SSSK-GridVision: Not enough vertical lines found: 2
+2026-04-08 20:06:08,868 [WARNING] SSSK-HistoryCrawler: ❌ Vision failed for 20.03 — queues invalid
+2026-04-08 20:06:10,369 [INFO] SSSK-HistoryCrawler: Processing 19.03 from 'Прогноз обмежень на 19 березня (ОНОВЛЕНО)'...
+2026-04-08 20:06:11,117 [INFO] SSSK-HistoryCrawler: Raw image saved: c:\Users\АТом\Desktop\Antigravity\SSSK\parser\data\raw_site\hist_1903_20260408_200611.png
+2026-04-08 20:06:11,117 [INFO] SSSK-HistoryCrawler: Running grid vision analysis...
+2026-04-08 20:06:11,178 [ERROR] SSSK-GridVision: Not enough vertical lines found: 1
+2026-04-08 20:06:11,178 [WARNING] SSSK-HistoryCrawler: ❌ Vision failed for 19.03 — queues invalid
+2026-04-08 20:06:12,681 [INFO] SSSK-HistoryCrawler: === History crawl complete. New successful entries: 0 ===
+2026-04-08 20:06:12,681 [INFO] SSSK-HistoryCrawler: Total DB entries: 8
+2026-04-08 20:09:24,514 [INFO] SSSK-HistoryCrawler: === Starting history crawler (target: last 7 days) ===
+2026-04-08 20:09:24,515 [INFO] SSSK-HistoryCrawler: Fetching news list: https://hoe.com.ua/post/novini-kompaniji
+2026-04-08 20:09:25,229 [INFO] SSSK-HistoryCrawler:   Found: 'Графіки обмежень на 8 квітня (ОНОВЛЕНО)' -> date=08.04, link=https://hoe.com.ua/post/grafiki-obmezhen-na-8-kvitnja.html
+2026-04-08 20:09:25,230 [INFO] SSSK-HistoryCrawler:   Found: 'Оновлено графіки погодинних відключень електроенергії' -> date=None, link=https://hoe.com.ua/post/onovleno-grafiki-pogodinnih-vidkljuchen-elektroenergiji.html
+2026-04-08 20:09:25,231 [INFO] SSSK-HistoryCrawler:   Found: 'Обмеження на 3 квітня' -> date=03.04, link=https://hoe.com.ua/post/obmezhennja-na-3-kvitnja.html
+2026-04-08 20:09:25,231 [INFO] SSSK-HistoryCrawler:   Found: 'Прогноз обмежень на 24 березня' -> date=24.03, link=https://hoe.com.ua/post/prognoz-obmezhen-na-24-bereznja.html
+2026-04-08 20:09:25,232 [INFO] SSSK-HistoryCrawler:   Found: 'Погодинні відключення на 23 березня (ОНОВЛЕНО)' -> date=23.03, link=https://hoe.com.ua/post/pogodinni-vidkljuchennja-na-23-bereznja.html
+2026-04-08 20:09:25,232 [INFO] SSSK-HistoryCrawler:   Found: 'Прогноз обмежень на 21 березня' -> date=21.03, link=https://hoe.com.ua/post/prognoz-obmezhen-na-21-bereznja.html
+2026-04-08 20:09:25,232 [INFO] SSSK-HistoryCrawler:   Found: 'Обмеження на 20 березня' -> date=20.03, link=https://hoe.com.ua/post/obmezhennja-na-20-bereznja.html
+2026-04-08 20:09:25,233 [INFO] SSSK-HistoryCrawler:   Found: 'Прогноз обмежень на 19 березня (ОНОВЛЕНО)' -> date=19.03, link=https://hoe.com.ua/post/prognoz-obmezhen-na-19-bereznja.html
+2026-04-08 20:09:25,233 [INFO] SSSK-HistoryCrawler: Fetching news list: https://hoe.com.ua/post/novini-kompaniji?page=2
+2026-04-08 20:09:25,876 [WARNING] SSSK-HistoryCrawler: No <article class='item'> found on page 2
+2026-04-08 20:09:25,879 [INFO] SSSK-HistoryCrawler: Found 8 schedule-related posts.
+2026-04-08 20:09:25,879 [INFO] SSSK-HistoryCrawler: Already in DB (processed): {'08.04', '27.03'}
+2026-04-08 20:09:25,879 [INFO] SSSK-HistoryCrawler: Skipping 08.04 — already in DB
+2026-04-08 20:09:25,880 [WARNING] SSSK-HistoryCrawler: Skipping 'Оновлено графіки погодинних відключень електроенергії' — could not extract date
+2026-04-08 20:09:25,880 [INFO] SSSK-HistoryCrawler: Processing 03.04 from 'Обмеження на 3 квітня'...
+2026-04-08 20:09:26,763 [INFO] SSSK-HistoryCrawler:   Found full-size image: https://hoe.com.ua/Content/Uploads/2026/04/file20260402191738372.png
+2026-04-08 20:09:27,331 [INFO] SSSK-HistoryCrawler:   Downloaded image: 302005 bytes
+2026-04-08 20:09:27,334 [INFO] SSSK-HistoryCrawler:   Raw image saved: c:\Users\АТом\Desktop\Antigravity\SSSK\parser\data\raw_site\hist_0304_20260408_200927.png
+2026-04-08 20:09:27,334 [INFO] SSSK-HistoryCrawler:   Running grid vision analysis...
+2026-04-08 20:09:27,578 [ERROR] SSSK-GridVision: Not enough vertical lines found: 0
+2026-04-08 20:09:27,578 [WARNING] SSSK-HistoryCrawler:   ❌ Vision failed for 03.04 — queues invalid
+2026-04-08 20:09:29,079 [INFO] SSSK-HistoryCrawler: Processing 24.03 from 'Прогноз обмежень на 24 березня'...
+2026-04-08 20:09:30,007 [INFO] SSSK-HistoryCrawler:   Found full-size image: https://hoe.com.ua/Content/Uploads/2026/03/file20260323232434264.png
+2026-04-08 20:09:30,684 [INFO] SSSK-HistoryCrawler:   Downloaded image: 297952 bytes
+2026-04-08 20:09:30,687 [INFO] SSSK-HistoryCrawler:   Raw image saved: c:\Users\АТом\Desktop\Antigravity\SSSK\parser\data\raw_site\hist_2403_20260408_200930.png
+2026-04-08 20:09:30,687 [INFO] SSSK-HistoryCrawler:   Running grid vision analysis...
+2026-04-08 20:09:31,072 [INFO] SSSK-GridVision: Grid Lines Solved: 25V, 13H
+2026-04-08 20:09:31,100 [INFO] SSSK-HistoryCrawler:   ✅ Successfully processed 24.03 (12 queues)
+2026-04-08 20:09:32,601 [INFO] SSSK-HistoryCrawler: Processing 23.03 from 'Погодинні відключення на 23 березня (ОНОВЛЕНО)'...
+2026-04-08 20:09:33,531 [INFO] SSSK-HistoryCrawler:   Found full-size image: https://hoe.com.ua/Content/Uploads/2026/03/file20260322193955941.jpg
+2026-04-08 20:09:34,144 [INFO] SSSK-HistoryCrawler:   Downloaded image: 116142 bytes
+2026-04-08 20:09:34,146 [INFO] SSSK-HistoryCrawler:   Raw image saved: c:\Users\АТом\Desktop\Antigravity\SSSK\parser\data\raw_site\hist_2303_20260408_200934.png
+2026-04-08 20:09:34,146 [INFO] SSSK-HistoryCrawler:   Running grid vision analysis...
+2026-04-08 20:09:34,292 [INFO] SSSK-GridVision: Grid Lines Solved: 25V, 13H
+2026-04-08 20:09:34,314 [INFO] SSSK-HistoryCrawler:   ✅ Successfully processed 23.03 (12 queues)
+2026-04-08 20:09:35,815 [INFO] SSSK-HistoryCrawler: Processing 21.03 from 'Прогноз обмежень на 21 березня'...
+2026-04-08 20:09:36,711 [INFO] SSSK-HistoryCrawler:   Found full-size image: https://hoe.com.ua/Content/Uploads/2026/03/file20260320193953490.png
+2026-04-08 20:09:38,085 [INFO] SSSK-HistoryCrawler:   Downloaded image: 299673 bytes
+2026-04-08 20:09:38,088 [INFO] SSSK-HistoryCrawler:   Raw image saved: c:\Users\АТом\Desktop\Antigravity\SSSK\parser\data\raw_site\hist_2103_20260408_200938.png
+2026-04-08 20:09:38,089 [INFO] SSSK-HistoryCrawler:   Running grid vision analysis...
+2026-04-08 20:09:38,382 [INFO] SSSK-GridVision: Grid Lines Solved: 25V, 13H
+2026-04-08 20:09:38,401 [INFO] SSSK-HistoryCrawler:   ✅ Successfully processed 21.03 (12 queues)
+2026-04-08 20:09:39,902 [INFO] SSSK-HistoryCrawler: Processing 20.03 from 'Обмеження на 20 березня'...
+2026-04-08 20:09:40,855 [INFO] SSSK-HistoryCrawler:   Found full-size image: https://hoe.com.ua/Content/Uploads/2026/03/file20260319202408080.PNG
+2026-04-08 20:09:41,465 [INFO] SSSK-HistoryCrawler:   Downloaded image: 101581 bytes
+2026-04-08 20:09:41,468 [INFO] SSSK-HistoryCrawler:   Raw image saved: c:\Users\АТом\Desktop\Antigravity\SSSK\parser\data\raw_site\hist_2003_20260408_200941.png
+2026-04-08 20:09:41,468 [INFO] SSSK-HistoryCrawler:   Running grid vision analysis...
+2026-04-08 20:09:41,535 [ERROR] SSSK-GridVision: Not enough vertical lines found: 0
+2026-04-08 20:09:41,536 [WARNING] SSSK-HistoryCrawler:   ❌ Vision failed for 20.03 — queues invalid
+2026-04-08 20:09:43,036 [INFO] SSSK-HistoryCrawler: Processing 19.03 from 'Прогноз обмежень на 19 березня (ОНОВЛЕНО)'...
+2026-04-08 20:09:43,888 [INFO] SSSK-HistoryCrawler:   Found full-size image: https://hoe.com.ua/Content/Uploads/2026/03/file20260318200648224.png
+2026-04-08 20:09:44,523 [INFO] SSSK-HistoryCrawler:   Downloaded image: 116880 bytes
+2026-04-08 20:09:44,525 [INFO] SSSK-HistoryCrawler:   Raw image saved: c:\Users\АТом\Desktop\Antigravity\SSSK\parser\data\raw_site\hist_1903_20260408_200944.png
+2026-04-08 20:09:44,526 [INFO] SSSK-HistoryCrawler:   Running grid vision analysis...
+2026-04-08 20:09:44,607 [ERROR] SSSK-GridVision: Not enough vertical lines found: 0
+2026-04-08 20:09:44,607 [WARNING] SSSK-HistoryCrawler:   ❌ Vision failed for 19.03 — queues invalid
+2026-04-08 20:09:46,110 [INFO] SSSK-HistoryCrawler: === History crawl complete. New successful entries: 3 ===
+2026-04-08 20:09:46,111 [INFO] SSSK-HistoryCrawler: Total DB entries: 8
+2026-04-08 22:11:07,421 [INFO] SSSK-HistoryCrawler: === Starting history crawler (target: last 7 days) ===
+2026-04-08 22:11:07,422 [INFO] SSSK-HistoryCrawler: Fetching news list: https://hoe.com.ua/post/novini-kompaniji
+2026-04-08 22:11:08,262 [INFO] SSSK-HistoryCrawler:   Found: 'Прогноз обмежень на 9 квітня' -> date=09.04, link=https://hoe.com.ua/post/prognoz-obmezhen-na-9-kvitnja.html
+2026-04-08 22:11:08,262 [INFO] SSSK-HistoryCrawler:   Found: 'Графіки обмежень на 8 квітня (ОНОВЛЕНО)' -> date=08.04, link=https://hoe.com.ua/post/grafiki-obmezhen-na-8-kvitnja.html
+2026-04-08 22:11:08,263 [INFO] SSSK-HistoryCrawler:   Found: 'Оновлено графіки погодинних відключень електроенергії' -> date=None, link=https://hoe.com.ua/post/onovleno-grafiki-pogodinnih-vidkljuchen-elektroenergiji.html
+2026-04-08 22:11:08,264 [INFO] SSSK-HistoryCrawler:   Found: 'Обмеження на 3 квітня' -> date=03.04, link=https://hoe.com.ua/post/obmezhennja-na-3-kvitnja.html
+2026-04-08 22:11:08,264 [INFO] SSSK-HistoryCrawler:   Found: 'Прогноз обмежень на 24 березня' -> date=24.03, link=https://hoe.com.ua/post/prognoz-obmezhen-na-24-bereznja.html
+2026-04-08 22:11:08,265 [INFO] SSSK-HistoryCrawler:   Found: 'Погодинні відключення на 23 березня (ОНОВЛЕНО)' -> date=23.03, link=https://hoe.com.ua/post/pogodinni-vidkljuchennja-na-23-bereznja.html
+2026-04-08 22:11:08,265 [INFO] SSSK-HistoryCrawler:   Found: 'Прогноз обмежень на 21 березня' -> date=21.03, link=https://hoe.com.ua/post/prognoz-obmezhen-na-21-bereznja.html
+2026-04-08 22:11:08,266 [INFO] SSSK-HistoryCrawler:   Found: 'Обмеження на 20 березня' -> date=20.03, link=https://hoe.com.ua/post/obmezhennja-na-20-bereznja.html
+2026-04-08 22:11:08,266 [INFO] SSSK-HistoryCrawler: Fetching news list: https://hoe.com.ua/post/novini-kompaniji?page=2
+2026-04-08 22:11:08,960 [WARNING] SSSK-HistoryCrawler: No <article class='item'> found on page 2
+2026-04-08 22:11:08,963 [INFO] SSSK-HistoryCrawler: Found 8 schedule-related posts.
+2026-04-08 22:11:08,963 [INFO] SSSK-HistoryCrawler: Already in DB (processed): {'21.03', '08.04', '24.03', '23.03', '27.03'}
+2026-04-08 22:11:08,963 [INFO] SSSK-HistoryCrawler: Processing 09.04 from 'Прогноз обмежень на 9 квітня'...
+2026-04-08 22:11:09,831 [INFO] SSSK-HistoryCrawler:   Found 1 image(s) in post
+2026-04-08 22:11:09,834 [INFO] SSSK-HistoryCrawler:   Trying image 1/1: https://hoe.com.ua/Content/Uploads/2026/04/file20260408202332442.png
+2026-04-08 22:11:10,552 [INFO] SSSK-HistoryCrawler:   Downloaded: 299439 bytes
+2026-04-08 22:11:10,555 [INFO] SSSK-HistoryCrawler:   Running grid vision analysis...
+2026-04-08 22:11:10,618 [INFO] SSSK-GridVision: Image size: 1920x1126
+2026-04-08 22:11:11,265 [INFO] SSSK-GridVision: [dark_lines] Grid Solved: 25V, 13H
+2026-04-08 22:11:11,311 [INFO] SSSK-HistoryCrawler:   ✅ Successfully processed 09.04 (12 queues)
+2026-04-08 22:11:12,812 [INFO] SSSK-HistoryCrawler: Skipping 08.04 — already in DB
+2026-04-08 22:11:12,812 [WARNING] SSSK-HistoryCrawler: Skipping 'Оновлено графіки погодинних відключень електроенергії' — could not extract date
+2026-04-08 22:11:12,813 [INFO] SSSK-HistoryCrawler: Processing 03.04 from 'Обмеження на 3 квітня'...
+2026-04-08 22:11:13,736 [INFO] SSSK-HistoryCrawler:   Found 1 image(s) in post
+2026-04-08 22:11:13,738 [INFO] SSSK-HistoryCrawler:   Trying image 1/1: https://hoe.com.ua/Content/Uploads/2026/04/file20260402191738372.png
+2026-04-08 22:11:14,619 [INFO] SSSK-HistoryCrawler:   Downloaded: 302005 bytes
+2026-04-08 22:11:14,622 [INFO] SSSK-HistoryCrawler:   Running grid vision analysis...
+2026-04-08 22:11:14,649 [INFO] SSSK-GridVision: Image size: 1920x1126
+2026-04-08 22:11:16,157 [INFO] SSSK-GridVision: [grey_lines] Grid Solved: 25V, 13H
+2026-04-08 22:11:16,195 [INFO] SSSK-HistoryCrawler:   ✅ Successfully processed 03.04 (12 queues)
+2026-04-08 22:11:17,695 [INFO] SSSK-HistoryCrawler: Skipping 24.03 — already in DB
+2026-04-08 22:11:17,696 [INFO] SSSK-HistoryCrawler: Skipping 23.03 — already in DB
+2026-04-08 22:11:17,696 [INFO] SSSK-HistoryCrawler: Skipping 21.03 — already in DB
+2026-04-08 22:11:17,696 [INFO] SSSK-HistoryCrawler: Processing 20.03 from 'Обмеження на 20 березня'...
+2026-04-08 22:11:18,594 [INFO] SSSK-HistoryCrawler:   Found 1 image(s) in post
+2026-04-08 22:11:18,596 [INFO] SSSK-HistoryCrawler:   Trying image 1/1: https://hoe.com.ua/Content/Uploads/2026/03/file20260319202408080.PNG
+2026-04-08 22:11:19,256 [INFO] SSSK-HistoryCrawler:   Downloaded: 101581 bytes
+2026-04-08 22:11:19,258 [INFO] SSSK-HistoryCrawler:   Running grid vision analysis...
+2026-04-08 22:11:19,262 [INFO] SSSK-GridVision: Image size: 1096x643
+2026-04-08 22:11:19,788 [INFO] SSSK-GridVision:   Interpolation: step=35.00px
+2026-04-08 22:11:19,801 [INFO] SSSK-GridVision:   Interpolation: score=18/25
+2026-04-08 22:11:19,924 [INFO] SSSK-GridVision: [interpolated] Grid Solved: 25V, 13H
+2026-04-08 22:11:19,940 [INFO] SSSK-HistoryCrawler:   ✅ Successfully processed 20.03 (12 queues)
+2026-04-08 22:11:21,444 [INFO] SSSK-HistoryCrawler: === History crawl complete. New successful entries: 3 ===
+2026-04-08 22:11:21,444 [INFO] SSSK-HistoryCrawler: Total DB entries: 8
+2026-04-08 22:16:46,252 [INFO] SSSK-Main: Starting SSSK Parser cycle
+2026-04-08 22:16:46,253 [INFO] SSSK-Main: Executing parser run. Mode: site
+2026-04-08 22:16:46,253 [INFO] SSSK-SiteParser: Starting site parser cycle...
+2026-04-08 22:16:46,253 [INFO] SSSK-SiteParser: Fetching https://hoe.com.ua/page/pogodinni-vidkljuchennja with Playwright...
+2026-04-08 22:16:54,618 [INFO] SSSK-SiteParser: Target image URL: https://hoe.com.ua/Content/Uploads/2026/04/file20260408202332442.png
+2026-04-08 22:16:55,312 [INFO] SSSK-Main: New schedule detected from site. Running OCR processing...
+2026-04-08 22:16:58,148 [INFO] SSSK-GridVision: Image size: 1920x1126
+2026-04-08 22:16:58,725 [INFO] SSSK-GridVision: [dark_lines] Grid Solved: 25V, 13H
+2026-04-08 22:16:58,762 [INFO] SSSK-TableParser: Successfully parsed grid using Vision
+2026-04-08 22:16:58,763 [INFO] SSSK-Main: Table parsing successful - structured data saved
+2026-04-08 22:16:58,765 [INFO] SSSK-Main: schedule_api.json exported: 9 entries.
+2026-04-08 22:16:58,789 [INFO] SSSK-GenerateToday: today.json generated: C:\Users\АТом\Desktop\Antigravity\SSSK\pwa\data\today.json
+2026-04-08 22:16:58,798 [INFO] SSSK-Main: !!! SUCCESS: Extracted data from site schedule !!!
+2026-04-08 22:16:58,799 [INFO] SSSK-Utils: Removed old file: 20260327_193937.png
+2026-04-08 22:16:58,800 [INFO] SSSK-Utils: Removed old file: 20260327_213219.png
+2026-04-08 22:16:58,801 [INFO] SSSK-Utils: Removed old file: 20260328_071458.png
+2026-04-08 22:16:58,801 [INFO] SSSK-Utils: Removed old file: 20260328_130306.png
+2026-04-08 22:16:58,802 [INFO] SSSK-Utils: Removed old file: 20260328_195910.png
+2026-04-08 22:16:58,802 [INFO] SSSK-Utils: Removed old file: 20260328_214716.png
+2026-04-08 22:16:58,803 [INFO] SSSK-Utils: Removed old file: 20260329_085351.png
+2026-04-08 22:16:58,803 [INFO] SSSK-Utils: Removed old file: 20260329_140436.png
+2026-04-08 22:16:58,804 [INFO] SSSK-Utils: Removed old file: 20260329_190008.png
+2026-04-08 22:16:58,804 [INFO] SSSK-Utils: Removed old file: 20260329_210318.png
+2026-04-08 22:16:58,805 [INFO] SSSK-Utils: Removed old file: 20260329_225220.png
+2026-04-08 22:16:58,805 [INFO] SSSK-Utils: Removed old file: 20260330_091844.png
+2026-04-08 22:16:58,806 [INFO] SSSK-Utils: Removed old file: 20260330_150944.png
+2026-04-08 22:16:58,806 [INFO] SSSK-Utils: Removed old file: 20260330_210622.png
+2026-04-08 22:16:58,807 [INFO] SSSK-Utils: Removed old file: 20260330_225959.png
+2026-04-08 22:16:58,807 [INFO] SSSK-Utils: Removed old file: 20260331_085744.png
+2026-04-08 22:16:58,808 [INFO] SSSK-Utils: Removed old file: 20260331_150710.png
+2026-04-08 22:16:58,808 [INFO] SSSK-Utils: Removed old file: 20260331_210601.png
+2026-04-08 22:16:58,809 [INFO] SSSK-Utils: Removed old file: 20260331_225825.png
+2026-04-08 22:16:58,809 [INFO] SSSK-Utils: Removed old file: 20260401_052402.png
+2026-04-08 22:16:58,810 [INFO] SSSK-Utils: Removed old file: 20260401_135237.png
+2026-04-08 22:16:58,810 [INFO] SSSK-Utils: Removed old file: 20260401_190525.png
+2026-04-08 22:16:58,818 [INFO] SSSK-Main: Cycle completed successfully.
+2026-04-08 22:35:00,296 [INFO] SSSK-Main: Starting SSSK Parser cycle
+2026-04-08 22:35:00,298 [INFO] SSSK-Main: Executing parser run. Mode: site
+2026-04-08 22:35:00,298 [INFO] SSSK-SiteParser: Starting site parser cycle...
+2026-04-08 22:35:00,298 [INFO] SSSK-SiteParser: Fetching https://hoe.com.ua/page/pogodinni-vidkljuchennja with Playwright...
+2026-04-08 22:35:08,845 [INFO] SSSK-SiteParser: Target image URL: https://hoe.com.ua/Content/Uploads/2026/04/file20260408202332442.png
+2026-04-08 22:35:09,546 [INFO] SSSK-SiteParser: Image hash match. No changes detected.
+2026-04-08 22:35:09,556 [INFO] SSSK-Main: Cycle completed successfully.

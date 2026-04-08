@@ -17,6 +17,12 @@
             SSSK Admin
         </a>
         <div class="header-right">
+            <div id="local-toggle-container" style="display: flex; align-items: center; gap: 8px; margin-right: 12px; font-size: 11px; color: var(--text-secondary); background: var(--bg-primary); padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-strong);">
+                <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                    <input type="checkbox" id="local-data-toggle" style="accent-color: var(--accent-blue);">
+                    <span style="user-select: none;">Локальні дані</span>
+                </label>
+            </div>
             <div id="header-status" class="status-pill warn">● Завантаження…</div>
             <a href="index.html" class="btn btn-ghost btn-sm">← PWA</a>
         </div>
@@ -85,25 +91,52 @@
             </h1>
 
             <!-- Schedule Grid -->
+                        <!-- Main Schedule Section -->
             <div class="card" id="schedule-card">
-                <div class="card-title">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="18" height="18" rx="2"/>
-                        <line x1="3" y1="9" x2="21" y2="9"/>
-                        <line x1="3" y1="15" x2="21" y2="15"/>
-                    </svg>
-                    <span id="schedule-date">Графік на сьогодні</span>
-                    <span id="schedule-mode" class="mode-badge"></span>
+                <div class="card-title" id="schedule-card-title" style="color: var(--accent-blue); font-weight: 700;">
+                    АКТУАЛЬНИЙ ГРАФІК НА СЬОГОДНІ
                 </div>
                 <div id="schedule-grid" class="schedule-grid-container">
-                    <div class="schedule-loading">
+                    <div class="loading-state">
                         <div class="loading-spinner"></div>
-                        Завантаження графіка…
+                        Завантаження актуального графіка…
                     </div>
                 </div>
                 <div class="schedule-legend">
-                    <span class="legend-item"><span class="legend-dot on"></span> Світло є (1)</span>
-                    <span class="legend-item"><span class="legend-dot off"></span> Світла немає (0)</span>
+                    <span class="legend-item"><span class="legend-dot on"></span> Світло є</span>
+                    <span class="legend-item"><span class="legend-dot off"></span> Світла немає</span>
+                    <div id="schedule-date-badge" class="badge badge-site" style="margin-left: auto;">...</div>
+                </div>
+            </div>
+
+            <!-- Tomorrow Schedule Section -->
+            <div class="card" id="tomorrow-card" style="display: none; border: 1px solid var(--accent-green);">
+                <div class="card-title" id="tomorrow-card-title" style="color: var(--accent-green); font-weight: 700;">
+                    ГРАФІК НА ЗАВТРА
+                </div>
+                <div id="tomorrow-grid" class="schedule-grid-container">
+                    <div class="loading-state">
+                        <div class="loading-spinner"></div>
+                        Очікування графіка на завтра…
+                    </div>
+                </div>
+                <div class="schedule-legend">
+                    <span class="legend-item"><span class="legend-dot on"></span> Світло є</span>
+                    <span class="legend-item"><span class="legend-dot off"></span> Світла немає</span>
+                    <div id="tomorrow-date-badge" class="badge badge-site" style="margin-left: auto; border-color: var(--accent-green); color: var(--accent-green);">...</div>
+                </div>
+            </div>
+
+            <!-- Reference Section -->
+            <div class="card" id="reference-card" style="border-style: dashed; opacity: 0.9;">
+                <div class="card-title" style="color: var(--text-muted);">
+                    <i class="fas fa-history" style="margin-right:8px"></i> ЕТАЛОННИЙ ДИЗАЙН (ДЛЯ ЗВІРКИ)
+                </div>
+                <div id="reference-grid" class="schedule-grid-container">
+                    <!-- Filled by JS with 27.03 data -->
+                </div>
+                <div class="schedule-legend">
+                    <span class="legend-item" style="font-size: 11px;">Графік за 27.03.2026 (використовується для тестування дизайну)</span>
                 </div>
             </div>
 
@@ -155,8 +188,8 @@
                     <span class="kv-val muted" id="kv-last-site">—</span>
                 </div>
                 <div class="kv-row">
-                    <span class="kv-key">Останній успішний (telegram)</span>
-                    <span class="kv-val muted" id="kv-last-telegram">—</span>
+                    <span class="kv-key">Еталонний дизайн</span>
+                    <span class="kv-val green">27.03.2026</span>
                 </div>
                 <div class="kv-row">
                     <span class="kv-key">Hash (site)</span>
@@ -212,9 +245,9 @@
                 <div class="form-group">
                     <label>Джерело даних</label>
                     <select id="source-select" class="admin-input">
-                        <option value="both">Обидва (Site + Telegram)</option>
-                        <option value="site">Тільки Сайт</option>
-                        <option value="telegram">Тільки Telegram</option>
+                        <option value="site">Сайт (Автоматично)</option>
+                        <option value="archive">Архів (Парсинг історії)</option>
+                        <option value="manual">Ручне введення</option>
                     </select>
                 </div>
                 

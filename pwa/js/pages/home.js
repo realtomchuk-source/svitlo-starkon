@@ -649,29 +649,27 @@ function updateHeroUI(selectedGroup, now, isAllClear, isNoPower, demoMode, sched
         }
 
         if (countdownEl) {
-            if (isAllClear || (nextChangeHour === 24 && isCurrentlyOn)) {
-                countdownEl.textContent = "--:--";
-                if (heroSubtitle) heroSubtitle.textContent = "Змін не планується";
-                if (progressFill) progressFill.style.width = "0%";
-            } else {
-                // Update Timer Text (H:MM format per TS 8.1 / User preference 0:45)
-                const h = Math.floor(minutesRemaining / 60);
-                const m = minutesRemaining % 60;
-                countdownEl.textContent = `${h}:${m.toString().padStart(2, '0')}`;
-                
-                // Update Description Text (TS 7.4)
-                if (heroSubtitle) {
+            // Update Timer Text (H:MM format)
+            const h = Math.floor(minutesRemaining / 60);
+            const m = minutesRemaining % 60;
+            countdownEl.textContent = `${h}:${m.toString().padStart(2, '0')}`;
+
+            // Update Description Text
+            if (heroSubtitle) {
+                if (nextChangeHour === 24) {
+                    heroSubtitle.textContent = "до кінця доби";
+                } else {
                     const actionText = isCurrentlyOn ? 'вимкнення' : 'увімкнення';
                     heroSubtitle.textContent = `до ${actionText} о ${nextChangeHour}:00`;
                 }
+            }
 
-                // Update Progress Bar (TS 8.2: 1 - (remaining_sec / duration_sec))
-                if (progressFill) {
-                    const diffSeconds = Math.max(0, Math.floor(diffMs / 1000));
-                    const totalBlockSeconds = totalBlockDuration * 60;
-                    const progress = 1 - (diffSeconds / totalBlockSeconds);
-                    progressFill.style.width = `${Math.max(0, Math.min(1, progress)) * 100}%`;
-                }
+            // Update Progress Bar (TS 8.2: 1 - (remaining_sec / duration_sec))
+            if (progressFill) {
+                const diffSeconds = Math.max(0, Math.floor(diffMs / 1000));
+                const totalBlockSeconds = totalBlockDuration * 60;
+                const progress = 1 - (diffSeconds / totalBlockSeconds);
+                progressFill.style.width = `${Math.max(0, Math.min(1, progress)) * 100}%`;
             }
         }
         // 4. Оновлення Інфо-Табло (Dashboard Tablo) через автономний контролер

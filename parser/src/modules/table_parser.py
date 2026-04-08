@@ -76,10 +76,13 @@ def extract_hours_from_values(values_str):
     
     return hours
 
-def parse_schedule_from_text(text):
+from modules.grid_vision import parse_grid_from_image
+
+def parse_schedule_from_text(text, img_bytes=None):
     if not text or len(text.strip()) < 10:
         logger.warning("OCR text is too short or empty")
-        return None
+        # If we have image bytes, we can still try vision parsing
+        if not img_bytes: return None
 
     date_short, date_full = extract_date(text)
     mode = detect_mode(text)
@@ -89,21 +92,30 @@ def parse_schedule_from_text(text):
         return build_result(date_short, date_full, mode, queues)
 
     queues = {}
-    lines = text.split("\n")
+    
+    # 1. ALWAYS TRY VISION FIRST if available (it is now more reliable than OCR for grid)
+    if img_bytes:
+        vision_queues = parse_grid_from_image(img_bytes)
+        if vision_queues and len(vision_queues) >= 12:
+            logger.info("Successfully parsed grid using Vision")
+            queues = vision_queues
 
-    for line in lines:
-        group_id, values_str = parse_queue_line(line)
-        if group_id and group_id in ALL_GROUPS:
-            hours = extract_hours_from_values(values_str)
-            if len(hours) >= 24:
-                queues[group_id] = "".join(hours[:24])
-            elif len(hours) > 0:
-                # Pad with 1s (power on) if incomplete
-                queues[group_id] = "".join(hours).ljust(24, "1")
+    # 2. FALLBACK TO OCR if Vision failed
+    if not queues:
+        logger.info("Falling back to OCR for grid parsing")
+        lines = text.split("\n")
+        for line in lines:
+            group_id, values_str = parse_queue_line(line)
+            if group_id and group_id in ALL_GROUPS:
+                hours = extract_hours_from_values(values_str)
+                if len(hours) >= 24:
+                    queues[group_id] = "".join(hours[:24])
+                elif len(hours) > 0:
+                    queues[group_id] = "".join(hours).ljust(24, "1")
 
-    # If we failed to parse most queues, it's a bad OCR
+    # If we failed both
     if len(queues) < 3:
-        logger.warning(f"Only {len(queues)} queues parsed, OCR might be too noisy")
+        logger.warning(f"Failed to parse queues (Vision/OCR). Found {len(queues)}")
         return None
 
     # Fill missing queues with default "always on"

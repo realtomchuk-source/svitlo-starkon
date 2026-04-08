@@ -42,20 +42,7 @@ def save_json(path, data):
 def get_now():
     return datetime.now(TZ)
 
-def send_telegram_alert(message):
-    token = os.getenv("TELEGRAM_BOT_TOKEN")
-    chat_id = os.getenv("TELEGRAM_CHAT_ID")
-    if not token or not chat_id:
-        logger.warning(f"Telegram alert skipped (missing credentials): {message}")
-        return
-    
-    url = f"https://api.telegram.org/bot{token}/sendMessage"
-    try:
-        resp = requests.post(url, json={"chat_id": chat_id, "text": message}, timeout=10)
-        resp.raise_for_status()
-        logger.info("Telegram alert sent successfully.")
-    except Exception as e:
-        logger.error(f"Failed to send telegram alert: {e}")
+# send_telegram_alert removed (Telegram purge)
 
 def should_run(state):
     from config import PEAK_HOUR_START, PEAK_HOUR_END, PEAK_INTERVAL, DEFAULT_INTERVAL_HOURS

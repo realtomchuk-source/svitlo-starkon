@@ -2,7 +2,7 @@ import os
 import sys
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from modules.utils import load_json, save_json, get_now
@@ -18,12 +18,13 @@ def generate_today_json():
     db = load_json(UNIFIED_DB, default=[])
 
     today_str = get_now().strftime("%d.%m")
-    tomorrow_str = (get_now().replace(hour=0, minute=0, second=0)).strftime("%d.%m")
+    tomorrow_str = (get_now() + timedelta(days=1)).strftime("%d.%m")
 
     best_entry = None
     for entry in reversed(db):
         td = entry.get("target_date")
-        if td and (td == today_str or td == tomorrow_str):
+        # Only use successfully processed entries
+        if entry.get("processed") and td and (td == today_str or td == tomorrow_str):
             best_entry = entry
             break
 

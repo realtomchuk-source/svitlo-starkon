@@ -460,6 +460,7 @@ html, body {
     display: flex;
     align-items: center;
     gap: 3px;
+    margin-bottom: 2px;
 }
 
 .queue-label {
@@ -469,6 +470,36 @@ html, body {
     color: var(--text-secondary);
     text-align: right;
     flex-shrink: 0;
+    margin-right: 4px;
+}
+
+.queue-label.header {
+    font-weight: 700;
+    color: var(--accent-blue);
+    opacity: 0.8;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.header-row {
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 4px;
+}
+
+.hour-header {
+    flex: 1;
+    text-align: center;
+    font-size: 8px;
+    line-height: 1.1;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    font-weight: 600;
+    padding-bottom: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .hour-cell {

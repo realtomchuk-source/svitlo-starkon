@@ -24,9 +24,8 @@ on:
         default: 'site'
         type: choice
         options:
-          - both
           - site
-          - telegram
+          - archive
       override_interval:
         description: 'Форсований інтервал (хвилини, 0 - вимкнено)'
         required: false
@@ -65,29 +64,10 @@ jobs:
 
       - name: Run parser
         env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           OVERRIDE_SOURCE: ${{ github.event.inputs.source || 'site' }}
           OVERRIDE_INTERVAL: ${{ github.event.inputs.override_interval || '0' }}
           OVERRIDE_DURATION: ${{ github.event.inputs.override_duration || '1' }}
         run: python parser/src/parse_schedule.py
-
-      - name: Generate today.json for PWA
-        run: python parser/src/generate_today.py
-
-      - name: Sync data to PWA
-        run: |
-          cp parser/data/schedule_api.json pwa/data/schedule_api.json 2>/dev/null || true
-          cp parser/data/today.json pwa/data/today.json 2>/dev/null || true
-          echo "Synced parser data to PWA"
-
-      - name: Commit and push changes
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add parser/data/*.json 2>/dev/null || true
-          git add parser/data/raw_site/*.png 2>/dev/null || true
-          git add parser/data/raw_telegram/*.jpg 2>/dev/null || true
           git add parser/data/logs/*.txt 2>/dev/null || true
           git add pwa/data/schedule_api.json 2>/dev/null || true
           git add pwa/data/today.json 2>/dev/null || true

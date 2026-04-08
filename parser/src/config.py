@@ -9,10 +9,7 @@ UNIFIED_DB = os.path.join(DATA_DIR, "unified_schedules.json")
 SCHEDULE_API_FILE = os.path.join(DATA_DIR, "schedule_api.json")
 
 RAW_SITE_DIR = os.path.join(DATA_DIR, "raw_site")
-RAW_TELEGRAM_DIR = os.path.join(DATA_DIR, "raw_telegram")
-
-ARCHIVE_DIR = os.path.join(DATA_DIR, "archive")
-ARCHIVE_RAW_DIR = os.path.join(DATA_DIR, "archive_raw")
+# RAW_TELEGRAM_DIR removed (Telegram purge)
 
 TIMEZONE = "Europe/Kiev"
 
@@ -23,5 +20,3 @@ PEAK_HOUR_START = 19
 PEAK_HOUR_END = 23
 PEAK_INTERVAL = 15
 DEFAULT_INTERVAL_HOURS = 5
-
-ARCHIVE_RETENTION_DAYS = 30
