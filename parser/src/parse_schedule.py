@@ -8,26 +8,19 @@ from modules.utils import load_json, save_json, get_now, should_run, send_telegr
 from modules.site_parser import run_site_parser
 from modules.telegram_parser import run_telegram_parser
 from modules.ocr_helper import extract_text_from_image
+from modules.table_parser import parse_schedule_from_text, validate_queues
 from config import STATE_FILE, UNIFIED_DB, SCHEDULE_API_FILE, RAW_SITE_DIR, RAW_TELEGRAM_DIR, LOGS_DIR
 
-# Initialize logger for the main script
 logger = logging.getLogger("SSSK-Main")
 
 
 def generate_api_export(db):
-    """
-    Transforms the internal parser DB (unified_schedules.json) into a
-    PWA-compatible API file (schedule_api.json).
-    This is the isolation contract between the parser layer and the PWA layer.
-    The PWA should only ever read schedule_api.json, never unified_schedules.json.
-    """
     api_entries = []
     for entry in db:
         api_entry = {
             "timestamp": entry.get("timestamp"),
             "target_date": entry.get("target_date"),
             "source": entry.get("source"),
-            # Normalize field name: raw_text_summary (parser) -> parsed_text (PWA)
             "parsed_text": entry.get("raw_text_summary", entry.get("parsed_text", "")),
             "is_update": entry.get("is_update", False),
         }
@@ -37,26 +30,30 @@ def generate_api_export(db):
     logger.info(f"schedule_api.json exported: {len(api_entries)} entries.")
 
 
+def generate_today_json_from_db(db):
+    from generate_today import generate_today_json
+    return generate_today_json()
+
+
 def main():
     logger.info("Starting SSSK Parser cycle")
-    
+
     state = load_json(STATE_FILE, default={
         "last_run": None,
         "last_success_site": None,
         "last_success_telegram": None,
         "last_site_hash": None,
         "last_telegram_hash": None,
-        "current_source": "both",
+        "current_source": "site",
         "override_until": None,
         "override_interval_minutes": None
     })
-    
-    # 1. Обробка ручних налаштувань (Override) та конфігурації
+
     override_source = os.getenv("OVERRIDE_SOURCE")
     if override_source:
         state["current_source"] = override_source
         logger.info(f"Source override detected: {override_source}")
-    
+
     override_interval = os.getenv("OVERRIDE_INTERVAL") or "0"
     if int(override_interval) > 0:
         now = get_now()
@@ -64,18 +61,16 @@ def main():
         state["override_until"] = (now + timedelta(hours=duration_h)).isoformat()
         state["override_interval_minutes"] = int(override_interval)
         logger.info(f"Interval override activated: {override_interval}m until {state['override_until']}")
-    
-    # 2. Перевірка розкладу
+
     if not should_run(state):
         logger.info("Skipping run (schedule policy says no).")
         return
 
     logger.info(f"Executing parser run. Mode: {state['current_source']}")
-    
+
     site_res = None
     tele_res = None
-    
-    # 3. Запуск підмодулів
+
     if state["current_source"] in ["both", "site"]:
         site_res = run_site_parser(state)
         if site_res and site_res.get("hash"):
@@ -88,12 +83,10 @@ def main():
             state["last_telegram_hash"] = tele_res["hash"]
             state["last_success_telegram"] = get_now().isoformat()
 
-    # 4. Аналіз та Пріоритезація
     final_data = None
     source_used = None
     is_updated = False
-    
-    # Priority: Telegram > Site
+
     if tele_res and tele_res.get("changed"):
         final_data = tele_res
         source_used = "telegram"
@@ -102,20 +95,25 @@ def main():
         final_data = site_res
         source_used = "site"
         is_updated = True
-        
-    # 5. Якщо виявлено зміни - обробляємо OCR та зберігаємо в БД
+
     if final_data and is_updated:
         logger.info(f"New schedule detected from {source_used}. Running OCR processing...")
         raw_text = extract_text_from_image(final_data["img_bytes"])
         caption = final_data.get("caption", "").lower()
-        
+
         is_emergency = any(kw in caption for kw in ["оновлено", "оновлен", "термінов"])
-        
-        # Date extraction
+
+        structured = parse_schedule_from_text(raw_text)
+
         date_found = None
-        if "на" in raw_text:
-             matches = re.findall(r"\d{2}\.\d{2}", raw_text)
-             if matches: date_found = matches[0]
+        if structured:
+            date_found = structured.get("date")
+
+        if not date_found:
+            if "на" in raw_text:
+                matches = re.findall(r"\d{2}\.\d{2}", raw_text)
+                if matches:
+                    date_found = matches[0]
 
         entry = {
             "timestamp": get_now().isoformat(),
@@ -126,26 +124,33 @@ def main():
             "processed": False,
             "raw_text_summary": raw_text[:500]
         }
-        
+
+        if structured and validate_queues(structured.get("queues", {})):
+            entry["queues"] = structured["queues"]
+            entry["mode"] = structured["mode"]
+            entry["date"] = structured["date"]
+            entry["date_full"] = structured["date_full"]
+            entry["message"] = structured["message"]
+            entry["processed"] = True
+            logger.info("Table parsing successful - structured data saved")
+
         db = load_json(UNIFIED_DB, default=[])
         db.append(entry)
         save_json(UNIFIED_DB, db)
 
-        # Export PWA-compatible API file (isolates parser DB from PWA layer)
         generate_api_export(db)
-        
+        generate_today_json_from_db(db)
+
         logger.info(f"!!! SUCCESS: Extracted data from {source_used} schedule !!!")
         if is_emergency:
             send_telegram_alert(f"🚨 ВИЯВЛЕНО ОНОВЛЕНИЙ ГРАФІК ({source_used})! Перевірте систему.")
         else:
             send_telegram_alert(f"ℹ️ Виявлено новий розклад ({source_used}).")
 
-    # 6. Очищення старих даних (Data Lake rotation)
     cleanup_old_files(RAW_SITE_DIR, days=7)
     cleanup_old_files(RAW_TELEGRAM_DIR, days=7)
     cleanup_old_files(LOGS_DIR, days=30)
-    
-    # 7. Завершення
+
     state["last_run"] = get_now().isoformat()
     save_json(STATE_FILE, state)
     logger.info("Cycle completed successfully.")

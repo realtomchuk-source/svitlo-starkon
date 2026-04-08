@@ -1,0 +1,58 @@
+name: SSSK Archive Collector
+
+on:
+  schedule:
+    # 5 разів на день
+    - cron: '30 3 * * *'
+    - cron: '30 9 * * *'
+    - cron: '30 15 * * *'
+    - cron: '30 19 * * *'
+    - cron: '30 23 * * *'
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr libtesseract-dev tesseract-ocr-ukr
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install Pillow requests pytz beautifulsoup4 lxml pytesseract
+
+      - name: Run archive parser
+        run: python parser/src/archive_parser.py
+
+      - name: Sync archive to PWA
+        run: |
+          mkdir -p pwa/data/archive pwa/data/archive_raw
+          cp parser/data/archive/*.json pwa/data/archive/ 2>/dev/null || true
+          cp parser/data/archive_raw/*.png pwa/data/archive_raw/ 2>/dev/null || true
+          echo "Synced archive data to PWA"
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add parser/data/archive/*.json 2>/dev/null || true
+          git add parser/data/archive_raw/*.png 2>/dev/null || true
+          git add pwa/data/archive/*.json 2>/dev/null || true
+          git add pwa/data/archive_raw/*.png 2>/dev/null || true
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Archive: Update archive data" && git push)

@@ -20,8 +20,11 @@ const ACTIONS_URL = `https://github.com/${REPO_OWNER}/${REPO_NAME}/actions/workf
 
 let parserState   = null;
 let scheduleData  = [];
+let todayData     = null;
 let githubToken   = localStorage.getItem('sssk_admin_token') || '';
 let currentSection = 'dashboard';
+
+const ALL_GROUPS = ["1.1", "1.2", "2.1", "2.2", "3.1", "3.2", "4.1", "4.2", "5.1", "5.2", "6.1", "6.2"];
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
@@ -75,7 +78,13 @@ async function refreshAll() {
     try {
         parserState  = await fetchRaw('parser/data/state.json');
         scheduleData = await fetchRaw('parser/data/unified_schedules.json');
+        try {
+            todayData = await fetchRaw('pwa/data/today.json');
+        } catch (e) {
+            todayData = null;
+        }
         renderDashboard();
+        renderScheduleGrid();
         renderHistory();
         updateHeaderStatus('ok');
     } catch (e) {
@@ -133,6 +142,54 @@ function renderDashboard() {
 function showDashboardError(msg) {
     setText('stat-last-run', 'Помилка');
     setText('stat-last-run-sub', msg);
+}
+
+// ─── Render: Schedule Grid ─────────────────────────────────────────────────────
+
+function renderScheduleGrid() {
+    const grid = document.getElementById('schedule-grid');
+    const dateEl = document.getElementById('schedule-date');
+    const modeEl = document.getElementById('schedule-mode');
+    if (!grid) return;
+
+    if (!todayData || !todayData.queues) {
+        grid.innerHTML = '<div class="schedule-loading">Немає даних графіка на сьогодні</div>';
+        return;
+    }
+
+    const mode = todayData.mode || 'schedule';
+    const date = todayData.date || '';
+    const message = todayData.message || '';
+
+    if (dateEl) dateEl.textContent = message || `Графік на ${date}`;
+    if (modeEl) {
+        const labels = { schedule: '📅 Графік', all_clear: '✅ Без відключень', no_power: '🔴 Немає світла' };
+        modeEl.textContent = labels[mode] || mode;
+        modeEl.className = 'mode-badge mode-' + mode;
+    }
+
+    grid.innerHTML = '';
+
+    ALL_GROUPS.forEach(group => {
+        const row = document.createElement('div');
+        row.className = 'queue-row';
+
+        const label = document.createElement('span');
+        label.className = 'queue-label';
+        label.textContent = group;
+        row.appendChild(label);
+
+        const bits = todayData.queues[group] || '1'.repeat(24);
+        for (let i = 0; i < 24; i++) {
+            const cell = document.createElement('div');
+            const isOn = bits[i] === '1';
+            cell.className = 'hour-cell ' + (isOn ? 'on' : 'off');
+            cell.title = `${String(i).padStart(2, '0')}:00 — ${isOn ? 'Світло є' : 'Світла немає'}`;
+            row.appendChild(cell);
+        }
+
+        grid.appendChild(row);
+    });
 }
 
 // ─── Render: History ──────────────────────────────────────────────────────────
