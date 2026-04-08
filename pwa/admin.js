@@ -2,9 +2,6 @@
  * SSSK Admin Panel JavaScript
  * Reads parser state via GitHub Raw API and triggers workflows via GitHub Actions API.
  * Token is stored in localStorage — never committed to the repo.
- *
- * Config:
- *   REPO_OWNER / REPO_NAME — set to the actual GitHub repo.
  */
 
 const REPO_OWNER = 'realtomchuk-source';
@@ -23,6 +20,7 @@ let scheduleData  = [];
 let todayData     = null;
 let githubToken   = localStorage.getItem('sssk_admin_token') || '';
 let currentSection = 'dashboard';
+let dataSource    = 'remote'; // default to remote for admin dashboard
 
 const ALL_GROUPS = ["1.1", "1.2", "2.1", "2.2", "3.1", "3.2", "4.1", "4.2", "5.1", "5.2", "6.1", "6.2"];
 
@@ -67,22 +65,47 @@ function switchSection(name) {
 
 // ─── Data Fetching ─────────────────────────────────────────────────────────────
 
-async function fetchRaw(path) {
-    const url = `${RAW_BASE}/${path}?t=${Date.now()}`;
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${path}`);
-    return resp.json();
+async function fetchFile(path) {
+    // If remote, use GitHub Raw with cache busting
+    // If local, use relative path (only works if opened from same origin or local server)
+    const baseUrl = dataSource === 'remote' ? RAW_BASE : '.';
+    const url = `${baseUrl}/${path}?t=${Date.now()}`;
+    
+    try {
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        return await resp.json();
+    } catch (e) {
+        console.warn(`Failed to fetch ${path} from ${dataSource}:`, e);
+        throw e;
+    }
 }
 
 async function refreshAll() {
     try {
-        parserState  = await fetchRaw('parser/data/state.json');
-        scheduleData = await fetchRaw('parser/data/unified_schedules.json');
-        try {
-            todayData = await fetchRaw('pwa/data/today.json');
-        } catch (e) {
-            todayData = null;
+        updateHeaderStatus('loading');
+        
+        // Fetch core data
+        const results = await Promise.allSettled([
+            fetchFile('parser/data/state.json'),
+            fetchFile('parser/data/unified_schedules.json'),
+            fetchFile('pwa/data/today.json')
+        ]);
+
+        parserState = results[0].status === 'fulfilled' ? results[0].value : parserState;
+        scheduleData = results[1].status === 'fulfilled' ? results[1].value : scheduleData;
+        todayData = results[2].status === 'fulfilled' ? results[2].value : null;
+
+        // Auto-fallback: if todayData is stale (from March), check the latest in scheduleData
+        if (todayData && todayData.date === '27.03' && scheduleData.length > 0) {
+            const latest = scheduleData[scheduleData.length - 1];
+            // If latest in DB is newer than tomorrow (or today), we might prefer showing that
+            // for debugging purposes if it is processed
+            if (latest.processed && latest.target_date !== '27.03') {
+                console.log('Today data is stale, but we have a newer processed schedule in database.');
+            }
         }
+
         renderDashboard();
         renderScheduleGrid();
         renderHistory();
@@ -99,8 +122,14 @@ async function refreshAll() {
 function updateHeaderStatus(status) {
     const pill = document.getElementById('header-status');
     if (!pill) return;
+    
     pill.className = 'status-pill ' + status;
-    const labels = { ok: '● Система онлайн', warn: '● Увага', err: '● Помилка читання' };
+    const labels = { 
+        ok: '● Система онлайн', 
+        loading: '○ Оновлення...', 
+        warn: '● Увага', 
+        err: '● Помилка мережі' 
+    };
     pill.textContent = labels[status] || '●';
 }
 
@@ -120,7 +149,12 @@ function renderDashboard() {
     // Schedule count
     setText('stat-schedules', scheduleData.length);
     const latest = scheduleData[scheduleData.length - 1];
-    setText('stat-schedules-sub', latest ? `Останній: ${latest.target_date || '—'}` : 'Немає даних');
+    
+    let subText = latest ? `Останній: ${latest.target_date || '—'}` : 'Немає даних';
+    if (latest && !latest.processed) {
+        subText += ' ⚠️ Не оброблено';
+    }
+    setText('stat-schedules-sub', subText);
 
     // Override
     const overrideActive = parserState.override_until &&
@@ -129,7 +163,7 @@ function renderDashboard() {
 
     // State details
     setKv('kv-last-site',     parserState.last_success_site, 'muted');
-    setKv('kv-last-telegram', parserState.last_success_telegram || 'Не налаштовано', 'muted');
+    setKv('kv-last-telegram', parserState.last_success_telegram || 'Не активний (заглушка)', 'muted');
     setKv('kv-hash-site',     (parserState.last_site_hash || '—').substring(0, 12) + '…', 'muted');
     setKv('kv-source-mode',   src, src === 'both' ? 'green' : 'amber');
     setKv('kv-override-until', parserState.override_until || 'Вимкнено', 'muted');
@@ -137,6 +171,40 @@ function renderDashboard() {
     // Actions link
     const actionsLink = document.getElementById('actions-link');
     if (actionsLink) actionsLink.href = ACTIONS_URL;
+    
+    // Debug info for latest run
+    if (latest && !latest.processed) {
+        showOcrDebug(latest);
+    } else {
+        hideOcrDebug();
+    }
+}
+
+function showOcrDebug(entry) {
+    let debugBox = document.getElementById('ocr-debug-box');
+    if (!debugBox) {
+        const parent = document.querySelector('.dashboard-grid');
+        debugBox = document.createElement('div');
+        debugBox.id = 'ocr-debug-box';
+        debugBox.className = 'stat-card debug-card';
+        debugBox.style.gridColumn = '1 / -1';
+        debugBox.style.border = '1px dashed var(--warning)';
+        parent.appendChild(debugBox);
+    }
+    
+    debugBox.innerHTML = `
+        <h3>⚠️ Помилка обробки останнього графіка</h3>
+        <p style="font-size:12px; margin-bottom:10px">Текст був отриманий, але не зміг бути перетворений на таблицю. Перевірте OCR нижче:</p>
+        <div style="background:rgba(0,0,0,0.3); padding:10px; border-radius:8px; font-family:monospace; font-size:11px; white-space:pre-wrap; max-height:150px; overflow-y:auto">
+            ${escHtml(entry.raw_text_summary || 'Порожній текст')}
+        </div>
+    `;
+    debugBox.style.display = 'block';
+}
+
+function hideOcrDebug() {
+    const debugBox = document.getElementById('ocr-debug-box');
+    if (debugBox) debugBox.style.display = 'none';
 }
 
 function showDashboardError(msg) {
@@ -153,7 +221,7 @@ function renderScheduleGrid() {
     if (!grid) return;
 
     if (!todayData || !todayData.queues) {
-        grid.innerHTML = '<div class="schedule-loading">Немає даних графіка на сьогодні</div>';
+        grid.innerHTML = '<div class="schedule-loading">Отримання даних...</div>';
         return;
     }
 
@@ -212,15 +280,19 @@ function renderHistory() {
         const typeBadge = entry.is_update
             ? `<span class="badge badge-update">🚨 Оновлення</span>`
             : `<span class="badge badge-new">✅ Новий</span>`;
-        const preview = (entry.raw_text_summary || entry.parsed_text || '').substring(0, 60);
+        
+        let statusText = entry.processed ? '✅ Оброблено' : '⚠️ Помилка OCR';
+        const preview = (entry.raw_text_summary || entry.parsed_text || '').substring(0, 50);
 
         tr.innerHTML = `
             <td>${formatFull(entry.timestamp)}</td>
-            <td>${entry.target_date || '—'}</td>
+            <td>${entry.target_date || '—'} </td>
             <td>${srcBadge}</td>
             <td>${typeBadge}</td>
             <td style="color:var(--text-muted);font-size:11px;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
-                title="${escHtml(preview)}">${escHtml(preview) || '—'}</td>
+                title="${escHtml(entry.raw_text_summary)}">
+                <span style="color:${entry.processed ? 'inherit' : 'var(--warning)'}">${statusText}</span>: ${escHtml(preview)}...
+            </td>
         `;
         tbody.appendChild(tr);
     });
@@ -244,7 +316,7 @@ function renderTimeline() {
         const t = new Date(entry.timestamp).getTime();
         const pct = ((t - min) / range * 90 + 5).toFixed(1);
         const dot = document.createElement('div');
-        dot.className = 'timeline-dot' + (entry.is_update ? ' update' : '');
+        dot.className = 'timeline-dot' + (entry.is_update ? ' update' : '') + (entry.processed ? '' : ' error');
         dot.style.left = pct + '%';
         dot.title = `${entry.target_date || '?'} — ${formatFull(entry.timestamp)} (${entry.source})`;
         bar.appendChild(dot);
@@ -312,7 +384,8 @@ async function triggerWorkflow() {
         });
 
         if (resp.status === 204) {
-            appendLog(`✅ Workflow запущено успішно! Перевірте: ${ACTIONS_URL}`, 'ok');
+            appendLog(`✅ Workflow запущено успішно! Оновлення з'явиться за 1-2 хв.`, 'ok');
+            updateHeaderStatus('loading');
         } else {
             const data = await resp.json().catch(() => ({}));
             appendLog(`❌ Помилка ${resp.status}: ${data.message || 'unknown error'}`, 'err');
@@ -323,7 +396,7 @@ async function triggerWorkflow() {
 }
 
 async function refreshNow() {
-    appendLog('🔄 Перезавантажуємо дані…', 'info');
+    appendLog('🔄 Форсоване оновлення даних…', 'info');
     await refreshAll();
     appendLog('✅ Дані оновлено.', 'ok');
 }
