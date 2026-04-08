@@ -96,13 +96,17 @@ async function refreshAll() {
         scheduleData = results[1].status === 'fulfilled' ? results[1].value : scheduleData;
         todayData = results[2].status === 'fulfilled' ? results[2].value : null;
 
-        // Auto-fallback: if todayData is stale (from March), check the latest in scheduleData
-        if (todayData && todayData.date === '27.03' && scheduleData.length > 0) {
-            const latest = scheduleData[scheduleData.length - 1];
-            // If latest in DB is newer than tomorrow (or today), we might prefer showing that
-            // for debugging purposes if it is processed
-            if (latest.processed && latest.target_date !== '27.03') {
-                console.log('Today data is stale, but we have a newer processed schedule in database.');
+        // Auto-fallback: if todayData is missing or stale, use the latest processed from scheduleData
+        if ((!todayData || todayData.date === '27.03') && scheduleData.length > 0) {
+            const latestValid = [...scheduleData].reverse().find(e => e.processed && e.queues);
+            if (latestValid) {
+                console.log('Today data is missing/stale. Falling back to latest processed in database:', latestValid.target_date);
+                todayData = {
+                    date: latestValid.target_date,
+                    mode: latestValid.mode || 'schedule',
+                    queues: latestValid.queues,
+                    message: latestValid.message || 'Останній відомий графік (з бази)'
+                };
             }
         }
 
@@ -128,7 +132,7 @@ function updateHeaderStatus(status) {
         ok: '● Система онлайн', 
         loading: '○ Оновлення...', 
         warn: '● Увага', 
-        err: '● Помилка мережі' 
+        err: '● Помилка даних' 
     };
     pill.textContent = labels[status] || '●';
 }
@@ -183,7 +187,8 @@ function renderDashboard() {
 function showOcrDebug(entry) {
     let debugBox = document.getElementById('ocr-debug-box');
     if (!debugBox) {
-        const parent = document.querySelector('.dashboard-grid');
+        const parent = document.querySelector('.stats-grid');
+        if (!parent) return; // safety check
         debugBox = document.createElement('div');
         debugBox.id = 'ocr-debug-box';
         debugBox.className = 'stat-card debug-card';
