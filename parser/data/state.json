@@ -1,10 +1,10 @@
 {
-  "last_run": "2026-04-08T05:08:54.687224+03:00",
-  "last_success_site": "2026-04-08T05:08:54.686076+03:00",
+  "last_run": "2026-04-08T11:23:27.708695+03:00",
+  "last_success_site": "2026-04-08T11:23:26.196895+03:00",
   "last_success_telegram": null,
-  "last_site_hash": "a45c8aa9837088df4f1dcf5674ad9e3a",
+  "last_site_hash": "a07ed532fe34811e8a3eea1644c75b5a",
   "last_telegram_hash": null,
   "current_source": "both",
-  "override_until": null,
-  "override_interval_minutes": null
+  "override_until": "2026-04-08T12:23:24.134337+03:00",
+  "override_interval_minutes": 15
 }
