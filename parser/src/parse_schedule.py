@@ -57,7 +57,12 @@ def generate_api_export(db):
             "source": entry.get("source"),
             "change_desc": entry.get("change_desc", ""),
             "is_update": entry.get("is_update", False),
-            "processed": entry.get("processed", False)
+            "processed": entry.get("processed", False),
+            "queues": entry.get("queues", {}),
+            "mode": entry.get("mode", "schedule"),
+            "date": entry.get("date", ""),
+            "date_full": entry.get("date_full", ""),
+            "message": entry.get("message", "")
         }
         api_entries.append(api_entry)
 

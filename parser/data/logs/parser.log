@@ -396,3 +396,9 @@
 2026-04-09 14:28:43,290 [INFO] SSSK-Main: Cycle completed successfully.
 2026-04-09 14:28:43,291 [INFO] SSSK-Main: Starting SSSK Parser cycle (Professional Mode)
 2026-04-09 14:28:43,307 [INFO] SSSK-Main: Skipping run (schedule policy says no).
+2026-04-09 14:42:03,522 [INFO] SSSK-Main: Starting SSSK Parser cycle (Professional Mode)
+2026-04-09 14:42:03,522 [INFO] SSSK-Main: Skipping run (schedule policy says no).
+2026-04-09 14:42:03,522 [INFO] SSSK-Main: Starting SSSK Parser cycle (Professional Mode)
+2026-04-09 14:42:03,523 [INFO] SSSK-Main: Skipping run (schedule policy says no).
+2026-04-09 14:42:22,265 [INFO] SSSK-Main: history_api.json exported: 10 entries.
+2026-04-09 14:42:22,270 [INFO] SSSK-GenerateToday: today.json generated: C:\Users\АТом\Desktop\Antigravity\SSSK\pwa\data\today.json
