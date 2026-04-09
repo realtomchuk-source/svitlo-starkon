@@ -6,11 +6,10 @@ from datetime import datetime, timedelta
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from modules.utils import load_json, save_json, get_now
-from config import UNIFIED_DB, DATA_DIR, SCHEDULE_API_FILE
+from config import UNIFIED_DB, DATA_DIR, SCHEDULE_API_FILE, TODAY_JSON_FILE
 
 logger = logging.getLogger("SSSK-GenerateToday")
 
-TODAY_JSON_PATH = os.path.join(os.path.dirname(os.path.dirname(DATA_DIR)), "pwa", "data", "today.json")
 STATUS_FILE = os.path.join(DATA_DIR, "parser_status.json")
 
 

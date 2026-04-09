@@ -9,8 +9,10 @@ from config import OBL_URL, RAW_SITE_DIR
 
 logger = logging.getLogger("SSSK-SiteParser")
 
-def get_image_hash(image_bytes):
-    return hashlib.md5(image_bytes).hexdigest()
+def get_hash(data_bytes_or_str):
+    if isinstance(data_bytes_or_str, str):
+        data_bytes_or_str = data_bytes_or_str.encode('utf-8')
+    return hashlib.md5(data_bytes_or_str).hexdigest()
 
 def fetch_page_dynamic(url):
     """Fetches the page content using Playwright."""
@@ -95,8 +97,11 @@ def run_site_parser(state):
         logger.error(f"Image download error: {e}")
         return None
 
-    new_hash = get_image_hash(img_bytes)
+    new_hash = get_hash(img_bytes)
+    html_hash = get_hash(html)
+    
     last_hash = state.get("last_site_hash")
+    last_html_hash = state.get("last_html_hash")
 
     from modules.utils import get_now
     timestamp = get_now().strftime("%Y%m%d_%H%M%S")
@@ -105,14 +110,14 @@ def run_site_parser(state):
     with open(raw_path, "wb") as f:
         f.write(img_bytes)
 
-    if new_hash == last_hash:
-        logger.info("Image hash match. No changes detected.")
-        return {"changed": False, "raw_path": raw_path, "hash": new_hash}
+    changed = (new_hash != last_hash) or (html_hash != last_html_hash)
     
     return {
-        "changed": True,
+        "changed": changed,
         "raw_path": raw_path,
         "hash": new_hash,
+        "html_hash": html_hash,
         "img_bytes": img_bytes,
-        "caption": "New schedule image from site"
+        "html": html,
+        "caption": "Schedule updated (image or text)" if changed else "No changes"
     }

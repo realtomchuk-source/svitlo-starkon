@@ -2,11 +2,8 @@ name: SSSK Monitor
 
 on:
   schedule:
-    # ТИМЧАСОВИЙ РЕЖИМ (відсутність відключень)
-    # Пік (19:00 - 23:00 EEST / 17:00 - 21:00 UTC): кожні 15 хвилин
-    - cron: '*/15 17-20 * * *'
-    # Решта доби: кожні 5 годин (0:00, 5:00, 10:00, 15:00 UTC)
-    - cron: '0 0,5,10,15 * * *'
+    # Оновлення щогодини (на початку кожної години)
+    - cron: '0 * * * *'
 
     # СТАНДАРТНИЙ РЕЖИМ (при активних відключеннях) — розкоментувати
     # Вечірній пік (19:00-24:00 EEST / 17:00-22:00 UTC): кожні 5 хв
@@ -59,7 +56,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r SSSK/parser/requirements.txt
+          pip install -r parser/requirements.txt
           playwright install chromium --with-deps
 
       - name: Run parser
@@ -67,8 +64,11 @@ jobs:
           OVERRIDE_SOURCE: ${{ github.event.inputs.source || 'site' }}
           OVERRIDE_INTERVAL: ${{ github.event.inputs.override_interval || '0' }}
           OVERRIDE_DURATION: ${{ github.event.inputs.override_duration || '1' }}
-        run: python parser/src/parse_schedule.py
+        run: |
+          python parser/src/parse_schedule.py
+          git config --global user.name "Parser Bot"
+          git config --global user.email "bot@sssk.ua"
+          git add parser/data/*.json 2>/dev/null || true
           git add parser/data/logs/*.txt 2>/dev/null || true
-          git add pwa/data/schedule_api.json 2>/dev/null || true
-          git add pwa/data/today.json 2>/dev/null || true
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Parser: Update data and state" && git push)
+          git add pwa/data/*.json 2>/dev/null || true
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Parser: Update data and health status" && git push)

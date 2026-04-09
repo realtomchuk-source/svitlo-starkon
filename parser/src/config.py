@@ -9,6 +9,11 @@ UNIFIED_DB = os.path.join(DATA_DIR, "unified_schedules.json")
 SCHEDULE_API_FILE = os.path.join(DATA_DIR, "schedule_api.json")
 
 RAW_SITE_DIR = os.path.join(DATA_DIR, "raw_site")
+PWA_DATA_DIR = os.path.join(os.path.dirname(BASE_DIR), "pwa", "data")
+
+HISTORY_API_FILE = os.path.join(PWA_DATA_DIR, "history_api.json")
+HEALTH_FILE = os.path.join(PWA_DATA_DIR, "health.json")
+TODAY_JSON_FILE = os.path.join(PWA_DATA_DIR, "today.json")
 # RAW_TELEGRAM_DIR removed (Telegram purge)
 
 TIMEZONE = "Europe/Kiev"

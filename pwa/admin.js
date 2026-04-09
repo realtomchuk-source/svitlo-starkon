@@ -17,6 +17,7 @@ const ACTIONS_URL = `https://github.com/${REPO_OWNER}/${REPO_NAME}/actions/workf
 
 let parserState   = null;
 let scheduleData  = [];
+let healthData    = null;
 let todayData     = null;
 let githubToken   = localStorage.getItem('sssk_admin_token') || '';
 let currentSection = 'dashboard';
@@ -113,18 +114,18 @@ async function refreshAll() {
         // Fetch core data (Respects Local/Remote toggle)
         const results = await Promise.allSettled([
             fetchFile('parser/data/state.json'),
-            fetchFile('parser/data/unified_schedules.json'),
-            fetchFile('pwa/data/today.json')
+            fetchFile('pwa/data/history_api.json'),
+            fetchFile('pwa/data/today.json'),
+            fetchFile('pwa/data/health.json')
         ]);
 
         parserState = results[0].status === 'fulfilled' ? results[0].value : parserState;
         scheduleData = results[1].status === 'fulfilled' ? results[1].value : scheduleData;
-        
+        todayData = results[2].status === 'fulfilled' ? results[2].value : null;
+        healthData = results[3].status === 'fulfilled' ? results[3].value : null;
+
         const todayDateStr = getFormattedDate(0);
         const tomorrowDateStr = getFormattedDate(1);
-
-        // 1. Identify Today's Data
-        todayData = results[2].status === 'fulfilled' ? results[2].value : null;
 
         // Auto-fallback for Today: if todayData is missing/stale, use scheduleData
         if ((!todayData || todayData.date !== todayDateStr) && scheduleData.length > 0) {
@@ -159,8 +160,14 @@ async function refreshAll() {
             renderScheduleGrid(tomorrowData, 'tomorrow-grid');
         }
         renderHistory();
+        
+        if (healthData) {
+            updateHeaderStatus(healthData.status, healthData.message);
+        } else {
+            updateHeaderStatus('ok');
+        }
 
-        // Update Today Card UI
+        // 4. Update UI labels
         const todayTitle = document.getElementById('schedule-card-title');
         const todayBadge = document.getElementById('schedule-date-badge');
         if (todayData) {
@@ -370,17 +377,18 @@ function renderHistory() {
             ? `<span class="badge badge-update">🚨 Оновлення</span>`
             : `<span class="badge badge-new">✅ Новий</span>`;
         
-        let statusText = entry.processed ? '✅ Оброблено' : '⚠️ Помилка OCR';
-        const preview = (entry.raw_text_summary || entry.parsed_text || '').substring(0, 50);
+        const description = entry.change_desc || (entry.processed ? 'Змін не виявлено' : 'Помилка OCR');
 
         tr.innerHTML = `
             <td>${formatFull(entry.timestamp)}</td>
             <td>${entry.target_date || '—'} </td>
             <td>${srcBadge}</td>
             <td>${typeBadge}</td>
-            <td style="color:var(--text-muted);font-size:11px;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
-                title="${escHtml(entry.raw_text_summary)}">
-                <span style="color:${entry.processed ? 'inherit' : 'var(--warning)'}">${statusText}</span>: ${escHtml(preview)}...
+            <td style="color:var(--text-muted);font-size:11px;max-width:350px;line-height:1.2"
+                title="${escHtml(entry.change_desc)}">
+                <span style="color:${entry.processed ? 'var(--text-primary)' : 'var(--warning)'};font-weight:500">
+                    ${entry.processed ? '✓' : '⚠'} ${escHtml(description)}
+                </span>
             </td>
         `;
         tbody.appendChild(tr);
@@ -460,6 +468,7 @@ async function triggerWorkflow() {
             headers: {
                 'Authorization': `Bearer ${githubToken}`,
                 'Accept': 'application/vnd.github+json',
+                'X-GitHub-Api-Version': '2022-11-28',
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
@@ -473,11 +482,15 @@ async function triggerWorkflow() {
         });
 
         if (resp.status === 204) {
-            appendLog(`✅ Workflow запущено успішно! Оновлення з'явиться за 1-2 хв.`, 'ok');
-            updateHeaderStatus('loading');
+            appendLog(`✅ Workflow успішно ініційовано! Очікуйте оновлення (1-3 хв).`, 'ok');
+            updateHeaderStatus('loading', 'Парсер запускається...');
         } else {
             const data = await resp.json().catch(() => ({}));
-            appendLog(`❌ Помилка ${resp.status}: ${data.message || 'unknown error'}`, 'err');
+            let errorMsg = data.message || 'unknown error';
+            if (resp.status === 422) {
+                errorMsg = "Workflow не знайдено або відсутній trigger 'workflow_dispatch'. Перевірте назву файлу та гілку.";
+            }
+            appendLog(`❌ Помилка ${resp.status}: ${errorMsg}`, 'err');
         }
     } catch (e) {
         appendLog(`❌ Мережева помилка: ${e.message}`, 'err');
