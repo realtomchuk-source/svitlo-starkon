@@ -1,0 +1,82 @@
+[
+  {
+    "timestamp": null,
+    "target_date": "27.03",
+    "source": "site",
+    "change_desc": "",
+    "is_update": false,
+    "processed": true
+  },
+  {
+    "timestamp": "2026-04-08T18:24:28.784621+03:00",
+    "target_date": "08.04",
+    "source": "site",
+    "change_desc": "",
+    "is_update": true,
+    "processed": true
+  },
+  {
+    "timestamp": "2026-04-08T20:09:31.100554",
+    "target_date": "24.03",
+    "source": "site_history",
+    "change_desc": "",
+    "is_update": false,
+    "processed": true
+  },
+  {
+    "timestamp": "2026-04-08T20:09:34.314573",
+    "target_date": "23.03",
+    "source": "site_history",
+    "change_desc": "",
+    "is_update": false,
+    "processed": true
+  },
+  {
+    "timestamp": "2026-04-08T20:09:38.401301",
+    "target_date": "21.03",
+    "source": "site_history",
+    "change_desc": "",
+    "is_update": false,
+    "processed": true
+  },
+  {
+    "timestamp": "2026-04-08T22:11:11.311877",
+    "target_date": "09.04",
+    "source": "site_history",
+    "change_desc": "",
+    "is_update": false,
+    "processed": true
+  },
+  {
+    "timestamp": "2026-04-08T22:11:16.195118",
+    "target_date": "03.04",
+    "source": "site_history",
+    "change_desc": "",
+    "is_update": false,
+    "processed": true
+  },
+  {
+    "timestamp": "2026-04-08T22:11:19.940944",
+    "target_date": "20.03",
+    "source": "site_history",
+    "change_desc": "",
+    "is_update": false,
+    "processed": true
+  },
+  {
+    "timestamp": "2026-04-08T22:16:58.763021+03:00",
+    "target_date": "09.04",
+    "source": "site",
+    "change_desc": "",
+    "is_update": false,
+    "processed": true
+  },
+  {
+    "timestamp": "2026-04-09T14:28:43.259320+03:00",
+    "target_date": "09.04",
+    "source": "site",
+    "change_desc": "Черга 1.1: світло з'явиться о 19:00; Черга 1.2: світло з'явиться о 19:00; Черга 2.2: світло зникне о 09:00; Черга 3.1: світло зникне о 11:00; Черга 3.2: світло зникне о 14:00; Черга 4.1: світло з'явиться о 07:00; Черга 4.2: світло з'явиться о 07:00; Черга 5.1: світло з'явиться о 11:00; Черга 5.2: світло зникне о 09:00; Черга 6.1: світло з'явиться о 15:00; Черга 6.2: світло з'явиться о 15:00",
+    "is_update": false,
+    "processed": true
+  }
+]

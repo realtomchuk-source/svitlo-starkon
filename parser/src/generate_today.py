@@ -55,9 +55,9 @@ def generate_today_json():
     }
 
     try:
-        os.makedirs(os.path.dirname(TODAY_JSON_PATH), exist_ok=True)
-        save_json(TODAY_JSON_PATH, today_data)
-        logger.info(f"today.json generated: {TODAY_JSON_PATH}")
+        os.makedirs(os.path.dirname(TODAY_JSON_FILE), exist_ok=True)
+        save_json(TODAY_JSON_FILE, today_data)
+        logger.info(f"today.json generated: {TODAY_JSON_FILE}")
         write_status("ok", today_data)
         return True
     except Exception as e:

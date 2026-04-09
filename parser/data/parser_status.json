@@ -1,0 +1,5 @@
+{
+  "last_today_generated": "2026-04-09T14:28:43.284921+03:00",
+  "last_today_validation": "error",
+  "today_error": "name 'TODAY_JSON_PATH' is not defined"
+}

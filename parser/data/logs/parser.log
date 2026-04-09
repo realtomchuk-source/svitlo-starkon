@@ -369,3 +369,30 @@
 2026-04-08 22:35:08,845 [INFO] SSSK-SiteParser: Target image URL: https://hoe.com.ua/Content/Uploads/2026/04/file20260408202332442.png
 2026-04-08 22:35:09,546 [INFO] SSSK-SiteParser: Image hash match. No changes detected.
 2026-04-08 22:35:09,556 [INFO] SSSK-Main: Cycle completed successfully.
+2026-04-09 14:28:22,228 [INFO] SSSK-Main: Starting SSSK Parser cycle (Professional Mode)
+2026-04-09 14:28:22,229 [INFO] SSSK-Main: Executing parser run. Mode: site
+2026-04-09 14:28:22,229 [INFO] SSSK-SiteParser: Starting site parser cycle...
+2026-04-09 14:28:22,229 [INFO] SSSK-SiteParser: Fetching https://hoe.com.ua/page/pogodinni-vidkljuchennja with Playwright...
+2026-04-09 14:28:38,348 [INFO] SSSK-SiteParser: Target image URL: https://hoe.com.ua/Content/Uploads/2026/04/file20260409121137017.png
+2026-04-09 14:28:39,133 [INFO] SSSK-Main: New schedule detected from site. Running OCR processing...
+2026-04-09 14:28:42,675 [INFO] SSSK-GridVision: Image size: 1920x1126
+2026-04-09 14:28:43,158 [INFO] SSSK-GridVision: [dark_lines] Grid Solved: 25V, 13H
+2026-04-09 14:28:43,202 [INFO] SSSK-TableParser: Successfully parsed grid using Vision
+2026-04-09 14:28:43,202 [INFO] SSSK-Main: Checking for textual overrides in HTML content...
+2026-04-09 14:28:43,255 [INFO] SSSK-TextParser: Text Override: Group 2.2 starts OFF at 14:00
+2026-04-09 14:28:43,256 [INFO] SSSK-TextParser: Text Override: Group 3.2 OFF until 16:00
+2026-04-09 14:28:43,256 [INFO] SSSK-TextParser: Text Override: Group 5.2 OFF until 12:00
+2026-04-09 14:28:43,256 [INFO] SSSK-TextParser: Text Override: Group 3.1 OFF until 15:00
+2026-04-09 14:28:43,256 [INFO] SSSK-TextParser: Text Override: Group 3.1 OFF from 11:00
+2026-04-09 14:28:43,256 [INFO] SSSK-TextParser: Text Override: Group 2.2 OFF until 11:00
+2026-04-09 14:28:43,256 [INFO] SSSK-TextParser: Text Override: Group 2.2 OFF from 9:00
+2026-04-09 14:28:43,256 [INFO] SSSK-TextParser: Text Override: Group 5.2 OFF until 11:00
+2026-04-09 14:28:43,257 [INFO] SSSK-TextParser: Text Override: Group 5.2 OFF from 9:00
+2026-04-09 14:28:43,258 [INFO] SSSK-TextParser: Applied 9 textual schedule overrides.
+2026-04-09 14:28:43,259 [INFO] SSSK-Main: Delta detected: Черга 1.1: світло з'явиться о 19:00; Черга 1.2: світло з'явиться о 19:00; Черга 2.2: світло зникне о 09:00; Черга 3.1: світло зникне о 11:00; Черга 3.2: світло зникне о 14:00; Черга 4.1: світло з'явиться о 07:00; Черга 4.2: світло з'явиться о 07:00; Черга 5.1: світло з'явиться о 11:00; Черга 5.2: світло зникне о 09:00; Черга 6.1: світло з'явиться о 15:00; Черга 6.2: світло з'явиться о 15:00
+2026-04-09 14:28:43,262 [INFO] SSSK-Main: history_api.json exported: 10 entries.
+2026-04-09 14:28:43,262 [INFO] SSSK-Main: !!! SUCCESS: Extracted data from site schedule !!!
+2026-04-09 14:28:43,284 [ERROR] SSSK-GenerateToday: Failed to write today.json: name 'TODAY_JSON_PATH' is not defined
+2026-04-09 14:28:43,290 [INFO] SSSK-Main: Cycle completed successfully.
+2026-04-09 14:28:43,291 [INFO] SSSK-Main: Starting SSSK Parser cycle (Professional Mode)
+2026-04-09 14:28:43,307 [INFO] SSSK-Main: Skipping run (schedule policy says no).
