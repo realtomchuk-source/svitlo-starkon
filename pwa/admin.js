@@ -61,6 +61,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Source Selection (Show/Hide Manual Editor)
+    const sourceSelect = document.getElementById('source-select');
+    const manualEditor = document.getElementById('manual-editor');
+    if (sourceSelect && manualEditor) {
+        sourceSelect.addEventListener('change', () => {
+            manualEditor.style.display = (sourceSelect.value === 'manual') ? 'block' : 'none';
+            if (sourceSelect.value === 'manual') renderManualGrid();
+        });
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('reset-manual-grid');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            if (confirm('Очистити всю сітку (ввімкнути всюди світло)?')) {
+                renderManualGrid();
+            }
+        });
+    }
+
     refreshAll();
     setInterval(refreshAll, 60000); // auto-refresh every 60s
 });
@@ -477,6 +497,7 @@ async function triggerWorkflow() {
                     source:            source,
                     override_interval: String(interval),
                     override_duration: String(duration),
+                    manual_data:       source === 'manual' ? generateManualPayload() : '',
                 }
             })
         });
@@ -495,6 +516,112 @@ async function triggerWorkflow() {
     } catch (e) {
         appendLog(`❌ Мережева помилка: ${e.message}`, 'err');
     }
+}
+
+// ─── Manual Grid Editor Logic ───────────────────────────────────────────────
+
+function renderManualGrid() {
+    const container = document.getElementById('manual-grid-container');
+    if (!container) return;
+    container.innerHTML = '';
+
+    // Header Row
+    const header = document.createElement('div');
+    header.className = 'manual-grid-row manual-grid-header';
+    const corner = document.createElement('div');
+    corner.className = 'queue-label';
+    corner.textContent = 'Черга';
+    header.appendChild(corner);
+
+    for (let i = 0; i < 24; i++) {
+        const label = document.createElement('div');
+        label.className = 'manual-hour-label';
+        label.textContent = String(i).padStart(2, '0');
+        header.appendChild(label);
+    }
+    container.appendChild(header);
+
+    // Grid Rows
+    ALL_GROUPS.forEach(group => {
+        const row = document.createElement('div');
+        row.className = 'manual-grid-row';
+        row.dataset.group = group;
+
+        const label = document.createElement('div');
+        label.className = 'queue-label';
+        label.textContent = group;
+        row.appendChild(label);
+
+        for (let i = 0; i < 24; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'manual-hour-cell on'; // Default to "Light ON"
+            cell.dataset.hour = i;
+            cell.textContent = '1';
+            cell.onclick = () => {
+                const isOn = cell.classList.contains('on');
+                cell.classList.toggle('on', !isOn);
+                cell.classList.toggle('off', isOn);
+                cell.textContent = isOn ? '0' : '1';
+            };
+            row.appendChild(cell);
+        }
+        container.appendChild(row);
+    });
+
+    // Default Date to Today
+    const dateInput = document.getElementById('manual-target-date');
+    if (dateInput && !dateInput.value) {
+        dateInput.value = new Date().toISOString().split('T')[0];
+    }
+}
+
+function generateManualPayload() {
+    const dateInput = document.getElementById('manual-target-date');
+    const titleInput = document.getElementById('manual-title');
+    
+    if (!dateInput.value) {
+        alert('Будь ласка, оберіть дату!');
+        throw new Error('Date missing');
+    }
+
+    const queues = {};
+    document.querySelectorAll('.manual-grid-row[data-group]').forEach(row => {
+        const group = row.dataset.group;
+        let bits = '';
+        row.querySelectorAll('.manual-hour-cell').forEach(cell => {
+            bits += cell.classList.contains('on') ? '1' : '0';
+        });
+        queues[group] = bits;
+    });
+
+    // Parse DD.MM for the display fields
+    const parts = dateInput.value.split('-'); // YYYY-MM-DD
+    const ddmmyyyy = `${parts[2]}.${parts[1]}.${parts[0]}`;
+    const ddmm = `${parts[2]}.${parts[1]}`;
+
+    return JSON.stringify({
+        target_date: ddmm,
+        date: ddmm,
+        date_full: `щодо обмеження електроенергії на ${ddmmyyyy}`,
+        mode: "schedule",
+        message: titleInput.value || "Ручне введення",
+        queues: queues
+    });
+}
+
+function setManualDate(type) {
+    const dateInput = document.getElementById('manual-target-date');
+    const titleInput = document.getElementById('manual-title');
+    if (!dateInput || !titleInput) return;
+
+    const date = new Date();
+    if (type === 'tomorrow') {
+        date.setDate(date.getDate() + 1);
+        titleInput.value = 'Графік на завтра';
+    } else {
+        titleInput.value = 'Графік на сьогодні';
+    }
+    dateInput.value = date.toISOString().split('T')[0];
 }
 
 async function refreshNow() {

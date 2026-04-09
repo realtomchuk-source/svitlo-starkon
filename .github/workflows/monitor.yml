@@ -31,6 +31,10 @@ on:
         description: 'Тривалість форсованого режиму (години)'
         required: false
         default: '1'
+      manual_data:
+        description: 'JSON дані для ручного режиму'
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -64,6 +68,7 @@ jobs:
           OVERRIDE_SOURCE: ${{ github.event.inputs.source || 'site' }}
           OVERRIDE_INTERVAL: ${{ github.event.inputs.override_interval || '0' }}
           OVERRIDE_DURATION: ${{ github.event.inputs.override_duration || '1' }}
+          MANUAL_DATA: ${{ github.event.inputs.manual_data || '' }}
         run: |
           python parser/src/parse_schedule.py
           git config --global user.name "Parser Bot"

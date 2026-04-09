@@ -262,10 +262,40 @@
                     <input type="number" id="duration-input" class="admin-input" value="1" min="1" max="24">
                 </div>
 
-                <button class="btn btn-primary" onclick="triggerWorkflow()">🚀 Запустити парсер зараз</button>
-                <button class="btn btn-ghost" onclick="refreshNow()">🔄 Оновити дані в панелі</button>
+                <div class="form-group" id="manual-editor" style="display: none; border-top: 1px solid var(--border); padding-top: 20px; margin-top: 20px;">
+                    <label class="form-label">Редактор графіка (Ручне введення)</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+                        <div style="flex: 1; min-width: 200px;">
+                            <label class="form-label" style="font-size: 10px; opacity: 0.7;">Дата графіка</label>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="date" id="manual-target-date" class="form-input" style="flex: 1">
+                                <button class="btn btn-ghost btn-sm" onclick="setManualDate('today')" title="Сьогодні">Сьогодні</button>
+                                <button class="btn btn-ghost btn-sm" onclick="setManualDate('tomorrow')" title="Завтра">Завтра</button>
+                            </div>
+                        </div>
+                        <div style="flex: 1; min-width: 200px;">
+                            <label class="form-label" style="font-size: 10px; opacity: 0.7;">Тип оновлення (заголовок)</label>
+                            <input type="text" id="manual-title" class="form-input" placeholder="Наприклад: Графік на завтра" value="Графік на завтра">
+                        </div>
+                    </div>
+                    
+                    <div id="manual-grid-container" class="manual-grid-container" style="overflow-x: auto; padding-bottom: 12px;">
+                        <!-- JS generated grid here -->
+                    </div>
+
+                    <div class="schedule-legend" style="border: none; margin-top: 8px;">
+                        <span class="legend-item"><span class="legend-dot on"></span> Клік: Світло є</span>
+                        <span class="legend-item"><span class="legend-dot off"></span> Клік: Світла немає</span>
+                        <button id="reset-manual-grid" class="btn btn-ghost btn-sm" style="margin-left: auto;">Очистити сітку</button>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 12px; margin-top: 24px;">
+                    <button class="btn btn-primary" style="flex: 2" onclick="triggerWorkflow()">🚀 Запустити парсер зараз</button>
+                    <button class="btn btn-ghost" style="flex: 1" onclick="refreshNow()">🔄 Оновити дані</button>
+                </div>
                 
-                <div id="action-log" class="action-log"></div>
+                <div id="action-log" class="action-log" style="margin-top: 20px;"></div>
             </div>
         </section>
 

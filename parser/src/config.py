@@ -9,6 +9,7 @@ UNIFIED_DB = os.path.join(DATA_DIR, "unified_schedules.json")
 SCHEDULE_API_FILE = os.path.join(DATA_DIR, "schedule_api.json")
 
 RAW_SITE_DIR = os.path.join(DATA_DIR, "raw_site")
+ARCHIVE_DIR = os.path.join(DATA_DIR, "archive")
 PWA_DATA_DIR = os.path.join(os.path.dirname(BASE_DIR), "pwa", "data")
 
 HISTORY_API_FILE = os.path.join(PWA_DATA_DIR, "history_api.json")
