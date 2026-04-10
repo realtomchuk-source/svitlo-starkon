@@ -642,14 +642,22 @@ html, body {
 
 .hour-header {
     flex: 1;
-    text-align: center;
-    font-size: 13px;
+    text-align: left;
+    padding-left: 2px;
+    font-size: 14px;
     font-family: var(--font-mono);
     color: var(--text-bright);
     font-weight: 700;
     position: relative;
-    padding: 4px 0;
+    padding-top: 4px;
+    padding-bottom: 4px;
     opacity: 0.9;
+}
+
+.hour-header small {
+    font-size: 10px;
+    opacity: 0.5;
+    font-weight: 500;
 }
 
 /* Vertical help lines for readability */
@@ -677,14 +685,22 @@ html, body {
 
 .manual-hour-label {
     flex: 1;
-    text-align: center;
-    font-size: 13px; /* Bigger font */
+    text-align: left;
+    padding-left: 2px;
+    font-size: 14px;
     font-family: var(--font-mono);
-    color: var(--text-bright); /* Brighter color */
+    color: var(--text-bright);
     font-weight: 700;
     position: relative;
-    padding: 4px 0;
+    padding-top: 4px;
+    padding-bottom: 4px;
     opacity: 0.9;
+}
+
+.manual-hour-label small {
+    font-size: 10px;
+    opacity: 0.5;
+    font-weight: 500;
 }
 
 /* Vertical help lines for readability */

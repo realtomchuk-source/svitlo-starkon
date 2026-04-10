@@ -419,7 +419,7 @@ function renderScheduleGrid(data = todayData, containerId = 'schedule-grid') {
     for (let i = 0; i < 24; i++) {
         const hCell = document.createElement('div');
         hCell.className = 'hour-header';
-        hCell.textContent = String(i).padStart(2, '0');
+        hCell.innerHTML = `${String(i).padStart(2, '0')}<small>.00</small>`;
         headerRow.appendChild(hCell);
     }
     grid.appendChild(headerRow);
@@ -607,7 +607,7 @@ function renderManualGrid() {
     for (let i = 0; i < 24; i++) {
         const label = document.createElement('div');
         label.className = 'manual-hour-label';
-        label.textContent = String(i).padStart(2, '0');
+        label.innerHTML = `${String(i).padStart(2, '0')}<small>.00</small>`;
         header.appendChild(label);
     }
     container.appendChild(header);
