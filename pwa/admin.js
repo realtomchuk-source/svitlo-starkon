@@ -362,56 +362,106 @@ function showDashboardError(msg) {
 
 // ─── Render: Announcements ───────────────────────────────────────────────────
 
+// ─── Render: Announcements ───────────────────────────────────────────────────
+
 function renderAnnouncements() {
     const container = document.getElementById('announcements-list');
     if (!container) return;
 
-    // Collect all announcements from the last 50 records
-    // Flat mapping them and sorting by timestamp (newest first)
-    const all = [];
-    [...scheduleData].reverse().slice(0, 50).forEach(entry => {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    // Group by target_date -> uniqueKey
+    const dayGroups = {};
+
+    // Sort scheduleData by timestamp ASC to correctly track discovery lifecycle
+    const sortedData = [...scheduleData].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+    sortedData.forEach(entry => {
+        const entryTs = new Date(entry.timestamp);
+        if (entryTs < sevenDaysAgo) return;
+
         if (entry.announcements && Array.isArray(entry.announcements)) {
             entry.announcements.forEach(ann => {
-                all.push({
-                    ...ann,
-                    timestamp: entry.timestamp,
-                    date: entry.target_date || entry.date
-                });
+                // Determine which day this announcement belongs to (10.04 etc)
+                const dayKey = ann.target_date || entry.target_date || entry.date;
+                if (!dayKey) return;
+
+                if (!dayGroups[dayKey]) dayGroups[dayKey] = {};
+
+                // Composite key for logical deduplication
+                const intervalsStr = (ann.intervals || []).map(i => `${i.s}-${i.e}`).join(',');
+                const queuesStr = (ann.queues || []).sort().join(',');
+                const uniqueKey = `${ann.action}|${ann.text}|${intervalsStr}|${queuesStr}`;
+
+                if (!dayGroups[dayKey][uniqueKey]) {
+                    dayGroups[dayKey][uniqueKey] = {
+                        ...ann,
+                        firstSeen: entry.timestamp,
+                        lastSeen: entry.timestamp
+                    };
+                } else {
+                    // Update the "last confirmed" time
+                    dayGroups[dayKey][uniqueKey].lastSeen = entry.timestamp;
+                }
             });
         }
     });
 
-    if (all.length === 0) {
+    const dayKeys = Object.keys(dayGroups).sort((a, b) => {
+        // Sort dates descending (11.04 > 10.04)
+        const [dA, mA] = a.split('.').map(Number);
+        const [dB, mB] = b.split('.').map(Number);
+        return (mB * 100 + dB) - (mA * 100 + dA);
+    });
+
+    if (dayKeys.length === 0) {
         container.innerHTML = `
             <div class="announcement-empty">
-                Текстових анонсів за останні 24 години не знайдено.<br>
-                <span style="font-size: 11px; opacity: 0.7;">Вони з'являться автоматично, коли парсер виявить нові уточнення в новинах Обленерго.</span>
+                Текстових анонсів за останній тиждень не знайдено.<br>
+                <span style="font-size: 11px; opacity: 0.7;">Вони з'являться автоматично при виявленні нових уточнень.</span>
             </div>`;
         return;
     }
 
-    // Sort by timestamp if not already
-    container.innerHTML = all.map(ann => {
-        const timeStr = new Date(ann.timestamp).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
-        
-        const queuesHtml = ann.queues.map(q => `<span class="announcement-tag tag-queue">${q}</span>`).join('');
-        const actionHtml = ann.action === 'ON' 
-            ? '<span class="announcement-tag tag-on">Світло є</span>'
-            : '<span class="announcement-tag tag-off">Вимкнення</span>';
+    container.innerHTML = dayKeys.map(day => {
+        const group = dayGroups[day];
+        // Sort items within day by their last confirmed time (newest first)
+        const items = Object.values(group).sort((a, b) => new Date(b.lastSeen) - new Date(a.lastSeen));
+
+        const itemsHtml = items.map(ann => {
+            const firstTime = new Date(ann.firstSeen).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+            const lastTime = new Date(ann.lastSeen).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
             
-        const intervalsHtml = ann.intervals.length > 0 
-            ? ann.intervals.map(intv => `<span class="announcement-tag tag-time">${intv.s}:00-${intv.e}:00</span>`).join('')
-            : '';
+            // Show range only if it spans more than a single discovery run
+            const timeRange = firstTime === lastTime ? firstTime : `${firstTime} — ${lastTime}`;
+
+            const queuesHtml = ann.queues.map(q => `<span class="announcement-tag tag-queue">${q}</span>`).join('');
+            const actionHtml = ann.action === 'ON' 
+                ? '<span class="announcement-tag tag-on">Світло є</span>'
+                : '<span class="announcement-tag tag-off">Вимкнення</span>';
+                
+            const intervalsHtml = ann.intervals.length > 0 
+                ? ann.intervals.map(intv => `<span class="announcement-tag tag-time">${intv.s}:00-${intv.e}:00</span>`).join('')
+                : '';
+
+            return `
+                <div class="announcement-item">
+                    <div class="announcement-meta">
+                        <span class="announcement-tag tag-range" title="Час виявлення та останнього підтвердження">${timeRange}</span>
+                        ${queuesHtml}
+                        ${actionHtml}
+                        ${intervalsHtml}
+                    </div>
+                    <div class="announcement-text">${escHtml(ann.text)}</div>
+                </div>
+            `;
+        }).join('');
 
         return `
-            <div class="announcement-item">
-                <div class="announcement-meta">
-                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-right: 4px;">${ann.date} ${timeStr}</span>
-                    ${queuesHtml}
-                    ${actionHtml}
-                    ${intervalsHtml}
-                </div>
-                <div class="announcement-text">${escHtml(ann.text)}</div>
+            <div class="announcement-day-group">
+                <div class="announcement-day-header">${day}</div>
+                ${itemsHtml}
             </div>
         `;
     }).join('');
