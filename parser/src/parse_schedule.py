@@ -50,8 +50,31 @@ def update_health(status="ok", message="", mode="IDLE"):
 
 def generate_api_export(db):
     api_entries = []
-    # Keep last 20 for history
-    for entry in db[-20:]:
+    now = get_now()
+    # We want to keep approx 8 days of history for the "Digest" to work properly
+    cutoff = now - timedelta(days=8)
+    
+    filtered_entries = []
+    for entry in db:
+        try:
+            ts_str = entry.get("timestamp")
+            if not ts_str: continue
+            ts = datetime.fromisoformat(ts_str)
+            # Ensure timezone awareness for comparison
+            if ts.tzinfo is None:
+                from modules.utils import TZ
+                ts = TZ.localize(ts)
+            
+            if ts > cutoff:
+                filtered_entries.append(entry)
+        except:
+            continue
+            
+    # Fallback: if time-based filtering results in too few entries, take last 50
+    if len(filtered_entries) < 30:
+        filtered_entries = db[-50:]
+
+    for entry in filtered_entries:
         api_entry = {
             "timestamp": entry.get("timestamp"),
             "target_date": entry.get("target_date"),
@@ -69,7 +92,7 @@ def generate_api_export(db):
         api_entries.append(api_entry)
 
     save_json(HISTORY_API_FILE, api_entries)
-    logger.info(f"history_api.json exported: {len(api_entries)} entries.")
+    logger.info(f"history_api.json exported: {len(api_entries)} entries (Full 8-day history).")
 
 def generate_today_json_from_db():
     from generate_today import generate_today_json
