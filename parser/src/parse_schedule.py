@@ -206,14 +206,16 @@ def main():
             if image_changed:
                 process_image(site_res["img_bytes"], "site", site_res["raw_path"], state, site_res.get("html"))
             
-            # NOTE: history_crawler (called above) now handles deep extraction 
-            # of text announcements for Today and Tomorrow by following news links.
-            # We just ensure history_api.json is fresh.
+            # NOTE: history_crawler handles deep extraction, 
+            # we must ensure API is exported if crawler or site-parser made changes.
             generate_api_export(db)
-            logger.info("History API exported (including potential crawler updates).")
+            logger.info("History API exported.")
             
     else:
         logger.info("No tactical need for heavy scan (HTML hashes match and idle/day mode).")
+        # Ensure API is still updated in case Crawler found text updates
+        db = load_json(UNIFIED_DB, default=[])
+        generate_api_export(db)
 
     # 6. Оновлення вихідних даних
     generate_today_json()

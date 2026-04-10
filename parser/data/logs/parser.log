@@ -485,3 +485,39 @@
 2026-04-10 10:17:53,869 [INFO] SSSK-HistoryCrawler: Skipping 24.03 — already in DB
 2026-04-10 10:17:53,873 [INFO] SSSK-HistoryCrawler: === History crawl complete. New successful entries: 1 ===
 2026-04-10 10:17:53,873 [INFO] SSSK-HistoryCrawler: Total DB entries: 13
+2026-04-10 17:59:58,287 [INFO] SSSK-Main: Starting SSSK Parser cycle (Adaptive Intelligence Mode)
+2026-04-10 17:59:58,311 [INFO] SSSK-Main: SmartRun: Skipping (interval not reached).
+2026-04-10 18:00:16,794 [INFO] SSSK-Main: Starting SSSK Parser cycle (Adaptive Intelligence Mode)
+2026-04-10 18:00:16,806 [CRITICAL] SSSK-Main: FATAL: Unhandled exception: can't subtract offset-naive and offset-aware datetimes
+Traceback (most recent call last):
+  File "C:\Users\АТом\Desktop\Antigravity\SSSK\parser\src\parse_schedule.py", line 233, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\АТом\Desktop\Antigravity\SSSK\parser\src\parse_schedule.py", line 158, in main
+    if not should_run(state):
+           ~~~~~~~~~~^^^^^^^
+  File "C:\Users\АТом\Desktop\Antigravity\SSSK\parser\src\modules\utils.py", line 81, in should_run
+    diff_minutes = (now - last_run).total_seconds() / 60
+                    ~~~~^~~~~~~~~~
+TypeError: can't subtract offset-naive and offset-aware datetimes
+2026-04-10 18:00:33,246 [INFO] SSSK-Main: Starting SSSK Parser cycle (Adaptive Intelligence Mode)
+2026-04-10 18:00:33,258 [INFO] SSSK-Utils: SmartRun: Mode=DAY, Interval=40m, Diff=3300120.6m -> RUN
+2026-04-10 18:00:33,876 [INFO] SSSK-Main: DETECTOR: Site HTML changed! Forcing heavy scan.
+2026-04-10 18:00:33,876 [INFO] SSSK-Main: Executing heavy scan. Reason: site_changed=True, force=True, aggressive=False
+2026-04-10 18:00:33,876 [INFO] SSSK-SiteParser: Starting site parser cycle...
+2026-04-10 18:00:33,877 [INFO] SSSK-SiteParser: Fetching https://hoe.com.ua/page/pogodinni-vidkljuchennja with Playwright...
+2026-04-10 18:00:42,125 [INFO] SSSK-SiteParser: Target image URL: https://hoe.com.ua/Content/Uploads/2026/04/file20260409203903009.png
+2026-04-10 18:00:42,779 [INFO] SSSK-Main: Processing image from site...
+2026-04-10 18:00:45,523 [INFO] SSSK-GridVision: Image size: 1920x1126
+2026-04-10 18:00:45,707 [INFO] SSSK-GridVision: [dark_lines] Restricted Y-range: 65-1045
+2026-04-10 18:00:46,398 [INFO] SSSK-GridVision: [dark_lines] Grid Solved: 25V, 13H
+2026-04-10 18:00:46,488 [INFO] SSSK-GridVision: Debug grid saved to parser\data\debug_grid.png
+2026-04-10 18:00:46,509 [INFO] SSSK-TableParser: Successfully parsed grid using Vision
+2026-04-10 18:00:46,509 [INFO] SSSK-Main: Applying text overrides from HTML...
+2026-04-10 18:00:46,541 [INFO] SSSK-TextParser: Applied 3 textual schedule overrides.
+2026-04-10 18:00:46,545 [INFO] SSSK-Main: history_api.json exported: 20 entries.
+2026-04-10 18:00:46,545 [INFO] SSSK-Main: SUCCESS: Processed site schedule for 10.04
+2026-04-10 18:00:46,547 [INFO] SSSK-Main: history_api.json exported: 19 entries.
+2026-04-10 18:00:46,547 [INFO] SSSK-Main: History API exported.
+2026-04-10 18:00:46,570 [INFO] SSSK-GenerateToday: today.json generated: C:\Users\АТом\Desktop\Antigravity\SSSK\pwa\data\today.json
+2026-04-10 18:00:46,589 [INFO] SSSK-Main: Cycle completed successfully.
