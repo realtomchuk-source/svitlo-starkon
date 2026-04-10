@@ -13,6 +13,19 @@ const RAW_BASE = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/$
 const API_BASE = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}`;
 const ACTIONS_URL = `https://github.com/${REPO_OWNER}/${REPO_NAME}/actions/workflows/${WORKFLOW_ID}`;
 
+const ETALON_DATA = {
+    date: '27.03',
+    target_date: '27.03',
+    queues: {
+        "1.1": "000011110000111100001111", "1.2": "111100001111000011110000",
+        "2.1": "001100110011001100110011", "2.2": "110011001100110011001100",
+        "3.1": "000000111111000000111111", "3.2": "111111000000111111000000",
+        "4.1": "010101010101010101010101", "4.2": "101010101010101010101010",
+        "5.1": "000111000111000111000111", "5.2": "111000111000111000111000",
+        "6.1": "000000001111111100000000", "6.2": "111111110000000011111111"
+    }
+};
+
 // ─── State ────────────────────────────────────────────────────────────────────
 
 let parserState   = null;
@@ -190,11 +203,8 @@ async function refreshAll() {
                 </div>`;
         }
         
-        // Reference grid (27.03 fallback)
-        const refData = [...scheduleData].find(e => e.date === '27.03' || e.target_date === '27.03');
-        if (refData) {
-            renderScheduleGrid(refData, 'reference-grid');
-        }
+        // Reference grid (Always use constant ETALON_DATA for visual test)
+        renderScheduleGrid(ETALON_DATA, 'reference-grid');
         renderAnnouncements();
         renderHistory();
         
@@ -297,16 +307,10 @@ function renderDashboard(tomorrowData = null) {
     }
 
     // Handle tomorrow card visibility
-    const tomorrowCard = document.getElementById('tomorrow-card');
-    if (tomorrowCard) {
-        tomorrowCard.style.display = tomorrowData ? 'block' : 'none';
-    }
+    // Card is now always visible to show placeholder if tomorrowData is null
 
-    // Handle reference grid (27.03)
-    const designRef = scheduleData.find(e => e.target_date === '27.03' || e.date === '27.03');
-    if (designRef) {
-        renderScheduleGrid(designRef, 'reference-grid', true);
-    }
+    // Handle reference grid (Always use constant ETALON_DATA for visual test)
+    renderScheduleGrid(ETALON_DATA, 'reference-grid');
 
     // Actions link
     const actionsLink = document.getElementById('actions-link');
