@@ -205,6 +205,9 @@ def main():
     # Плановий запуск кожні 2 години в будь-якому випадку для надійності
     last_run_str = state.get("last_run")
     last_run = datetime.fromisoformat(last_run_str) if last_run_str else now - timedelta(hours=5)
+    # Ensure last_run is timezone aware for comparison if now is TZ aware
+    if last_run.tzinfo is None:
+        last_run = TZ.localize(last_run)
     force_heavy = (now - last_run).total_seconds() / 3600 >= 2
 
     if site_changed or force_heavy or is_aggressive:
