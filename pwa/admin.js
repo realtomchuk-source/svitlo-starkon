@@ -800,7 +800,11 @@ function appendLog(msg, type = 'info') {
 
 function formatRelative(iso) {
     if (!iso) return '—';
-    const diff = Date.now() - new Date(iso).getTime();
+    let dateStr = iso;
+    if (!/[Z+\-]\d{2}/.test(dateStr.slice(-6))) {
+        dateStr += 'Z';
+    }
+    const diff = Date.now() - new Date(dateStr).getTime();
     const m = Math.floor(diff / 60000);
     if (m < 1)  return 'щойно';
     if (m < 60) return `${m} хв тому`;
@@ -811,7 +815,14 @@ function formatRelative(iso) {
 
 function formatFull(iso) {
     if (!iso) return '—';
-    return new Date(iso).toLocaleString('uk-UA', {
+    // If no timezone info, the timestamp is UTC (from GitHub Actions runner)
+    // Append 'Z' so JS interprets it correctly instead of as local time
+    let dateStr = iso;
+    if (!/[Z+\-]\d{2}/.test(dateStr.slice(-6))) {
+        dateStr += 'Z';
+    }
+    return new Date(dateStr).toLocaleString('uk-UA', {
+        timeZone: 'Europe/Kyiv',
         day: '2-digit', month: '2-digit', year: 'numeric',
         hour: '2-digit', minute: '2-digit'
     });

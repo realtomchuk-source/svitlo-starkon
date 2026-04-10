@@ -232,7 +232,7 @@ def process_history(limit_days=7):
                     logger.info(f"  🔔 Found NEW text announcements for {item['date']}!")
                     existing_entry["announcements"] = new_announcements
                     existing_entry["queues"] = updated_queues
-                    existing_entry["timestamp"] = datetime.now().isoformat()
+                    existing_entry["timestamp"] = get_now().isoformat()
                     existing_entry["updated_by"] = "text_digest"
                     processed_count += 1
                 
@@ -258,7 +258,7 @@ def process_history(limit_days=7):
                     logger.info(f"  Downloaded: {len(img_bytes)} bytes")
 
                     # Save raw image
-                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                    timestamp = get_now().strftime("%Y%m%d_%H%M%S")
                     os.makedirs(RAW_SITE_DIR, exist_ok=True)
                     raw_path = os.path.join(RAW_SITE_DIR, f"hist_{item['date'].replace('.', '')}_{timestamp}.png")
                     with open(raw_path, "wb") as f:
@@ -277,7 +277,7 @@ def process_history(limit_days=7):
                             "source": "site_history",
                             "type": "schedule",
                             "processed": True,
-                            "timestamp": datetime.now().isoformat(),
+                            "timestamp": get_now().isoformat(),
                             "source_url": item["link"],
                             "raw_path": raw_path,
                             "queues": queues
@@ -302,7 +302,7 @@ def process_history(limit_days=7):
                     "source": "site_history",
                     "type": "schedule",
                     "processed": False,
-                    "timestamp": datetime.now().isoformat(),
+                    "timestamp": get_now().isoformat(),
                     "source_url": item["link"],
                     "queues": {}
                 })
