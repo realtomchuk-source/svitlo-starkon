@@ -319,8 +319,8 @@ function renderDashboard(tomorrowData = null) {
     const actionsLink = document.getElementById('actions-link');
     if (actionsLink) actionsLink.href = ACTIONS_URL;
     
-    // Show OCR debug for the LATEST entry if it failed, but don't show it for older ones
-    if (latestAny && !latestAny.processed) {
+    // Show OCR debug for the LATEST entry if it failed, but don't show it for older ones or placeholders
+    if (latestAny && !latestAny.processed && !latestAny.is_placeholder) {
         showOcrDebug(latestAny);
     } else {
         hideOcrDebug();

@@ -672,3 +672,5 @@ TypeError: can't subtract offset-naive and offset-aware datetimes
 2026-04-10 18:30:54,342 [INFO] SSSK-Main: history_api.json exported: 20 entries.
 2026-04-10 18:30:54,362 [INFO] SSSK-GenerateToday: today.json generated: C:\Users\АТом\Desktop\Antigravity\SSSK\pwa\data\today.json
 2026-04-10 18:30:54,366 [INFO] SSSK-Main: SmartRun: Skipping (interval not reached).
+2026-04-10 19:05:51,078 [INFO] SSSK-Main: Starting SSSK Parser cycle (Adaptive Intelligence Mode)
+2026-04-10 19:05:51,082 [INFO] SSSK-Main: SmartRun: Skipping (interval not reached).
