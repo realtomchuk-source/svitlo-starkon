@@ -71,9 +71,14 @@ def run_site_parser(state):
     if not html:
         return None
 
+    # 2. Extract specific image URL
     img_url = extract_image_url(html)
     
-    # Check for "no outages" text
+    # 3. Extract news text for announcements (preserve structure)
+    news_text = soup.get_text(separator='\n')
+    news_text = '\n'.join([line.strip() for line in news_text.splitlines() if line.strip()])
+    
+    # 4. Check for "no outages" text
     is_empty = False
     if not img_url:
         soup = BeautifulSoup(html, 'html.parser')
@@ -131,5 +136,6 @@ def run_site_parser(state):
         "html_hash": html_hash,
         "img_bytes": img_bytes,
         "html": html,
+        "news_text": news_text,
         "caption": "Schedule updated (image or text)" if changed else "No changes"
     }

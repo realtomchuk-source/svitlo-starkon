@@ -85,14 +85,6 @@ def process_image(img_bytes, source_used, raw_path, state, html_content=None):
         matches = re.findall(r"\d{2}\.\d{2}", raw_text)
         if matches: date_found = matches[0]
 
-    if structured and html_content:
-         logger.info("Applying text overrides from HTML...")
-         structured["queues"], announcements = apply_text_overrides(structured["queues"], html_content, date_found)
-         entry["announcements"] = announcements
-
-    db = load_json(UNIFIED_DB, default=[])
-    last_entry = next((e for e in reversed(db) if e.get("target_date") == date_found), None) if date_found else None
-
     entry = {
         "timestamp": get_now().isoformat(),
         "target_date": date_found,
@@ -103,6 +95,11 @@ def process_image(img_bytes, source_used, raw_path, state, html_content=None):
         "raw_text_summary": raw_text[:500] if raw_text else "",
         "announcements": []
     }
+
+    if structured and html_content:
+         logger.info("Applying text overrides from HTML...")
+         structured["queues"], announcements = apply_text_overrides(structured["queues"], html_content, date_found)
+         entry["announcements"] = announcements
 
     if structured and validate_queues(structured.get("queues", {})):
         entry.update({
@@ -196,8 +193,41 @@ def main():
             state["last_site_hash"] = site_res.get("hash")
             state["last_html_hash"] = site_res.get("html_hash")
             
-            if site_res.get("changed"):
+            # Одержуємо поточну базу для аналізу змін
+            db = load_json(UNIFIED_DB, default=[])
+            last_valid_entry = db[-1] if db else None
+            
+            # А) Зміна картинки або форсований запуск
+            image_changed = site_res.get("changed")
+            if image_changed:
                 process_image(site_res["img_bytes"], "site", site_res["raw_path"], state, site_res.get("html"))
+            
+            # Б) Завжди перевіряємо текст на наявність нових анонсів (підчерги тощо)
+            # Навіть якщо картинка та сама, текст міг оновитися
+            news_text = site_res.get("news_text")
+            if news_text:
+                # Беремо найсвіжіший графік для Today
+                from generate_today import get_today_date
+                today_str = get_today_date()
+                active_entry = next((e for e in reversed(db) if e.get("target_date") == today_str), last_valid_entry)
+                
+                if active_entry and "queues" in active_entry:
+                    logger.info(f"Checking text overrides for {today_str}...")
+                    _, new_announcements = apply_text_overrides(active_entry["queues"], news_text, today_str)
+                    
+                    # Якщо анонси змінилися (або картинка не мінялась, але ми хочемо зафіксувати запуск)
+                    # Ми створюємо новий запис в історії, якщо анонси НЕ порожні і відрізняються
+                    old_announcements = active_entry.get("announcements", [])
+                    if new_announcements and new_announcements != old_announcements:
+                        logger.info("NEW text announcements detected! Creating history entry.")
+                        new_entry = active_entry.copy()
+                        new_entry["timestamp"] = get_now().isoformat()
+                        new_entry["announcements"] = new_announcements
+                        new_entry["change_desc"] = "Оновлено текстові анонси (підчерги)"
+                        db.append(new_entry)
+                        save_json(UNIFIED_DB, db)
+                        generate_api_export(db)
+            
     else:
         logger.info("No tactical need for heavy scan (HTML hashes match and idle/day mode).")
 
