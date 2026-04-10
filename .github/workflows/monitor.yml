@@ -12,6 +12,13 @@ on:
     # Денний режим (09:00-19:00 EEST / 06:00-16:00 UTC): кожні 3 год
     # - cron: '0 6,9,12,15 * * *'
 
+  push:
+    branches:
+      - main
+    paths:
+      - 'parser/src/**'
+      - '.github/workflows/monitor.yml'
+
   workflow_dispatch:
     inputs:
       source:
