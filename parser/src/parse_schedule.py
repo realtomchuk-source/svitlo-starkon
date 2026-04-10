@@ -110,6 +110,8 @@ def process_image(img_bytes, source_used, raw_path, state, html_content=None):
             "message": structured["message"],
             "processed": True
         })
+        db = load_json(UNIFIED_DB, default=[])
+        last_entry = db[-1] if db else None
         entry["change_desc"] = calculate_delta(last_entry, entry)
         db.append(entry)
         save_json(UNIFIED_DB, db)
@@ -175,7 +177,9 @@ def main():
         logger.info("Mode: AGGRESSIVE. Searching for tomorrow's schedule in News...")
         try:
             from history_crawler import process_history
-            process_history(limit_days=2) # Перевіряємо тільки останні новини
+            # NEW: Always check latest 3 days for text updates and new schedules
+            logger.info("Running history crawler for text and schedule updates...")
+            process_history(limit_days=3)
         except Exception as e:
             logger.error(f"History crawling error: {e}")
 
@@ -202,31 +206,11 @@ def main():
             if image_changed:
                 process_image(site_res["img_bytes"], "site", site_res["raw_path"], state, site_res.get("html"))
             
-            # Б) Завжди перевіряємо текст на наявність нових анонсів (підчерги тощо)
-            # Навіть якщо картинка та сама, текст міг оновитися
-            news_text = site_res.get("news_text")
-            if news_text:
-                # Беремо найсвіжіший графік для Today
-                from generate_today import get_today_date
-                today_str = get_today_date()
-                active_entry = next((e for e in reversed(db) if e.get("target_date") == today_str), last_valid_entry)
-                
-                if active_entry and "queues" in active_entry:
-                    logger.info(f"Checking text overrides for {today_str}...")
-                    _, new_announcements = apply_text_overrides(active_entry["queues"], news_text, today_str)
-                    
-                    # Якщо анонси змінилися (або картинка не мінялась, але ми хочемо зафіксувати запуск)
-                    # Ми створюємо новий запис в історії, якщо анонси НЕ порожні і відрізняються
-                    old_announcements = active_entry.get("announcements", [])
-                    if new_announcements and new_announcements != old_announcements:
-                        logger.info("NEW text announcements detected! Creating history entry.")
-                        new_entry = active_entry.copy()
-                        new_entry["timestamp"] = get_now().isoformat()
-                        new_entry["announcements"] = new_announcements
-                        new_entry["change_desc"] = "Оновлено текстові анонси (підчерги)"
-                        db.append(new_entry)
-                        save_json(UNIFIED_DB, db)
-                        generate_api_export(db)
+            # NOTE: history_crawler (called above) now handles deep extraction 
+            # of text announcements for Today and Tomorrow by following news links.
+            # We just ensure history_api.json is fresh.
+            generate_api_export(db)
+            logger.info("History API exported (including potential crawler updates).")
             
     else:
         logger.info("No tactical need for heavy scan (HTML hashes match and idle/day mode).")

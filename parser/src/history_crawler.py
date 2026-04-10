@@ -15,6 +15,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from modules.utils import load_json, save_json, get_now
 from modules.table_parser import validate_queues
 from modules.grid_vision import parse_grid_from_image
+from modules.text_parser import apply_text_overrides
 from config import UNIFIED_DB, HEADERS, RAW_SITE_DIR
 
 # Logging
@@ -133,6 +134,22 @@ def get_news_links(max_pages=2):
     return links
 
 
+def extract_text_from_post(post_url):
+    """Open the post page and extract plain text from div.post."""
+    try:
+        resp = requests.get(post_url, headers=HEADERS, timeout=30)
+        resp.encoding = 'utf-8'
+        soup = BeautifulSoup(resp.text, 'html.parser')
+
+        post_div = soup.select_one('div.post')
+        if post_div:
+            # We want to preserve newlines for text_parser
+            return post_div.get_text(separator='\n')
+    except Exception as e:
+        logger.error(f"Error extracting text from {post_url}: {e}")
+    return None
+
+
 def extract_images_from_post(post_url):
     """Open the post page and find ALL schedule images inside div.post.
     
@@ -193,14 +210,38 @@ def process_history(limit_days=7):
             logger.warning(f"Skipping '{item['title']}' — could not extract date")
             continue
 
-        if item["date"] in existing_dates:
-            logger.info(f"Skipping {item['date']} — already in DB")
-            continue
-
         try:
             logger.info(f"Processing {item['date']} from '{item['title']}'...")
 
-            # Fetch ALL images from the post page (some posts have text + schedule at bottom)
+            # NEW: Extract body text to check for podcherga cancellations
+            news_text = extract_text_from_post(item["link"])
+            
+            # Find existing entry in DB to see if we need to update it
+            existing_entry = next((e for e in db if e.get("target_date") == item["date"]), None)
+            
+            if existing_entry and news_text:
+                # Apply text overrides to EXISTING entry
+                logger.info(f"  Checking text updates for existing entry {item['date']}...")
+                updated_queues, new_announcements = apply_text_overrides(
+                    existing_entry.get("queues", {}), news_text, item["date"]
+                )
+                
+                old_announcements = existing_entry.get("announcements", [])
+                if new_announcements and new_announcements != old_announcements:
+                    logger.info(f"  🔔 Found NEW text announcements for {item['date']}!")
+                    existing_entry["announcements"] = new_announcements
+                    existing_entry["queues"] = updated_queues
+                    existing_entry["timestamp"] = datetime.now().isoformat()
+                    existing_entry["updated_by"] = "text_digest"
+                    processed_count += 1
+                
+                # If date is already processed, we skip full image check unless it's a new image
+                if item["date"] in existing_dates:
+                    # Check if there is a NEW image URL in the post that we haven't seen?
+                    # For now, if it's text-only update for an existing date, we are done.
+                    continue
+
+            # Original Image Logic
             img_urls = extract_images_from_post(item["link"])
 
             if not img_urls:

@@ -72,6 +72,7 @@ def run_site_parser(state):
         return None
 
     # 2. Extract specific image URL
+    soup = BeautifulSoup(html, 'html.parser')
     img_url = extract_image_url(html)
     
     # 3. Extract news text for announcements (preserve structure)
