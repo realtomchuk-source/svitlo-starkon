@@ -271,6 +271,14 @@ def process_history(limit_days=7):
                     is_valid = queues is not None and validate_queues(queues)
 
                     if is_valid:
+                        # NEW: Capture raw queues before any potential overrides
+                        queues_raw = queues.copy()
+                        announcements = []
+                        
+                        if news_text:
+                             logger.info(f"  Applying text overrides to NEW {item['date']} entry...")
+                             queues, announcements = apply_text_overrides(queues, news_text, item["date"])
+
                         new_entry = {
                             "date": item["date"],
                             "target_date": item["date"],
@@ -280,7 +288,9 @@ def process_history(limit_days=7):
                             "timestamp": get_now().isoformat(),
                             "source_url": item["link"],
                             "raw_path": raw_path,
-                            "queues": queues
+                            "queues": queues,
+                            "queues_raw": queues_raw,
+                            "announcements": announcements
                         }
                         db.append(new_entry)
                         processed_count += 1

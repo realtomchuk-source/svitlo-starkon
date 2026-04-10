@@ -87,7 +87,8 @@ def generate_api_export(db):
             "date": entry.get("date", ""),
             "date_full": entry.get("date_full", ""),
             "message": entry.get("message", ""),
-            "announcements": entry.get("announcements", [])
+            "announcements": entry.get("announcements", []),
+            "queues_raw": entry.get("queues_raw", {})
         }
         api_entries.append(api_entry)
 
@@ -120,14 +121,19 @@ def process_image(img_bytes, source_used, raw_path, state, html_content=None):
         "announcements": []
     }
 
-    if structured and html_content:
-         logger.info("Applying text overrides from HTML...")
-         structured["queues"], announcements = apply_text_overrides(structured["queues"], html_content, date_found)
-         entry["announcements"] = announcements
+    if structured:
+        # Keep a clean copy of original queues from the image
+        entry["queues_raw"] = structured["queues"].copy() if "queues" in structured else {}
+        
+        if html_content:
+             logger.info("Applying text overrides from HTML...")
+             structured["queues"], announcements = apply_text_overrides(structured["queues"], html_content, date_found)
+             entry["announcements"] = announcements
 
     if structured and validate_queues(structured.get("queues", {})):
         entry.update({
             "queues": structured["queues"],
+            "queues_raw": entry.get("queues_raw", {}), # Explicitly include raw here
             "mode": structured["mode"],
             "date": structured["date"],
             "date_full": structured["date_full"],

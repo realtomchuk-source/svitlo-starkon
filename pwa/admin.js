@@ -184,6 +184,7 @@ async function refreshAll() {
                 date: matchTomorrow.target_date,
                 mode: matchTomorrow.mode || 'schedule',
                 queues: matchTomorrow.queues,
+                queues_raw: matchTomorrow.queues_raw || null,
                 message: matchTomorrow.message || `Графік на ${matchTomorrow.target_date}`
             };
         }
@@ -193,14 +194,34 @@ async function refreshAll() {
         
         // Tomorrow handling: show grid or placeholder
         const tomorrowGrid = document.getElementById('tomorrow-grid');
+        const aggCard = document.getElementById('tomorrow-aggregated-card');
+        const aggGrid = document.getElementById('tomorrow-aggregated-grid');
+        const aggBadge = document.getElementById('tomorrow-aggregated-badge');
+
         if (tomorrowData) {
-            renderScheduleGrid(tomorrowData, 'tomorrow-grid');
-        } else if (tomorrowGrid) {
-            tomorrowGrid.innerHTML = `
-                <div class="announcement-empty" style="padding: 40px 0;">
-                    Графік на завтра ще не опублікований ОБЛЕНЕРГО.<br>
-                    <span style="font-size: 11px; opacity: 0.7;">Зазвичай з'являється після 18:00. Парсер перевіряє сайт кожні 10 хвилин.</span>
-                </div>`;
+            if (tomorrowData.queues_raw) {
+                // We have BOTH: Original in primary, Aggregated in secondary
+                renderScheduleGrid({ ...tomorrowData, queues: tomorrowData.queues_raw }, 'tomorrow-grid');
+                
+                if (aggCard && aggGrid) {
+                    aggCard.style.display = 'block';
+                    renderScheduleGrid(tomorrowData, 'tomorrow-aggregated-grid');
+                    if (aggBadge) aggBadge.textContent = tomorrowData.date;
+                }
+            } else {
+                // Only one version available
+                renderScheduleGrid(tomorrowData, 'tomorrow-grid');
+                if (aggCard) aggCard.style.display = 'none';
+            }
+        } else {
+            if (aggCard) aggCard.style.display = 'none';
+            if (tomorrowGrid) {
+                tomorrowGrid.innerHTML = `
+                    <div class="announcement-empty" style="padding: 40px 0;">
+                        Графік на завтра ще не опублікований ОБЛЕНЕРГО.<br>
+                        <span style="font-size: 11px; opacity: 0.7;">Зазвичай з'являється після 18:00. Парсер перевіряє сайт кожні 10 хвилин.</span>
+                    </div>`;
+            }
         }
         
         // Reference grid (Always use constant ETALON_DATA for visual test)
@@ -226,10 +247,15 @@ async function refreshAll() {
         const tomorrowTitle = document.getElementById('tomorrow-card-title');
         const tomorrowBadge = document.getElementById('tomorrow-date-badge');
         if (tomorrowData) {
-            if (tomorrowTitle) tomorrowTitle.textContent = tomorrowData.message || `ГРАФІК НА ЗАВТРА (${tomorrowData.date})`;
+            if (tomorrowData.queues_raw) {
+                if (tomorrowTitle) tomorrowTitle.textContent = `ОРИГІНАЛЬНИЙ ГРАФІК (З КАРТИНКИ)`;
+            } else {
+                if (tomorrowTitle) tomorrowTitle.textContent = tomorrowData.message || `ГРАФІК НА ЗАВТРА (${tomorrowData.date})`;
+            }
             if (tomorrowBadge) tomorrowBadge.textContent = tomorrowData.date || '—';
         } else {
             // Placeholder date even if data is missing
+            if (tomorrowTitle) tomorrowTitle.textContent = `ГРАФІК НА ЗАВТРА`;
             if (tomorrowBadge) tomorrowBadge.textContent = tomorrowDateStr;
         }
 
@@ -390,9 +416,10 @@ function renderAnnouncements() {
                 if (!dayGroups[dayKey]) dayGroups[dayKey] = {};
 
                 // Composite key for logical deduplication
-                const intervalsStr = (ann.intervals || []).map(i => `${i.s}-${i.e}`).join(',');
+                const cleanText = (ann.text || '').trim();
+                const intervalsStr = (ann.intervals || []).map(i => `${i.s}-${i.e}`).sort().join(',');
                 const queuesStr = (ann.queues || []).sort().join(',');
-                const uniqueKey = `${ann.action}|${ann.text}|${intervalsStr}|${queuesStr}`;
+                const uniqueKey = `${ann.action}|${cleanText}|${intervalsStr}|${queuesStr}`;
 
                 if (!dayGroups[dayKey][uniqueKey]) {
                     dayGroups[dayKey][uniqueKey] = {
