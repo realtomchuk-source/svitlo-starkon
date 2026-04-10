@@ -894,5 +894,16 @@
     "message": "Графік погодинних відключень на 10.04.2026",
     "change_desc": "Змін у самому графіку не виявлено (лише оновлення картинки або статтей)",
     "updated_by": "text_digest"
+  },
+  {
+    "timestamp": "2026-04-10T18:30:54.335645+03:00",
+    "target_date": "11.04",
+    "source": "system",
+    "type": "schedule",
+    "processed": false,
+    "is_placeholder": true,
+    "message": "Очікування публікації графіка на 11.04",
+    "queues": {},
+    "change_desc": "Створено заготовку (очікуємо 11.04)"
   }
 ]

@@ -228,6 +228,9 @@ async function refreshAll() {
         if (tomorrowData) {
             if (tomorrowTitle) tomorrowTitle.textContent = tomorrowData.message || `ГРАФІК НА ЗАВТРА (${tomorrowData.date})`;
             if (tomorrowBadge) tomorrowBadge.textContent = tomorrowData.date || '—';
+        } else {
+            // Placeholder date even if data is missing
+            if (tomorrowBadge) tomorrowBadge.textContent = tomorrowDateStr;
         }
 
         updateHeaderStatus('ok');

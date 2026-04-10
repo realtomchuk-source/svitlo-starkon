@@ -149,6 +149,30 @@ def main():
             update_health("ok", "Дедлайн: Графік не знайдено, світло є", "DEADLINE")
             generate_today_json()
             return
+
+    # 1.5 Автоматична "заготовка" на завтра (після 19:00)
+    tomorrow_str = (now + timedelta(days=1)).strftime("%d.%m")
+    if is_aggressive:
+        db = load_json(UNIFIED_DB, default=[])
+        # Перевіряємо, чи є вже будь-який запис на завтра (навіть не оброблений)
+        has_tomorrow = any(e.get("target_date") == tomorrow_str for e in db)
+        if not has_tomorrow:
+            logger.info(f"Creating placeholder for tomorrow: {tomorrow_str}")
+            placeholder = {
+                "timestamp": now.isoformat(),
+                "target_date": tomorrow_str,
+                "source": "system",
+                "type": "schedule",
+                "processed": False,
+                "is_placeholder": True,
+                "message": f"Очікування публікації графіка на {tomorrow_str}",
+                "queues": {},
+                "change_desc": f"Створено заготовку (очікуємо {tomorrow_str})"
+            }
+            db.append(placeholder)
+            save_json(UNIFIED_DB, db)
+            generate_api_export(db)
+            generate_today_json() # Trigger today generation to update status
     
     # Визначаємо режим для health
     current_mode = "DAY"
