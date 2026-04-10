@@ -110,7 +110,7 @@
             </div>
 
             <!-- Tomorrow Schedule Section -->
-            <div class="card" id="tomorrow-card" style="display: none; border: 1px solid var(--accent-green);">
+            <div class="card" id="tomorrow-card" style="border: 1px solid var(--accent-green);">
                 <div class="card-title" id="tomorrow-card-title" style="color: var(--accent-green); font-weight: 700;">
                     ГРАФІК НА ЗАВТРА
                 </div>
@@ -127,18 +127,6 @@
                 </div>
             </div>
 
-            <!-- Reference Section -->
-            <div class="card" id="reference-card" style="border-style: dashed; opacity: 0.9;">
-                <div class="card-title" style="color: var(--text-muted);">
-                    <i class="fas fa-history" style="margin-right:8px"></i> ЕТАЛОННИЙ ДИЗАЙН (ДЛЯ ЗВІРКИ)
-                </div>
-                <div id="reference-grid" class="schedule-grid-container">
-                    <!-- Filled by JS with 27.03 data -->
-                </div>
-                <div class="schedule-legend">
-                    <span class="legend-item" style="font-size: 11px;">Графік за 27.03.2026 (використовується для тестування дизайну)</span>
-                </div>
-            </div>
 
             <!-- Stats -->
             <div class="stats-grid">
@@ -219,6 +207,19 @@
                 <div class="kv-row">
                     <span class="kv-key">Override активний до</span>
                     <span class="kv-val muted" id="kv-override-until">—</span>
+                </div>
+            </div>
+
+            <!-- Reference Section (Moved to Bottom) -->
+            <div class="card" id="reference-card" style="border-style: dashed; opacity: 0.6; margin-top: 40px;">
+                <div class="card-title" style="color: var(--text-muted);">
+                    <i class="fas fa-history" style="margin-right:8px"></i> ЕТАЛОННИЙ ДИЗАЙН (ДЛЯ ЗВІРКИ)
+                </div>
+                <div id="reference-grid" class="schedule-grid-container">
+                    <!-- Filled by JS with 27.03 data -->
+                </div>
+                <div class="schedule-legend">
+                    <span class="legend-item" style="font-size: 11px;">Графік за 27.03.2026 (використовується для візуального звірки рендеру)</span>
                 </div>
             </div>
         </section>

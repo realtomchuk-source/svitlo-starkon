@@ -101,7 +101,8 @@ function switchSection(name) {
 async function fetchFile(path) {
     // If remote, use GitHub Raw with cache busting
     if (dataSource === 'remote') {
-        return await fetch(`${RAW_BASE}/${path}?t=${Date.now()}`).then(r => r.json());
+        const url = `${RAW_BASE}/${path}?t=${Date.now()}`;
+        return await fetch(url, { cache: 'no-store' }).then(r => r.json());
     }
     
     // In local mode, we need to handle cases where the server is started from the project root 
@@ -118,7 +119,7 @@ async function fetchFile(path) {
     
     try {
         console.log(`[Local Fetch] Requesting: ${localUrl}`);
-        const resp = await fetch(localUrl);
+        const resp = await fetch(localUrl, { cache: 'no-store' });
         if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${localUrl}`);
         return await resp.json();
     } catch (e) {
@@ -176,8 +177,23 @@ async function refreshAll() {
 
         renderDashboard(tomorrowData);
         renderScheduleGrid(todayData, 'schedule-grid');
+        
+        // Tomorrow handling: show grid or placeholder
+        const tomorrowGrid = document.getElementById('tomorrow-grid');
         if (tomorrowData) {
             renderScheduleGrid(tomorrowData, 'tomorrow-grid');
+        } else if (tomorrowGrid) {
+            tomorrowGrid.innerHTML = `
+                <div class="announcement-empty" style="padding: 40px 0;">
+                    Графік на завтра ще не опублікований ОБЛЕНЕРГО.<br>
+                    <span style="font-size: 11px; opacity: 0.7;">Зазвичай з'являється після 18:00. Парсер перевіряє сайт кожні 10 хвилин.</span>
+                </div>`;
+        }
+        
+        // Reference grid (27.03 fallback)
+        const refData = [...scheduleData].find(e => e.date === '27.03' || e.target_date === '27.03');
+        if (refData) {
+            renderScheduleGrid(refData, 'reference-grid');
         }
         renderAnnouncements();
         renderHistory();
@@ -343,10 +359,10 @@ function renderAnnouncements() {
     const container = document.getElementById('announcements-list');
     if (!container) return;
 
-    // Collect all announcements from the last 10 records
+    // Collect all announcements from the last 50 records
     // Flat mapping them and sorting by timestamp (newest first)
     const all = [];
-    [...scheduleData].reverse().slice(0, 15).forEach(entry => {
+    [...scheduleData].reverse().slice(0, 50).forEach(entry => {
         if (entry.announcements && Array.isArray(entry.announcements)) {
             entry.announcements.forEach(ann => {
                 all.push({
@@ -361,8 +377,8 @@ function renderAnnouncements() {
     if (all.length === 0) {
         container.innerHTML = `
             <div class="announcement-empty">
-                Текстових анонсів поки не виявлено.<br>
-                З'являться автоматично після аналізу статей Обленерго.
+                Текстових анонсів за останні 24 години не знайдено.<br>
+                <span style="font-size: 11px; opacity: 0.7;">Вони з'являться автоматично, коли парсер виявить нові уточнення в новинах Обленерго.</span>
             </div>`;
         return;
     }
@@ -377,7 +393,7 @@ function renderAnnouncements() {
             : '<span class="announcement-tag tag-off">Вимкнення</span>';
             
         const intervalsHtml = ann.intervals.length > 0 
-            ? ann.intervals.map(([s, e]) => `<span class="announcement-tag tag-time">${s}:00-${e}:00</span>`).join('')
+            ? ann.intervals.map(intv => `<span class="announcement-tag tag-time">${intv.s}:00-${intv.e}:00</span>`).join('')
             : '';
 
         return `

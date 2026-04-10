@@ -63,7 +63,8 @@ def generate_api_export(db):
             "mode": entry.get("mode", "schedule"),
             "date": entry.get("date", ""),
             "date_full": entry.get("date_full", ""),
-            "message": entry.get("message", "")
+            "message": entry.get("message", ""),
+            "announcements": entry.get("announcements", [])
         }
         api_entries.append(api_entry)
 
@@ -175,13 +176,6 @@ def main():
     # А) Пошук графіка на завтра в новинах (якщо вечір і ще не знайдено)
     if is_aggressive:
         logger.info("Mode: AGGRESSIVE. Searching for tomorrow's schedule in News...")
-        try:
-            from history_crawler import process_history
-            # NEW: Always check latest 3 days for text updates and new schedules
-            logger.info("Running history crawler for text and schedule updates...")
-            process_history(limit_days=3)
-        except Exception as e:
-            logger.error(f"History crawling error: {e}")
 
     # Б) Стандартний моніторинг головної (якщо є зміни або плановий запуск)
     # Плановий запуск кожні 2 години в будь-якому випадку для надійності
@@ -206,6 +200,16 @@ def main():
             if image_changed:
                 process_image(site_res["img_bytes"], "site", site_res["raw_path"], state, site_res.get("html"))
             
+            # NEW: Run history crawler ALWAYS after potential heavy scan to sync text
+            try:
+                from history_crawler import process_history
+                logger.info("Running history crawler to sync announcements...")
+                process_history(limit_days=3)
+                # Refresh DB reference after crawler updates
+                db = load_json(UNIFIED_DB, default=[])
+            except Exception as e:
+                logger.error(f"Post-scan crawler error: {e}")
+
             # NOTE: history_crawler handles deep extraction, 
             # we must ensure API is exported if crawler or site-parser made changes.
             generate_api_export(db)
@@ -214,6 +218,11 @@ def main():
     else:
         logger.info("No tactical need for heavy scan (HTML hashes match and idle/day mode).")
         # Ensure API is still updated in case Crawler found text updates
+        try:
+            from history_crawler import process_history
+            process_history(limit_days=3)
+        except: pass
+        
         db = load_json(UNIFIED_DB, default=[])
         generate_api_export(db)
 

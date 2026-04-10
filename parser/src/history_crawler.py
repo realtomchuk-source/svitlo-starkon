@@ -217,7 +217,8 @@ def process_history(limit_days=7):
             news_text = extract_text_from_post(item["link"])
             
             # Find existing entry in DB to see if we need to update it
-            existing_entry = next((e for e in db if e.get("target_date") == item["date"]), None)
+            # CRITICAL: Find the LATEST (most recent) entry, not the first one.
+            existing_entry = next((e for e in reversed(db) if e.get("target_date") == item["date"]), None)
             
             if existing_entry and news_text:
                 # Apply text overrides to EXISTING entry
