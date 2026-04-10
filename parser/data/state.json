@@ -3,7 +3,7 @@
   "last_success_site": "2026-04-10T12:16:19.240066+03:00",
   "last_site_hash": "5ab4e1f35fca38adad07bd29be02aaee",
   "current_source": "site",
-  "override_until": "2026-04-10T12:54:17.217477+03:00",
-  "override_interval_minutes": 15,
+  "override_until": null,
+  "override_interval_minutes": null,
   "last_html_hash": "261ff3a13a7e8aee352e38c2a00dbb06"
 }
