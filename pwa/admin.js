@@ -801,7 +801,7 @@ function appendLog(msg, type = 'info') {
 function formatRelative(iso) {
     if (!iso) return '—';
     let dateStr = iso;
-    if (!/[Z+\-]\d{2}/.test(dateStr.slice(-6))) {
+    if (!/Z$|[+-]\d{2}:\d{2}$/.test(dateStr)) {
         dateStr += 'Z';
     }
     const diff = Date.now() - new Date(dateStr).getTime();
@@ -818,7 +818,7 @@ function formatFull(iso) {
     // If no timezone info, the timestamp is UTC (from GitHub Actions runner)
     // Append 'Z' so JS interprets it correctly instead of as local time
     let dateStr = iso;
-    if (!/[Z+\-]\d{2}/.test(dateStr.slice(-6))) {
+    if (!/Z$|[+-]\d{2}:\d{2}$/.test(dateStr)) {
         dateStr += 'Z';
     }
     return new Date(dateStr).toLocaleString('uk-UA', {
