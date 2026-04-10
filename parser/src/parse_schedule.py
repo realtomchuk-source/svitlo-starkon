@@ -4,12 +4,12 @@ import re
 import json
 import logging
 from datetime import datetime, timedelta
-from modules.utils import load_json, save_json, get_now, should_run, cleanup_old_files
+from modules.utils import load_json, save_json, get_now, should_run, cleanup_old_files, is_tomorrow_processed
 from modules.site_parser import run_site_parser
 from modules.ocr_helper import extract_text_from_image
 from modules.table_parser import parse_schedule_from_text, validate_queues
 from modules.text_parser import apply_text_overrides
-from config import STATE_FILE, UNIFIED_DB, SCHEDULE_API_FILE, RAW_SITE_DIR, LOGS_DIR, HISTORY_API_FILE, HEALTH_FILE, ARCHIVE_DIR
+from config import STATE_FILE, UNIFIED_DB, SCHEDULE_API_FILE, RAW_SITE_DIR, LOGS_DIR, HISTORY_API_FILE, HEALTH_FILE, ARCHIVE_DIR, EVENING_START_HOUR
 
 logger = logging.getLogger("SSSK-Main")
 
@@ -137,10 +137,14 @@ def main():
     curr_hour = now.hour
     curr_minute = now.minute
 
+    # 0. Статус розкладу на завтра та режим моніторингу
+    tomorrow_ready = is_tomorrow_processed()
+    is_aggressive = EVENING_START_HOUR <= curr_hour <= 23 and not tomorrow_ready
+
     # 1. Спеціальна обробка: Дедлайн 23:50 (Авто-світло)
     from generate_today import generate_today_json
     if curr_hour == 23 and curr_minute >= 50:
-        if not is_tomorrow_processed():
+        if not tomorrow_ready:
             logger.info("DEADLINE reached: Tomorrow schedule not found. Ensuring power-on state.")
             update_health("ok", "Дедлайн: Графік не знайдено, світло є", "DEADLINE")
             generate_today_json()
@@ -157,9 +161,7 @@ def main():
         update_health("ok", "Очікування наступного запуску", current_mode)
         return
 
-    # 3. Визначення пріоритетного завдання
-    tomorrow_ready = is_tomorrow_processed()
-    is_aggressive = EVENING_START_HOUR <= curr_hour <= 23 and not tomorrow_ready
+    # 3. Пріоритетне завдання вже визначене через is_aggressive
 
     # 4. Легкий моніторинг (Детектор змін)
     from modules.site_parser import check_site_light
