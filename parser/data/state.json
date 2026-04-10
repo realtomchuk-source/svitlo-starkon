@@ -1,9 +1,9 @@
 {
-  "last_run": "2026-04-10T10:50:35.964991+03:00",
-  "last_success_site": "2026-04-10T10:50:33.142228+03:00",
+  "last_run": "2026-04-10T11:17:20.444023+03:00",
+  "last_success_site": "2026-04-10T11:17:17.842695+03:00",
   "last_site_hash": "5ab4e1f35fca38adad07bd29be02aaee",
   "current_source": "site",
-  "override_until": "2026-04-10T11:03:01.116698+03:00",
+  "override_until": "2026-04-10T12:17:10.282100+03:00",
   "override_interval_minutes": 15,
-  "last_html_hash": "9061f84c3d0b89e6287248846e226999"
+  "last_html_hash": "857b104fdda91198800b30e3bef7971a"
 }
