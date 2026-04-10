@@ -11,9 +11,11 @@ ALL_GROUPS = ["1.1", "1.2", "2.1", "2.2", "3.1", "3.2", "4.1", "4.2", "5.1", "5.
 def apply_text_overrides(queues, html, target_date=None):
     """
     Parses HTML content for textual messages and applies overrides only if the date matches.
+    Returns (updated_queues, list_of_announcements)
     """
+    announcements = []
     if not html or not queues:
-        return queues
+        return queues, announcements
 
     # 1. Split content into logical blocks (paragraphs or lines)
     soup = BeautifulSoup(html, 'html.parser')
@@ -24,40 +26,32 @@ def apply_text_overrides(queues, html, target_date=None):
     blocks = re.split(r'\n\s*\n', raw_text)
 
     overrides_found = 0
-    now = datetime.now()
     
     for block in blocks:
         block = block.strip()
         if not block: continue
         
         # 2. Date Validation per block
-        # We need to extract the date from this specific block if possible
         date_keywords = ["січня", "лютого", "березня", "квітня", "травня", "червня", 
                          "липня", "серпня", "вересня", "жовтня", "листопада", "грудня"]
-        # Use a more restrictive pattern to avoid matching queue numbers (like 1.1) as dates
-        # Typically dates in news are "09.04" or "9 квітня"
         date_pattern = r"(?<!\d)(?<!черга )(?<!черги )(\d{1,2})[\.\s/]+(\d{1,2}|" + "|".join(date_keywords) + r")(?!\d)"
         
         date_match = re.search(date_pattern, block, re.IGNORECASE)
         if date_match and target_date:
             day_str = date_match.group(1).zfill(2)
             if not target_date.startswith(day_str):
-                # logger.debug(f"Skipping block due to date mismatch: {day_str} vs {target_date}")
                 continue
 
-        # 3. Deep Segmenting: split the block into sentences/segments
-        # This prevents a state keyword in sentence 1 from affecting queues in sentence 2
-        # Use negative lookahead to avoid splitting on dots inside queue numbers like "1.1"
+        # 3. Deep Segmenting
         segments = re.split(r'\.(?!\d)|;|!|\n', block)
         
         for segment in segments:
-            segment = segment.strip().lower()
-            if not segment: continue
+            segment_clean = segment.strip()
+            if not segment_clean: continue
             
-            # Find all queues in this specific segment
+            # Find all queues in this segment
             found_queues = []
-            # Match formats: "1.1", "черга 1.1", "підчерга 1.1", "1.1 черг"
-            q_matches = re.finditer(r"(?:черг[аі]|підчерг[аі])?\s*([1-6][\.,][12])", segment)
+            q_matches = re.finditer(r"(?:черг[аі]|підчерг[аі])?\s*([1-6][\.,][12])", segment_clean, re.IGNORECASE)
             for m in q_matches:
                 gid = m.group(1).replace(',', '.')
                 if gid in ALL_GROUPS:
@@ -65,51 +59,86 @@ def apply_text_overrides(queues, html, target_date=None):
             
             if not found_queues: continue
             
-            # Determine state for THIS segment
+            # Determine state
             action = None
-            if any(kw in segment for kw in ["заживлена", "заживлено", "з'явиться світло", "відмінено", "скасовано", "без обмежень", "включено"]):
+            seg_lower = segment_clean.lower()
+            if any(kw in seg_lower for kw in ["заживлена", "заживлено", "з'явиться світло", "відмінено", "скасовано", "без обмежень", "включено", "включена", "світло з'явилося", "заживлення"]):
                 action = "ON"
-            elif any(kw in segment for kw in ["відключено", "знеструмлено", "буде відсутня", "обмеження"]):
+            elif any(kw in seg_lower for kw in ["відключено", "відключена", "відключення", "триватиме", "знеструмлено", "знеструмлена", "буде відсутня", "обмеження", "вимкнено", "вимкнена", "зникне світло"]):
                 action = "OFF"
             
             if not action: continue
             
-            # Parse times in THIS segment
+            # Parse times
             intervals = []
-            # Pattern: 07:00-11:00 or 07-11 (supports various dashes)
-            time_matches = re.findall(r'(\d{1,2})(?:[:.]00)?\s*[–—-]\s*(\d{1,2})(?:[:.]00)?', segment)
-            for s_str, e_str in time_matches:
-                intervals.append((int(s_str) % 24, int(e_str) % 24 or 24))
             
-            # Pattern: з 07 до 11
-            from_to_matches = re.findall(r'з\s*(\d{1,2})(?:[:.]00)?\s*до\s*(\d{1,2})(?:[:.]00)?', segment)
-            for s_str, e_str in from_to_matches:
-                intervals.append((int(s_str) % 24, int(e_str) % 24 or 24))
+            # 1. Range Pattern: 07:00-11:00 or 07-11
+            time_matches = re.finditer(r'(?<![.\d])(\d{1,2})(?::00)?\s*[–—-]\s*(\d{1,2})(?::00)?(?![.\d])', segment_clean)
+            for m in time_matches:
+                s_val, e_val = int(m.group(1)), int(m.group(2))
+                if s_val < 24 and e_val <= 24:
+                    intervals.append({'s': s_val % 24, 'e': e_val % 24 or 24, 'type': 'range'})
+            
+            # 2. Pattern: з 07:00 до 11:00
+            if not intervals:
+                from_to_matches = re.finditer(r'з\s*(\d{1,2})(?::00)?\s*до\s*(\d{1,2})(?::00)?', segment_clean)
+                for m in from_to_matches:
+                    intervals.append({'s': int(m.group(1)) % 24, 'e': int(m.group(2)) % 24 or 24, 'type': 'range'})
 
-            if intervals:
-                logger.info(f"Text Match: Queues {found_queues} {action} at {intervals}")
+            # 3. Single patterns: до 12:00 or з 15:00
+            if not intervals:
+                upto_matches = re.finditer(r'\bдо\b\s*(\d{1,2})(?::00)?', segment_clean)
+                for m in upto_matches:
+                    intervals.append({'s': 0, 'e': int(m.group(1)) % 24 or 24, 'type': 'upto'})
+                
+                from_matches = re.finditer(r'\b(?:з|о)\b\s*(\d{1,2})(?::00)?', segment_clean)
+                for m in from_matches:
+                    intervals.append({'s': int(m.group(1)) % 24, 'e': 24, 'type': 'from'})
 
-            # Apply
+            # Store detection for Admin Panel
+            announcements.append({
+                "queues": found_queues,
+                "action": action,
+                "intervals": intervals,
+                "text": segment_clean[:200] + ("..." if len(segment_clean) > 200 else "")
+            })
+
+            # Apply to grid
             val = "1" if action == "ON" else "0"
             for g in found_queues:
                 if g not in queues: continue
                 q_list = list(queues[g])
                 
-                # If intervals found, apply only those
                 if intervals:
-                    for s, e in intervals:
-                        for h in range(s, e):
-                            if 0 <= h < 24: q_list[h] = val
-                        overrides_found += 1
-                else:
-                    # If NO intervals but the segment says "Queue X is ON/OFF"
-                    # We might want to apply it for the current/remaining hour?
-                    # For safety, we only touch specific hours if mentioned.
-                    pass
+                    for item in intervals:
+                        s, e = item['s'], item['e']
+                        itype = item['type']
+                        
+                        if itype == 'range':
+                            for h in range(s, e):
+                                if 0 <= h < 24: q_list[h] = val
+                        elif itype == 'upto':
+                            # Extension logic: fill backwards from e to the start of the current block
+                            # or at least the previous hour
+                            current_h = e - 1
+                            limit = 6 # Don't fill more than 6 hours back blindly
+                            while current_h >= 0 and limit > 0:
+                                was_zero = (q_list[current_h] == '0')
+                                q_list[current_h] = val
+                                if was_zero and current_h > 0: 
+                                    # If we hit an existing zero, we've successfully "extended" the block
+                                    break
+                                current_h -= 1
+                                limit -= 1
+                        elif itype == 'from':
+                            # From logic: fill forward
+                            for h in range(s, min(24, s + 4)): # Default forward 4h if no end
+                                q_list[h] = val
+                    overrides_found += 1
                 
                 queues[g] = "".join(q_list)
 
     if overrides_found > 0:
         logger.info(f"Applied {overrides_found} textual schedule overrides.")
     
-    return queues
+    return queues, announcements

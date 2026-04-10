@@ -179,6 +179,7 @@ async function refreshAll() {
         if (tomorrowData) {
             renderScheduleGrid(tomorrowData, 'tomorrow-grid');
         }
+        renderAnnouncements();
         renderHistory();
         
         if (healthData) {
@@ -259,10 +260,25 @@ function renderDashboard(tomorrowData = null) {
     setText('stat-override', overrideActive ? '⚡ Активний' : '— Вимкнено');
 
     // State details
-    setKv('kv-last-site',     parserState.last_success_site, 'muted');
-    setKv('kv-hash-site',     (parserState.last_site_hash || '—').substring(0, 12) + '…', 'muted');
+    setKv('kv-last-site',     parserState.last_run, 'muted');
+    setKv('kv-hash-site',     (parserState.last_html_hash || '—').substring(0, 12) + '…', 'muted');
     setKv('kv-source-mode',   src, 'amber');
-    setKv('kv-override-until', parserState.override_until || 'Вимкнено', 'muted');
+    
+    // Adaptive Intelligence Mode from health.json
+    if (healthData) {
+        const adaptiveEl = document.getElementById('kv-adaptive-mode');
+        if (adaptiveEl) {
+            const modeMap = {
+                'AGGRESSIVE': { text: '🚀 Пошук завтра (Агресивний)', color: 'var(--accent-amber)' },
+                'DAY': { text: '☀️ Денний моніторинг', color: 'var(--accent-blue)' },
+                'IDLE': { text: '🌙 Економ режим (Очікування)', color: 'var(--text-muted)' },
+                'DEADLINE': { text: '⚠️ Дедлайн: Світло є', color: 'var(--accent-green)' }
+            };
+            const m = modeMap[healthData.mode] || { text: healthData.mode || 'IDLE', color: 'var(--text-muted)' };
+            adaptiveEl.textContent = m.text;
+            adaptiveEl.style.color = m.color;
+        }
+    }
 
     // Handle tomorrow card visibility
     const tomorrowCard = document.getElementById('tomorrow-card');
@@ -321,6 +337,63 @@ function showDashboardError(msg) {
     setText('stat-last-run-sub', msg);
 }
 
+// ─── Render: Announcements ───────────────────────────────────────────────────
+
+function renderAnnouncements() {
+    const container = document.getElementById('announcements-list');
+    if (!container) return;
+
+    // Collect all announcements from the last 10 records
+    // Flat mapping them and sorting by timestamp (newest first)
+    const all = [];
+    [...scheduleData].reverse().slice(0, 15).forEach(entry => {
+        if (entry.announcements && Array.isArray(entry.announcements)) {
+            entry.announcements.forEach(ann => {
+                all.push({
+                    ...ann,
+                    timestamp: entry.timestamp,
+                    date: entry.target_date || entry.date
+                });
+            });
+        }
+    });
+
+    if (all.length === 0) {
+        container.innerHTML = `
+            <div class="announcement-empty">
+                Текстових анонсів поки не виявлено.<br>
+                З'являться автоматично після аналізу статей Обленерго.
+            </div>`;
+        return;
+    }
+
+    // Sort by timestamp if not already
+    container.innerHTML = all.map(ann => {
+        const timeStr = new Date(ann.timestamp).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+        
+        const queuesHtml = ann.queues.map(q => `<span class="announcement-tag tag-queue">${q}</span>`).join('');
+        const actionHtml = ann.action === 'ON' 
+            ? '<span class="announcement-tag tag-on">Світло є</span>'
+            : '<span class="announcement-tag tag-off">Вимкнення</span>';
+            
+        const intervalsHtml = ann.intervals.length > 0 
+            ? ann.intervals.map(([s, e]) => `<span class="announcement-tag tag-time">${s}:00-${e}:00</span>`).join('')
+            : '';
+
+        return `
+            <div class="announcement-item">
+                <div class="announcement-meta">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-right: 4px;">${ann.date} ${timeStr}</span>
+                    ${queuesHtml}
+                    ${actionHtml}
+                    ${intervalsHtml}
+                </div>
+                <div class="announcement-text">${escHtml(ann.text)}</div>
+            </div>
+        `;
+    }).join('');
+}
+
 // ─── Render: Schedule Grid ─────────────────────────────────────────────────────
 
 function renderScheduleGrid(data = todayData, containerId = 'schedule-grid') {
@@ -346,9 +419,7 @@ function renderScheduleGrid(data = todayData, containerId = 'schedule-grid') {
     for (let i = 0; i < 24; i++) {
         const hCell = document.createElement('div');
         hCell.className = 'hour-header';
-        const startStr = String(i).padStart(2, '0') + ':00';
-        const endStr = String(i + 1).padStart(2, '0') + ':00';
-        hCell.innerHTML = `${startStr}<br>—<br>${endStr}`;
+        hCell.textContent = String(i).padStart(2, '0');
         headerRow.appendChild(hCell);
     }
     grid.appendChild(headerRow);

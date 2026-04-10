@@ -14,6 +14,18 @@ def get_hash(data_bytes_or_str):
         data_bytes_or_str = data_bytes_or_str.encode('utf-8')
     return hashlib.md5(data_bytes_or_str).hexdigest()
 
+def check_site_light():
+    """Швидка перевірка сторінки через requests (без браузера)."""
+    import requests
+    from config import OBL_URL, HEADERS
+    try:
+        resp = requests.get(OBL_URL, headers=HEADERS, timeout=20)
+        if resp.status_code == 200:
+            return get_hash(resp.text)
+    except Exception as e:
+        logger.error(f"Light check error: {e}")
+    return None
+
 def fetch_page_dynamic(url):
     """Fetches the page content using Playwright."""
     logger.info(f"Fetching {url} with Playwright...")

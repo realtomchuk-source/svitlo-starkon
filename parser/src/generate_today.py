@@ -27,32 +27,38 @@ def generate_today_json():
             best_entry = entry
             break
 
-    if not best_entry and db:
-        best_entry = db[-1]
-
     if not best_entry:
-        logger.warning("No schedule data found, cannot generate today.json")
-        write_status("error", "No data")
-        return False
+        logger.warning(f"No schedule data found for {today_str} or {tomorrow_str}. Applying 'All-Clear' fallback.")
+        # Fallback: All queues available, no outages
+        queues = {str(i): ["1"] * 24 for i in [1, 2, 3, 4, 5, 6, "4.1", "4.2"]}
+        today_data = {
+            "date": today_str,
+            "updated_at": get_now().isoformat(),
+            "mode": "schedule",
+            "message": "Графік обмежень не оприлюднено. Попередньо: відключень не прогнозується.",
+            "has_tomorrow": False,
+            "queues": queues,
+            "is_fallback": True
+        }
+    else:
+        queues = best_entry.get("queues")
+        mode = best_entry.get("mode", "schedule")
+        date_short = best_entry.get("date", today_str)
+        date_full = best_entry.get("date_full", "")
 
-    queues = best_entry.get("queues")
-    mode = best_entry.get("mode", "schedule")
-    date_short = best_entry.get("date", today_str)
-    date_full = best_entry.get("date_full", "")
+        if not queues:
+            logger.warning("No structured queue data in latest entry")
+            write_status("error", "No queues")
+            return False
 
-    if not queues:
-        logger.warning("No structured queue data in latest entry")
-        write_status("error", "No queues")
-        return False
-
-    today_data = {
-        "date": date_short,
-        "updated_at": get_now().isoformat(),
-        "mode": mode,
-        "message": best_entry.get("message", f"Графік погодинних відключень на {date_full}"),
-        "has_tomorrow": True,
-        "queues": queues,
-    }
+        today_data = {
+            "date": date_short,
+            "updated_at": get_now().isoformat(),
+            "mode": mode,
+            "message": best_entry.get("message", f"Графік погодинних відключень на {date_full}"),
+            "has_tomorrow": (date_short == tomorrow_str),
+            "queues": queues,
+        }
 
     try:
         os.makedirs(os.path.dirname(TODAY_JSON_FILE), exist_ok=True)

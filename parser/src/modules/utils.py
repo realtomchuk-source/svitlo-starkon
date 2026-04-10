@@ -44,45 +44,62 @@ def get_now():
 
 # send_telegram_alert removed (Telegram purge)
 
-def should_run(state):
-    from config import PEAK_HOUR_START, PEAK_HOUR_END, PEAK_INTERVAL, DEFAULT_INTERVAL_HOURS
-    now = get_now()
+def is_tomorrow_processed():
+    """Перевіряє, чи є в базі успішно оброблений графік на завтра."""
+    from config import UNIFIED_DB
+    db = load_json(UNIFIED_DB, default=[])
+    tomorrow_str = (get_now() + timedelta(days=1)).strftime("%d.%m")
     
-    # 1. Перевірка Override
+    # Шукаємо успішно оброблений запис на завтра
+    for entry in reversed(db):
+        if entry.get("target_date") == tomorrow_str and entry.get("processed"):
+            return True
+    return False
+
+def should_run(state):
+    from config import (
+        MORNING_START_HOUR, EVENING_START_HOUR, 
+        AGGRESSIVE_INTERVAL, DAY_MONITOR_INTERVAL, IDLE_INTERVAL
+    )
+    now = get_now()
+    curr_hour = now.hour
+    
+    # 1. Перевірка Override (Ручний запуск)
     override_until_str = state.get("override_until")
     if override_until_str:
         override_until = datetime.fromisoformat(override_until_str)
         if now < override_until:
-            interval = state.get("override_interval_minutes", 0)
-            if interval <= 0: 
-                logger.info("Override active (forced run).")
-                return True
-            
-            last_run_str = state.get("last_run")
-            if not last_run_str: return True
-            
-            last_run = datetime.fromisoformat(last_run_str)
-            if (now - last_run).total_seconds() / 60 >= interval:
-                return True
-            return False
+            logger.info("Override active (forced run).")
+            return True
         else:
             state["override_until"] = None
-            state["override_interval_minutes"] = None
             save_json(STATE_FILE, state)
-            logger.info("Override expired.")
 
-    # 2. Стандартний розклад
-    curr_hour = now.hour
     last_run_str = state.get("last_run")
     if not last_run_str: return True
     last_run = datetime.fromisoformat(last_run_str)
+    diff_minutes = (now - last_run).total_seconds() / 60
+
+    # 2. Визначення режиму
+    tomorrow_ready = is_tomorrow_processed()
     
-    # Піковий годинник (кожні PEAK_INTERVAL хвилин)
-    if PEAK_HOUR_START <= curr_hour < PEAK_HOUR_END:
-        return (now - last_run).total_seconds() / 60 >= PEAK_INTERVAL
-    
-    # Решта доби (DEFAULT_INTERVAL_HOURS годин)
-    return (now - last_run).total_seconds() / 3600 >= DEFAULT_INTERVAL_HOURS
+    # Режим AGGRESSIVE: Вечір і завтрашній графік ще не знайдено
+    if EVENING_START_HOUR <= curr_hour <= 23 and not tomorrow_ready:
+        mode = "AGGRESSIVE"
+        interval = AGGRESSIVE_INTERVAL
+    # Режим DAY: День (робочий час)
+    elif MORNING_START_HOUR <= curr_hour < EVENING_START_HOUR:
+        mode = "DAY"
+        interval = DAY_MONITOR_INTERVAL
+    # Режим IDLE: Ніч або графік на завтра вже є
+    else:
+        mode = "IDLE"
+        interval = IDLE_INTERVAL
+
+    should = diff_minutes >= interval
+    if should:
+        logger.info(f"SmartRun: Mode={mode}, Interval={interval}m, Diff={diff_minutes:.1f}m -> RUN")
+    return should
 
 def cleanup_old_files(directory, days=7):
     if not os.path.exists(directory): return

@@ -18,9 +18,22 @@ TODAY_JSON_FILE = os.path.join(PWA_DATA_DIR, "today.json")
 # RAW_TELEGRAM_DIR removed (Telegram purge)
 
 TIMEZONE = "Europe/Kiev"
+KYIV_TZ_OFFSET = 3  # Поточне зміщення (UTC+3)
 
 OBL_URL = "https://hoe.com.ua/page/pogodinni-vidkljuchennja"
+NEWS_URL = "https://hoe.com.ua/post/novini-kompaniji"
 HEADERS = {"User-Agent": "SSSK-Monitor/2.0 (Professional)"}
+
+# Режими моніторингу (години за Києвом)
+MORNING_START_HOUR = 6
+EVENING_START_HOUR = 19
+DEADLINE_HOUR = 23
+DEADLINE_MINUTE = 50
+
+# Інтервали перевірок (у хвилинах)
+AGGRESSIVE_INTERVAL = 15      # Пошук "завтра" ввечері
+DAY_MONITOR_INTERVAL = 40    # Моніторинг протягом дня
+IDLE_INTERVAL = 120          # Нічний режим або коли все знайдено
 
 PEAK_HOUR_START = 19
 PEAK_HOUR_END = 23

@@ -37,13 +37,14 @@ def calculate_delta(old_entry, new_entry):
     
     return "; ".join(changes) if changes else "Змін у самому графіку не виявлено (лише оновлення картинки або статтей)"
 
-def update_health(status="ok", message=""):
+def update_health(status="ok", message="", mode="IDLE"):
     """Saves system health metrics."""
     health = {
         "timestamp": get_now().isoformat(),
         "status": status,
+        "mode": mode,
         "message": message,
-        "version": "2.0-PRO"
+        "version": "2.1-Adaptive"
     }
     save_json(HEALTH_FILE, health)
 
@@ -86,7 +87,8 @@ def process_image(img_bytes, source_used, raw_path, state, html_content=None):
 
     if structured and html_content:
          logger.info("Applying text overrides from HTML...")
-         structured["queues"] = apply_text_overrides(structured["queues"], html_content, date_found)
+         structured["queues"], announcements = apply_text_overrides(structured["queues"], html_content, date_found)
+         entry["announcements"] = announcements
 
     db = load_json(UNIFIED_DB, default=[])
     last_entry = next((e for e in reversed(db) if e.get("target_date") == date_found), None) if date_found else None
@@ -98,7 +100,8 @@ def process_image(img_bytes, source_used, raw_path, state, html_content=None):
         "raw_path": raw_path,
         "is_update": state["last_run"] is None or "оновлено" in (raw_text or "").lower(),
         "processed": False,
-        "raw_text_summary": raw_text[:500] if raw_text else ""
+        "raw_text_summary": raw_text[:500] if raw_text else "",
+        "announcements": []
     }
 
     if structured and validate_queues(structured.get("queues", {})):
@@ -121,113 +124,90 @@ def process_image(img_bytes, source_used, raw_path, state, html_content=None):
         return False
 
 def main():
-    logger.info("Starting SSSK Parser cycle (Professional Mode)")
+    logger.info("Starting SSSK Parser cycle (Adaptive Intelligence Mode)")
 
     state = load_json(STATE_FILE, default={
         "last_run": None,
-        "last_success_site": None,
         "last_site_hash": None,
-        "current_source": "site",
-        "override_until": None,
-        "override_interval_minutes": None
+        "last_html_hash": None,
+        "current_source": "site"
     })
 
-    override_source = os.getenv("OVERRIDE_SOURCE")
-    if override_source:
-        state["current_source"] = override_source
-        logger.info(f"Source override detected: {override_source}")
+    now = get_now()
+    curr_hour = now.hour
+    curr_minute = now.minute
 
-    override_interval = os.getenv("OVERRIDE_INTERVAL") or "0"
-    if int(override_interval) > 0:
-        now = get_now()
-        duration_h = int(os.getenv("OVERRIDE_DURATION") or "1")
-        state["override_until"] = (now + timedelta(hours=duration_h)).isoformat()
-        state["override_interval_minutes"] = int(override_interval)
-        logger.info(f"Interval override activated: {override_interval}m until {state['override_until']}")
+    # 1. Спеціальна обробка: Дедлайн 23:50 (Авто-світло)
+    from generate_today import generate_today_json
+    if curr_hour == 23 and curr_minute >= 50:
+        if not is_tomorrow_processed():
+            logger.info("DEADLINE reached: Tomorrow schedule not found. Ensuring power-on state.")
+            update_health("ok", "Дедлайн: Графік не знайдено, світло є", "DEADLINE")
+            generate_today_json()
+            return
+    
+    # Визначаємо режим для health
+    current_mode = "DAY"
+    if is_aggressive: current_mode = "AGGRESSIVE"
+    elif curr_hour < 6 or (curr_hour >= 20 and tomorrow_ready): current_mode = "IDLE"
 
+    # 2. Перевірка розкладу
     if not should_run(state):
-        logger.info("Skipping run (schedule policy says no).")
+        logger.info("SmartRun: Skipping (interval not reached).")
+        update_health("ok", "Очікування наступного запуску", current_mode)
         return
 
-    logger.info(f"Executing parser run. Mode: {state['current_source']}")
+    # 3. Визначення пріоритетного завдання
+    tomorrow_ready = is_tomorrow_processed()
+    is_aggressive = EVENING_START_HOUR <= curr_hour <= 23 and not tomorrow_ready
 
-    if state["current_source"] == "manual":
-        manual_json = os.getenv("MANUAL_DATA")
-        if manual_json:
-            try:
-                data = json.loads(manual_json)
-                db = load_json(UNIFIED_DB, default=[])
-                date_found = data.get("target_date")
-                last_entry = next((e for e in reversed(db) if e.get("target_date") == date_found), None) if date_found else None
-                
-                entry = {
-                    "timestamp": get_now().isoformat(),
-                    "target_date": date_found,
-                    "source": "manual",
-                    "queues": data.get("queues", {}),
-                    "mode": data.get("mode", "schedule"),
-                    "date": data.get("date", ""),
-                    "date_full": data.get("date_full", ""),
-                    "message": data.get("message", "Ручне введення через адмін-панель"),
-                    "is_update": True,
-                    "processed": True,
-                    "raw_path": "manual_input"
-                }
-                entry["change_desc"] = calculate_delta(last_entry, entry)
-                db.append(entry)
-                save_json(UNIFIED_DB, db)
-                generate_api_export(db)
-                logger.info("SUCCESS: Manual data applied.")
-            except Exception as e:
-                logger.error(f"Manual data error: {e}")
-        else:
-            logger.warning("Manual mode selected but no MANUAL_DATA provided.")
+    # 4. Легкий моніторинг (Детектор змін)
+    from modules.site_parser import check_site_light
+    current_light_hash = check_site_light()
+    last_light_hash = state.get("last_html_hash")
+    
+    site_changed = current_light_hash and current_light_hash != last_light_hash
+    if site_changed:
+        logger.info("DETECTOR: Site HTML changed! Forcing heavy scan.")
 
-    elif state["current_source"] == "archive":
-        if not os.path.exists(ARCHIVE_DIR):
-            os.makedirs(ARCHIVE_DIR)
-            logger.info(f"Created archive directory: {ARCHIVE_DIR}")
+    # 5. Виконання завдань
+    # А) Пошук графіка на завтра в новинах (якщо вечір і ще не знайдено)
+    if is_aggressive:
+        logger.info("Mode: AGGRESSIVE. Searching for tomorrow's schedule in News...")
+        try:
+            from history_crawler import process_history
+            process_history(limit_days=2) # Перевіряємо тільки останні новини
+        except Exception as e:
+            logger.error(f"History crawling error: {e}")
+
+    # Б) Стандартний моніторинг головної (якщо є зміни або плановий запуск)
+    # Плановий запуск кожні 2 години в будь-якому випадку для надійності
+    last_run_str = state.get("last_run")
+    last_run = datetime.fromisoformat(last_run_str) if last_run_str else now - timedelta(hours=5)
+    force_heavy = (now - last_run).total_seconds() / 3600 >= 2
+
+    if site_changed or force_heavy or is_aggressive:
+        logger.info(f"Executing heavy scan. Reason: site_changed={site_changed}, force={force_heavy}, aggressive={is_aggressive}")
         
-        files = [f for f in os.listdir(ARCHIVE_DIR) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
-        if not files:
-            logger.info("Archive is empty.")
-        else:
-            logger.info(f"Found {len(files)} files in archive.")
-            for filename in sorted(files):
-                filepath = os.path.join(ARCHIVE_DIR, filename)
-                with open(filepath, "rb") as f:
-                    img_bytes = f.read()
-                success = process_image(img_bytes, f"archive:{filename}", filepath, state)
-                if success:
-                    # Move to a subfolder or delete to prevent reprocessing?
-                    # For now, we just log.
-                    logger.info(f"Archived file {filename} processed.")
-
+        site_res = run_site_parser(state)
+        if site_res:
+            state["last_site_hash"] = site_res.get("hash")
+            state["last_html_hash"] = site_res.get("html_hash")
+            
+            if site_res.get("changed"):
+                process_image(site_res["img_bytes"], "site", site_res["raw_path"], state, site_res.get("html"))
     else:
-        # Default SITE logic
-        site_res = None
-        if state["current_source"] in ["both", "site"]:
-            site_res = run_site_parser(state)
-            if site_res:
-                state["last_site_hash"] = site_res.get("hash")
-                state["last_html_hash"] = site_res.get("html_hash")
-                state["last_success_site"] = get_now().isoformat()
+        logger.info("No tactical need for heavy scan (HTML hashes match and idle/day mode).")
 
-        if site_res and site_res.get("changed"):
-            process_image(site_res["img_bytes"], "site", site_res["raw_path"], state, site_res.get("html"))
-        else:
-            logger.info("No content changes detected on source site.")
-            update_health("ok", "Система в очікуванні змін")
-
-    # ALWAYS update today.json regardless of site changes
-    # to handle date-rollover or force-refresh cases.
-    generate_today_json_from_db()
+    # 6. Оновлення вихідних даних
+    generate_today_json()
     
     cleanup_old_files(RAW_SITE_DIR, days=7)
     cleanup_old_files(LOGS_DIR, days=30)
 
-    state["last_run"] = get_now().isoformat()
+    state["last_run"] = now.isoformat()
     save_json(STATE_FILE, state)
+    update_health("ok", "Цикл завершено успішно", current_mode)
     logger.info("Cycle completed successfully.")
 
 if __name__ == "__main__":

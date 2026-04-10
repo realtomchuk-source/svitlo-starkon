@@ -456,3 +456,32 @@
 2026-04-09 16:38:25,516 [INFO] SSSK-Main: SUCCESS: Processed site schedule for 09.04
 2026-04-09 16:38:25,540 [INFO] SSSK-GenerateToday: today.json generated: C:\Users\АТом\Desktop\Antigravity\SSSK\pwa\data\today.json
 2026-04-09 16:38:25,547 [INFO] SSSK-Main: Cycle completed successfully.
+2026-04-10 10:17:48,203 [INFO] SSSK-HistoryCrawler: === Starting history crawler (target: last 7 days) ===
+2026-04-10 10:17:48,203 [INFO] SSSK-HistoryCrawler: Fetching news list: https://hoe.com.ua/post/novini-kompaniji
+2026-04-10 10:17:48,896 [INFO] SSSK-HistoryCrawler:   Found: 'Прогноз обмежень на 10 квітня' -> date=10.04, link=https://hoe.com.ua/post/prognoz-obmezhen-na-10-kvitnja.html
+2026-04-10 10:17:48,896 [INFO] SSSK-HistoryCrawler:   Found: 'Прогноз обмежень на 9 квітня (ОНОВЛЕНО)' -> date=09.04, link=https://hoe.com.ua/post/prognoz-obmezhen-na-9-kvitnja.html
+2026-04-10 10:17:48,897 [INFO] SSSK-HistoryCrawler:   Found: 'Графіки обмежень на 8 квітня (ОНОВЛЕНО)' -> date=08.04, link=https://hoe.com.ua/post/grafiki-obmezhen-na-8-kvitnja.html
+2026-04-10 10:17:48,897 [INFO] SSSK-HistoryCrawler:   Found: 'Оновлено графіки погодинних відключень електроенергії' -> date=None, link=https://hoe.com.ua/post/onovleno-grafiki-pogodinnih-vidkljuchen-elektroenergiji.html
+2026-04-10 10:17:48,898 [INFO] SSSK-HistoryCrawler:   Found: 'Обмеження на 3 квітня' -> date=03.04, link=https://hoe.com.ua/post/obmezhennja-na-3-kvitnja.html
+2026-04-10 10:17:48,899 [INFO] SSSK-HistoryCrawler:   Found: 'Прогноз обмежень на 24 березня' -> date=24.03, link=https://hoe.com.ua/post/prognoz-obmezhen-na-24-bereznja.html
+2026-04-10 10:17:48,899 [INFO] SSSK-HistoryCrawler: Fetching news list: https://hoe.com.ua/post/novini-kompaniji?page=2
+2026-04-10 10:17:49,527 [WARNING] SSSK-HistoryCrawler: No <article class='item'> found on page 2
+2026-04-10 10:17:49,528 [INFO] SSSK-HistoryCrawler: Found 6 schedule-related posts.
+2026-04-10 10:17:49,529 [INFO] SSSK-HistoryCrawler: Already in DB (processed): {'21.03', '27.03', '24.03', '20.03', '23.03', '09.04', '08.04', '03.04'}
+2026-04-10 10:17:49,529 [INFO] SSSK-HistoryCrawler: Processing 10.04 from 'Прогноз обмежень на 10 квітня'...
+2026-04-10 10:17:50,469 [INFO] SSSK-HistoryCrawler:   Found 1 image(s) in post
+2026-04-10 10:17:50,471 [INFO] SSSK-HistoryCrawler:   Trying image 1/1: https://hoe.com.ua/Content/Uploads/2026/04/file20260409203903009.png
+2026-04-10 10:17:51,154 [INFO] SSSK-HistoryCrawler:   Downloaded: 302736 bytes
+2026-04-10 10:17:51,156 [INFO] SSSK-HistoryCrawler:   Running grid vision analysis...
+2026-04-10 10:17:51,282 [INFO] SSSK-GridVision: Image size: 1920x1126
+2026-04-10 10:17:51,475 [INFO] SSSK-GridVision: [dark_lines] Restricted Y-range: 65-1045
+2026-04-10 10:17:52,205 [INFO] SSSK-GridVision: [dark_lines] Grid Solved: 25V, 13H
+2026-04-10 10:17:52,327 [INFO] SSSK-GridVision: Debug grid saved to parser\data\debug_grid.png
+2026-04-10 10:17:52,368 [INFO] SSSK-HistoryCrawler:   ✅ Successfully processed 10.04 (12 queues)
+2026-04-10 10:17:53,868 [INFO] SSSK-HistoryCrawler: Skipping 09.04 — already in DB
+2026-04-10 10:17:53,868 [INFO] SSSK-HistoryCrawler: Skipping 08.04 — already in DB
+2026-04-10 10:17:53,869 [WARNING] SSSK-HistoryCrawler: Skipping 'Оновлено графіки погодинних відключень електроенергії' — could not extract date
+2026-04-10 10:17:53,869 [INFO] SSSK-HistoryCrawler: Skipping 03.04 — already in DB
+2026-04-10 10:17:53,869 [INFO] SSSK-HistoryCrawler: Skipping 24.03 — already in DB
+2026-04-10 10:17:53,873 [INFO] SSSK-HistoryCrawler: === History crawl complete. New successful entries: 1 ===
+2026-04-10 10:17:53,873 [INFO] SSSK-HistoryCrawler: Total DB entries: 13
