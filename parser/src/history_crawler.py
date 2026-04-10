@@ -221,26 +221,40 @@ def process_history(limit_days=7):
             existing_entry = next((e for e in reversed(db) if e.get("target_date") == item["date"]), None)
             
             if existing_entry and news_text:
-                # Apply text overrides to EXISTING entry
-                logger.info(f"  Checking text updates for existing entry {item['date']}...")
-                updated_queues, new_announcements = apply_text_overrides(
-                    existing_entry.get("queues", {}), news_text, item["date"]
-                )
+                # REPAIR LOGIC: If entry is missing queues_raw, it's from the old format.
+                # To fix the "dirty" queues, we MUST re-process from image.
+                # We also check if it's the current/tomorrow date to focus on active ones.
+                is_stale_format = "queues_raw" not in existing_entry and existing_entry.get("source") == "site"
                 
-                old_announcements = existing_entry.get("announcements", [])
-                if new_announcements and new_announcements != old_announcements:
-                    logger.info(f"  🔔 Found NEW text announcements for {item['date']}!")
-                    existing_entry["announcements"] = new_announcements
-                    existing_entry["queues"] = updated_queues
-                    existing_entry["timestamp"] = get_now().isoformat()
-                    existing_entry["updated_by"] = "text_digest"
-                    processed_count += 1
-                
-                # If date is already processed, we skip full image check unless it's a new image
-                if item["date"] in existing_dates:
-                    # Check if there is a NEW image URL in the post that we haven't seen?
-                    # For now, if it's text-only update for an existing date, we are done.
-                    continue
+                if is_stale_format:
+                    logger.info(f"  🔔 Entry for {item['date']} is OLD FORMAT (dirty). Removing to re-process cleanly.")
+                    db.remove(existing_entry)
+                    if item["date"] in existing_dates:
+                        existing_dates.remove(item["date"])
+                    existing_entry = None  # Force full re-processing below
+                else:
+                    # Apply text updates to EXISTING entry as usual
+                    logger.info(f"  Checking text updates for existing entry {item['date']}...")
+                    # We MUST use queues_raw as base if available, otherwise we use dirty queues (fallback)
+                    base_queues = existing_entry.get("queues_raw", existing_entry.get("queues", {})).copy()
+                    
+                    updated_queues, new_announcements = apply_text_overrides(
+                        base_queues, news_text, item["date"]
+                    )
+                    
+                    old_announcements = existing_entry.get("announcements", [])
+                    # Compare content (using sorted keys for robustness)
+                    if str(new_announcements) != str(old_announcements):
+                        logger.info(f"  🔔 Found NEW text announcements for {item['date']}!")
+                        existing_entry["announcements"] = new_announcements
+                        existing_entry["queues"] = updated_queues
+                        existing_entry["timestamp"] = get_now().isoformat()
+                        existing_entry["updated_by"] = "text_digest"
+                        processed_count += 1
+                    
+                    # If date is already processed, we skip full image check unless it's a new image
+                    if item["date"] in existing_dates:
+                        continue
 
             # Original Image Logic
             img_urls = extract_images_from_post(item["link"])
