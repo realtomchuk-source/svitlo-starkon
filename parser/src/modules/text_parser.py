@@ -26,6 +26,7 @@ def apply_text_overrides(queues, html, target_date=None):
     blocks = re.split(r'\n\s*\n', raw_text)
 
     overrides_found = 0
+    context_day = None # Track the date across blocks if one is found
     
     for block in blocks:
         block = block.strip()
@@ -34,16 +35,19 @@ def apply_text_overrides(queues, html, target_date=None):
         # 2. Date Validation per block
         date_keywords = ["січня", "лютого", "березня", "квітня", "травня", "червня", 
                          "липня", "серпня", "вересня", "жовтня", "листопада", "грудня"]
-        # Регулярний вираз для всього блоку по підчерзі
-        # Приклад: підчерга 2.2 — відключення триватиме до 12:00
-        # Підтримує різні тире, крапку з комою та гнучкі переноси
-        queue_pattern = r"(?:^|\n|;)\s*(?:[-*•]\s*)?підчерга\s*(\d+\.\d+)\s*[—:–-]\s*(.*?)(?=\s*(?:\n|;)\s*(?:[-*•]\s*)?підчерга|\Z)"
+        
         date_pattern = r"(?<!\d)(?<!черга )(?<!черги )(\d{1,2})[\.\s/]+(\d{1,2}|" + "|".join(date_keywords) + r")(?!\d)"
         
         date_match = re.search(date_pattern, block, re.IGNORECASE)
-        if date_match and target_date:
-            day_str = date_match.group(1).zfill(2)
-            if not target_date.startswith(day_str):
+        if date_match:
+            context_day = date_match.group(1).zfill(2)
+            logger.debug(f"Found new date context: {context_day}")
+
+        # If we have a context day and a target_date, enforce matching
+        if context_day and target_date:
+            target_day_only = target_date.split('.')[0].zfill(2)
+            if context_day != target_day_only:
+                logger.debug(f"Skipping block due to date mismatch: context={context_day}, target={target_day_only}")
                 continue
 
         # 3. Deep Segmenting
