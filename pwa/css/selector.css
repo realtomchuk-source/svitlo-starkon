@@ -50,7 +50,7 @@
 /* Glass Container — Final Optimized Design */
 .selector-container {
   margin: 0 20px 48px 20px;
-  padding: 14px 0;
+  padding: 10px 0;
   border-radius: 20px;
   background: var(--selector-glass-bg);
   backdrop-filter: blur(10px);
@@ -109,7 +109,7 @@
 /* Horizontal Scroll Track */
 .selector-scroll {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
@@ -126,9 +126,9 @@
 
 /* Card Base — Inactive State */
 .selector-card {
-  flex: 0 0 84px;
-  height: 84px;
-  border-radius: 18px;
+  flex: 0 0 56px;
+  height: 56px;
+  border-radius: 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -149,7 +149,7 @@
 
 /* Card Number */
 .selector-card .selector-num {
-  font-size: 32px;
+  font-size: 22px;
   font-weight: 600;
   color: #555; /* Live but secondary */
   font-variant-numeric: tabular-nums;
@@ -159,7 +159,7 @@
 
 /* Card Label — Context only for active */
 .selector-card .selector-label {
-  font-size: 11px;
+  font-size: 8px;
   font-weight: 400;
   color: #666;
   margin-top: 3px;
@@ -170,7 +170,7 @@
 /* ===== ACTIVE STATE — Focus through Geometry & System Accents ===== */
 
 .selector-card.active {
-  transform: scale(1.08); /* More pronounced jump */
+  transform: scale(1.05); /* Reduced for 80px block stability */
   border: 2px solid var(--selector-accent); /* Orange or Grey border */
   background: #FFFFFF;
   /* Multi-layered shadow: Neutral depth + Soft accent glow */
