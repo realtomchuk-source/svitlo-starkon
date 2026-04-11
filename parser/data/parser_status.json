@@ -1,7 +1,7 @@
 {
-  "last_today_generated": "2026-04-11T23:53:39.467596+03:00",
+  "last_today_generated": "2026-04-12T01:43:51.929126+03:00",
   "last_today_validation": "ok",
   "today_error": "name 'TODAY_JSON_PATH' is not defined",
   "today_mode": "schedule",
-  "today_date": "11.04"
+  "today_date": "12.04"
 }
