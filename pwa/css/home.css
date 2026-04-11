@@ -21,7 +21,7 @@
     border-radius: 18px;
     position: relative;
     overflow: hidden;
-    margin: 8px 16px 16px 16px;
+    margin: 12px 20px 0 20px;
     transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 5;
     box-sizing: border-box;
@@ -34,7 +34,7 @@
 /* --- Date Capsule (Left - Absolute) --- */
 .capsule-date-card {
     position: absolute;
-    left: 14px;
+    left: 20px;
     display: flex;
     align-items: center;
     gap: 6px;
@@ -84,7 +84,7 @@
 /* --- Clock Capsule (Right - Absolute) --- */
 .capsule-clock-card {
     position: absolute;
-    right: 14px;
+    right: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
