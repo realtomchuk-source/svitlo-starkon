@@ -16,6 +16,7 @@ export class TimelineEngineV2 {
         this.groups = config.groups || ['1.1', '1.2', '2.1', '2.2', '3.1', '3.2', '4.1', '4.2', '5.1', '5.2', '6.1', '6.2'];
         this.demoMode = config.demoMode || false;
         this.isAllClearDay = config.isAllClearDay || false;
+        this.isTomorrow = config.isTomorrow || false;
         
         // Ensure container is styled wrapping
         this.container.classList.add('tl-v2-container');
@@ -31,7 +32,9 @@ export class TimelineEngineV2 {
         this.buildData();
         this.renderDOM();
         this.setupScrubber();
-        this.startTick();
+        if (!this.isTomorrow) {
+            this.startTick();
+        }
     }
 
     stopAutoUpdate() {
@@ -178,17 +181,23 @@ export class TimelineEngineV2 {
         });
 
         // Now line
-        const nowLayer = document.getElementById('v2-now');
-        nowLayer.innerHTML = `
-            <div class="tl-v2-now-line" id="v2-now-line">
-                <div class="tl-v2-now-dot"></div>
-            </div>
-        `;
-        this.nowLine = document.getElementById('v2-now-line');
+        if (!this.isTomorrow) {
+            const nowLayer = document.getElementById('v2-now');
+            if (nowLayer) {
+                nowLayer.innerHTML = `
+                    <div class="tl-v2-now-line" id="v2-now-line">
+                        <div class="tl-v2-now-dot"></div>
+                    </div>
+                `;
+                this.nowLine = document.getElementById('v2-now-line');
+            }
+        }
+        
         this.updateTime();
     }
 
     updateTime() {
+        if (this.isTomorrow) return;
         if (!this.nowLine) return;
         const now = new Date();
         const mins = now.getHours() * 60 + now.getMinutes();
