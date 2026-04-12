@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-04-12T23:47:53.267912+03:00",
+  "timestamp": "2026-04-12T23:58:58.059652+03:00",
   "status": "ok",
-  "mode": "AGGRESSIVE",
-  "message": "Цикл завершено успішно",
+  "mode": "DEADLINE",
+  "message": "Дедлайн: Графік не знайдено, світло є",
   "version": "2.1-Adaptive"
 }
