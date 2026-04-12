@@ -133,19 +133,16 @@ export class TomorrowTimeline {
             }
         });
 
-        // 3. Малюємо маркери перемикання та баджі
+        // 3. Малюємо маркери перемикання та баджі (Всі зверху над графіком)
         let previousPerc = -100;
-        let altOffset = false;
 
         this.events.forEach(ev => {
             const perc = (ev.time / 1440) * 100;
             
+            // Залишаємо горизонтальний зсув, якщо маркери занадто близько
             let badgeShift = 0;
-            if ((perc - previousPerc) < 10) { 
-                altOffset = !altOffset;
-                badgeShift = altOffset ? 12 : -12;
-            } else {
-                altOffset = false;
+            if ((perc - previousPerc) < 6) { 
+                badgeShift = 14; // Зсув вправо для наступного баджа
             }
             previousPerc = perc;
 

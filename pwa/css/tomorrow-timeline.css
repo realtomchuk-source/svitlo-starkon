@@ -1,23 +1,23 @@
 /* 
-  Tomorrow Page Timeline Redesign (Premium Header Layout)
+  Tomorrow Page Timeline RE-DESIGN (Variant B: Single Row Capsules)
   Isolated styles for tomorrow.html
 */
 
 /* Container Tweak */
 .tl-v2-container.tomorrow-mode {
   height: 120px !important;
-  padding: 0 !important; /* Header will be full-width */
+  padding: 0 !important;
   overflow: hidden;
   border: 1px solid #E2E8F0;
   background: #FFFFFF;
 }
 
-/* 1. Header (Scale) */
+/* 1. Header (Compact Scale) */
 .tl-v2-container.tomorrow-mode .tl-v2-scale {
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
-  height: 30px !important;
+  height: 22px !important; /* Compact header */
   transform: none !important;
   border-radius: 0 !important;
   background: #F8FAFC !important; /* Slate-50 */
@@ -25,127 +25,126 @@
   z-index: 10;
 }
 
-/* 2. Ticks & Labels inside Header */
+/* 2. Ticks & Labels (Numbers near Ticks) */
 .tl-v2-container.tomorrow-mode .tl-v2-ticks-layer {
   top: 0 !important;
-  height: 30px !important;
+  height: 22px !important;
   transform: none !important;
   z-index: 11;
 }
 
 .tl-v2-container.tomorrow-mode .tl-v2-tick.major {
-  height: 10px !important;
+  height: 6px !important;
   top: 0 !important;
+  background: #64748B !important;
   transform: translateX(-50%) !important;
 }
 
 .tl-v2-container.tomorrow-mode .tl-v2-tick-label {
-  top: 18px !important;
-  font-size: 10px !important;
+  top: 13px !important; /* Extremely close to the tick */
+  font-size: 11px !important;
   font-weight: 600 !important;
-  color: #475569 !important; /* Slate-600 */
+  letter-spacing: -0.02em;
+  color: #334155 !important; /* Slate-700 */
 }
 
-/* 3. Working Stage (Segments Area) */
+/* 3. Working Stage */
 .tl-v2-container.tomorrow-mode .tl-v2-stage {
   height: 120px !important;
   margin: 0 !important;
 }
 
-/* 4. Segments (Axis at 75px) */
-/* 30px (header) + 45px (middle of remaining 90px) = 75px */
+/* 4. Single Row Graph (Variant B) */
+/* Graph Base Position: top 55px, Height 32px */
 .tl-v2-container.tomorrow-mode .tl-v2-segment {
-  height: 38px !important;
+  height: 32px !important;
+  top: 55px !important;
+  bottom: auto !important;
+  border-radius: 6px !important; /* Capsule look */
+  margin: 0 1px; /* Slight gap between capsules if possible */
 }
 
 .tl-v2-container.tomorrow-mode .tl-v2-segment.is-on {
-  bottom: 45px !important; /* Relative to center 75px */
-  border-radius: 4px 4px 0 0 !important;
+  background: var(--tl-v2-on) !important;
 }
 
 .tl-v2-container.tomorrow-mode .tl-v2-segment.is-off {
-  top: 75px !important;
-  border-radius: 0 0 4px 4px !important;
+  background: var(--tl-v2-off) !important;
 }
 
-/* 5. Markers & Badges */
+/* 5. Markers & Badges (All on TOP) */
 .tl-v2-container.tomorrow-mode .tl-v2-marker-line {
-  height: 20px !important;
-}
-.tl-v2-container.tomorrow-mode .tl-v2-marker-line.type-on {
-  bottom: calc(45px + 38px) !important;
-}
-.tl-v2-container.tomorrow-mode .tl-v2-marker-line.type-off {
-  top: calc(75px + 38px) !important;
+  height: 12px !important;
+  background: #94A3B8 !important; /* Slate-400 */
+  bottom: auto !important;
+  top: 43px !important; /* Just above the graph */
+  width: 1.5px !important;
 }
 
 .tl-v2-container.tomorrow-mode .tl-v2-badge {
   font-size: 10px !important;
-}
-.tl-v2-container.tomorrow-mode .tl-v2-badge.type-on {
-  bottom: calc(45px + 44px) !important;
-}
-.tl-v2-container.tomorrow-mode .tl-v2-badge.type-off {
-  top: calc(75px + 44px) !important;
+  bottom: auto !important;
+  top: 32px !important; /* In the gap between header and graph */
+  background: #FFF !important;
+  color: #475569 !important;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  font-weight: 700 !important;
 }
 
-/* 6. Interaction Handle (Grip) at the bottom */
+/* 6. Interaction Handle (Grip) at the bottom area */
 .tl-v2-container.tomorrow-mode .tl-v2-custom-handle {
   position: absolute;
   bottom: 0 !important;
-  top: auto !important;
+  top: 0 !important;
   transform: translateX(-50%) !important;
   height: 120px !important;
   width: 6px;
-  z-index: 6;
+  z-index: 20;
   pointer-events: none;
 }
 
 .tl-v2-container.tomorrow-mode .handle-core {
-  width: 4px;
+  width: 2px;
   height: 100%;
-  background: linear-gradient(to bottom, transparent, #CBD5E1 15%, #CBD5E1 85%, transparent);
-  opacity: 0.3;
+  background: #CBD5E1;
+  opacity: 0.4;
   margin: 0 auto;
 }
 
 .tl-v2-container.tomorrow-mode .handle-grip {
   position: absolute;
-  top: 90px !important; /* Near the bottom */
+  top: 100px !important; /* Bottom area */
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 24px;
-  height: 32px;
-  border-radius: 6px;
+  width: 28px;
+  height: 20px;
+  border-radius: 4px;
   background: #FFFFFF;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-  border: 1px solid #E2E8F0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border: 1px solid #CBD5E1;
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* Horizontal dots for the bottom handle */
   justify-content: center;
   align-items: center;
   gap: 3px;
 }
 
 .tl-v2-container.tomorrow-mode .handle-grip div {
-  width: 12px;
-  height: 1.5px;
+  width: 2px;
+  height: 10px;
   background: #CBD5E1;
   border-radius: 1px;
 }
 
-/* 7. Scroll Wrapper & Stage */
+/* 7. Scroll Behavior */
 .tl-v2-container.tomorrow-mode .tl-v2-scroll-wrapper {
   width: 100%;
   height: 100%;
   overflow-x: auto;
   overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
 }
 
 .tl-v2-container.tomorrow-mode .tl-v2-stage {
-  width: 100%;
   min-width: 800px;
-  height: 120px;
-  position: relative;
 }
