@@ -12,91 +12,166 @@
 }
 
 /* --- NEW DYNAMIC DASHBOARD BLOCK --- */
-.dynamic-info-block {
+/* --- NEW FLAT GLASS DASHBOARD (v2.0) --- */
+.dash-container {
     display: flex;
+    justify-content: space-around;
     align-items: center;
-    justify-content: center;
-    padding: 0 16px;
-    height: 52px;
-    border-radius: 18px;
-    position: relative;
-    overflow: hidden;
-    margin: 0 20px;
-    transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(0, 0, 0, 0.04);
+    height: 24px;
+    margin: 4px 15px;
+    padding: 0 12px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
     z-index: 5;
     box-sizing: border-box;
-}
-
-/* State-based backgrounds for the block itself */
-.dynamic-info-block.tablo-on { background-color: #ee7221 !important; }
-.dynamic-info-block.tablo-off { background-color: #374151 !important; }
-
-/* --- Date Capsule (Left - Absolute) --- */
-.capsule-date-card {
-    position: absolute;
-    left: 20px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    height: 28px;
-    padding: 0 10px;
-    background: rgba(255, 255, 255, 0.9); /* Milky Industrial glass */
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 0.5px solid rgba(255, 255, 255, 0.5);
-    border-radius: 8px;
-}
-
-.capsule-date-card .date-day {
-    font-family: "JetBrains Mono", monospace !important;
-    font-size: 13px;
-    font-weight: 800;
-    color: #ee7221 !important; /* Industrial Orange */
-    text-transform: uppercase;
-}
-
-.capsule-date-card .date-main {
-    font-family: "JetBrains Mono", monospace !important;
-    font-size: 13px;
-    font-weight: 500;
-    color: #111111 !important; /* High contrast dark text */
-    letter-spacing: 0.05em;
-}
-
-/* --- Status Capsule (Center) --- */
-.status-glass-capsule {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    height: 28px; /* Fixed height to match clock */
-    padding: 0 12px;
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 0.5px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px; /* Fixed radius to match clock */
-    color: #FFFFFF !important;
-    font-family: 'Inter', -apple-system, sans-serif !important;
-    font-size: 13px;
     font-weight: 500;
 }
 
-/* --- Clock Capsule (Right - Absolute) --- */
-.capsule-clock-card {
-    position: absolute;
-    right: 20px;
+/* Dynamic State Colors */
+.dash-container.status-on {
+    --dash-accent: #FF7A00;
+}
+.dash-container.status-off {
+    --dash-accent: #808080;
+}
+
+.dash-segment {
     display: flex;
+    flex-direction: row !important;
     align-items: center;
     justify-content: center;
-    height: 28px;
-    padding: 0 10px;
-    background: rgba(0, 0, 0, 0.2); /* Discreet dark glass from legacy */
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 0.5px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    flex: 1;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    gap: 6px;
+}
+
+/* Interactivity Feedback */
+.dash-segment:active {
+    transform: scale(0.95) !important;
+    opacity: 0.8;
+}
+
+/* Typography & Sub-elements */
+.dash-clock-hhmm {
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'Tektur', sans-serif;
+}
+
+.dash-clock-ss {
+    font-size: 11px;
+    opacity: 0.7;
+    margin-left: 2px;
+    font-family: 'Tektur', sans-serif;
+}
+
+.dash-day {
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+.dash-date-num {
+    font-size: 14px;
+    font-family: 'Tektur', sans-serif;
+    letter-spacing: -0.2px;
+}
+
+.dash-status-icon {
+    width: 12px;
+    height: 12px;
+    transition: filter 0.3s ease;
+}
+
+.dash-status-time {
+    font-size: 13px;
+    letter-spacing: -0.2px;
+}
+
+/* Colorize White Icon -> Orange (#FF7A00) */
+.status-on .dash-status-icon {
+    filter: invert(48%) sepia(85%) saturate(3015%) hue-rotate(15deg) brightness(101%) contrast(106%);
+    drop-shadow: 0 0 5px rgba(255, 122, 0, 0.4);
+}
+
+/* Colorize White Icon -> Grey (#808080) */
+.status-off .dash-status-icon {
+    filter: invert(53%) sepia(0%) saturate(0%) hue-rotate(175deg) brightness(95%) contrast(88%);
+}
+
+.dash-status-time {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--dash-accent);
+}
+
+.dash-clock {
+    font-family: 'Tektur', sans-serif;
+    font-size: 16px;
+    color: var(--dash-accent);
+    font-weight: 600;
+    flex-direction: row !important;
+    gap: 2px;
+}
+
+.dash-clock-sec {
+    font-size: 12px;
+    opacity: 0.6;
+    margin-top: 2px;
+}
+
+/* Legend Styles */
+.legend-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 10px 0;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px;
+    background: rgba(0,0,0,0.03);
+    border-radius: 16px;
+}
+
+.legend-color-p {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    flex-shrink: 0;
+}
+
+.legend-color-p.orange {
+    background: #FF7A00;
+    box-shadow: 0 4px 12px rgba(255, 122, 0, 0.2);
+}
+
+.legend-color-p.grey {
+    background: #808080;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.legend-label {
+    font-weight: 700;
+    font-size: 15px;
+    color: #1d1d1f;
+}
+
+.legend-desc {
+    font-size: 13px;
+    color: #86868b;
+    line-height: 1.4;
 }
 
 .capsule-clock-card .clock-text {
@@ -228,39 +303,8 @@
     text-align: left !important;
 }
 
-/* --- MAIN TABLO CONTAINER (Now Transparent!) --- */
-.dashboard-tablo {
-    display: flex;
-    flex: 1;
-    align-items: center;
-    justify-content: flex-start; /* Stick items to the left */
-    width: 100%;
-    height: 60px;
-    border-radius: 100px;
-    padding: 0;
-    gap: 12px; /* Consistent gap between all major groups */
-}
 
-/* Glass Overlay (Light) */
-/* --- BOTTOM FOUNDATION --- */
-
-
-/* Base state for tablo container itself - completely transparent */
-.dashboard-tablo.tablo-on,
-.dashboard-tablo.tablo-off {
-    background: transparent;
-}
-
-.bottom-foundation {
-    display: none; /* No longer needed with the body-sync approach */
-}
-
-/* Color logic handled at body level */
-.bottom-foundation.tablo-on,
-.bottom-foundation.tablo-off {
-    background: transparent !important;
-    box-shadow: none !important;
-}
+/* --- PROJECT SYNC v4.1: Legacy Dashboard Styles Removed --- */
 
 /* --- TABLO GROUPS --- */
 

@@ -9,9 +9,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?t=1774634927">
-    <link rel="stylesheet" href="css/home.css?v=1.0.0">
-    <link rel="stylesheet" href="css/tech-ui.css">
+    <link rel="stylesheet" href="style.css?v=4.1.2">
+    <link rel="stylesheet" href="css/home.css?v=4.1.2">
+    <link rel="stylesheet" href="css/tech-ui.css?v=4.1.2">
     <link rel="stylesheet" href="css/selector.css">
     <link rel="stylesheet" href="css/timeline-v2.css">
     <style>
@@ -94,28 +94,35 @@
                         <div class="phase-dot phase-end"></div>
                         <div class="phase-dot phase-current" id="hero-phase-current"></div>
                     </div>
+
+                    <!-- NEW: Horizontal 24h Mini-Graph -->
+                    <div class="hero-timeline-capsule" id="hero-timeline-v3">
+                        <div class="hero-tl-bubbles" id="hero-tl-bubbles"></div>
+                        <div class="hero-tl-track">
+                            <div class="hero-tl-segments" id="hero-tl-segments"></div>
+                            <div class="hero-tl-pointer" id="hero-tl-pointer" style="left: 0%;"></div>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Dynamic Dashboard Status Block (Pushed by Hero Redesign) -->
-                <div id="dynamic-info-block" class="dynamic-info-block status-off">
-                    <!-- Left: Date Capsule (Standardized Tech UI) -->
-                    <div class="capsule-date-card">
-                        <span id="capsule-date-day" class="date-day tech-ui-font">--</span>
-                        <span id="capsule-date-main" class="date-main tech-ui-font">--.--.----</span>
+                <div id="dynamic-info-block" class="dash-container status-off">
+                    <!-- Left: Date Segment (Static) -->
+                    <div class="dash-segment dash-date">
+                        <span id="capsule-date-day" class="dash-day">--</span>
+                        <span id="capsule-date-main" class="dash-date-num">--.--.----</span>
                     </div>
 
-                    <!-- Center: Status Capsule -->
-                    <div id="capsule-status-card" class="status-glass-capsule">
-                        <img id="capsule-status-icon" src="assets/dashboard_off.svg" width="16" height="16">
-                        <span class="status-dash">—</span>
-                        <span id="capsule-status-text" class="status-time-text">до&thinsp;00:00</span>
+                    <!-- Center: Status Segment (Interactive) -->
+                    <div id="dash-segment-status" class="dash-segment dash-status">
+                        <div id="capsule-status-container" class="dash-status-icon-box"></div>
+                        <span id="capsule-status-text" class="dash-status-time">до&thinsp;00:00</span>
                     </div>
 
-                    <!-- Right: Clock Capsule (Standardized Tech UI) -->
-                    <div class="capsule-clock-card">
-                        <div id="capsule-clock-display" class="clock-text tech-ui-font">
-                            00<span class="separator">:</span>00<span class="seconds">00</span>
-                        </div>
+                    <!-- Right: Clock Segment (Interactive) -->
+                    <div id="dash-segment-clock" class="dash-segment dash-clock">
+                        <span id="tablo-real-time">00:00</span>
+                        <span id="tablo-real-sec" class="dash-clock-sec">00</span>
                     </div>
                 </div>
 
@@ -173,6 +180,37 @@
             </div>
             <div class="group-grid" id="home-queue-buttons">
                 <!-- Group buttons injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Legend Overlay -->
+    <div id="legend-overlay" class="overlay" onclick="if(event.target===this) this.classList.remove('active')">
+        <div class="picker-container fade-in-up">
+            <div class="picker-header">
+                <h2 class="picker-title">Легенда графіку</h2>
+                <div class="picker-close" onclick="document.getElementById('legend-overlay').classList.remove('active')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+            </div>
+            <div class="legend-content">
+                <div class="legend-item">
+                    <div class="legend-color-p orange"></div>
+                    <div class="legend-info">
+                        <div class="legend-label">Помаранчевий</div>
+                        <div class="legend-desc">Електроенергія буде подаватись у цей час.</div>
+                    </div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color-p grey"></div>
+                    <div class="legend-info">
+                        <div class="legend-label">Сірий</div>
+                        <div class="legend-desc">Електроенергія буде відсутня у цей час.</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

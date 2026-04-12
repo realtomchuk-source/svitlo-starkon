@@ -210,19 +210,20 @@
 
 .hero-card {
   display: grid !important;
-  grid-template-columns: auto 1fr auto !important;
+  grid-template-columns: auto 1fr auto !important; /* 3 columns for Top Row content */
+  grid-template-rows: 1fr auto !important; /* Row 1: Content components, Row 2: Horizontal Graph Area */
   align-items: center !important;
   column-gap: 12px !important;
-
-  padding: 12px 14px !important;
-  height: 96px !important;
+  row-gap: 2px !important; /* Minimized gap to bring bubbles closer to graph */
+  padding: 16px 14px 18px !important; /* Increased bottom padding to 18px for better "foundation" */
+  height: 160px !important; /* Increased from 140px for better vertical balance with wide graph */
 
   border-radius: var(--hero-radius) !important;
   background: var(--hero-bg) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
-  border: 1px solid rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
   -webkit-font-smoothing: antialiased !important;
 
   transform: translateY(-2px) !important;
@@ -231,10 +232,6 @@
   box-sizing: border-box !important;
 }
 
-/* Exception: Narrow gap between Page Title and Hero to keep them grouped */
-.pwa-page-label + #smart-hero {
-  margin-top: -16px !important;
-}
 
 .hero-card.status-on {
   border-color: rgba(238, 114, 33, 0.4) !important;
@@ -402,12 +399,264 @@
   }
 }
 
-/* SOFT MODE */
-.phase-soft .phase-fill,
-.phase-soft .phase-current {
-  opacity: 0.75 !important;
+/* 8. HORIZONTAL MINI-GRAPH (24H CAPSULE) */
+.hero-timeline-capsule {
+  grid-column: 1 / span 3 !important; /* Stretch across all columns */
+  grid-row: 2 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  margin-top: 4px !important;
+  position: relative !important;
+  padding: 0 !important; /* Back to 100% width to match the bottom timeline scale exactly */
+  box-sizing: border-box !important;
 }
 
-.phase-soft .phase-track {
-  opacity: 0.5 !important;
+/* Bubbles Container */
+.hero-tl-bubbles {
+  position: relative !important;
+  height: 20px !important;
+  width: calc(100% - 32px) !important; /* Safety zone: 16px from each side */
+  margin: 0 auto 5px !important; /* Center the bubbles bubble area */
+}
+
+/* Individual Time Bubble */
+.hero-tl-bubble {
+  position: absolute !important;
+  top: -4px !important; /* Slightly adjusted for better alignment with new height */
+  transform: translateX(-50%) !important;
+  background: rgba(255, 255, 255, 0.45) !important;
+  backdrop-filter: blur(4px) !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  border-radius: 4px !important;
+  padding: 1px 4px !important;
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  color: #333 !important;
+  pointer-events: none !important;
+  transition: opacity 0.3s ease !important;
+  z-index: 3 !important;
+  white-space: nowrap !important;
+}
+
+/* Remove vertical tick to achieve cleaner centered look */
+.hero-tl-bubble::after {
+  display: none !important;
+}
+
+.hero-tl-bubble.is-past {
+  opacity: 0.4 !important;
+}
+
+/* The Horizontal "Tube" */
+.hero-tl-track {
+  position: relative !important;
+  height: 6px !important;
+  width: 100% !important;
+  background: rgba(0, 0, 0, 0.08) !important;
+  border-radius: 3px !important;
+  overflow: visible !important; /* Allow pointer glow to bleed */
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.1) !important;
+}
+
+.hero-tl-segments {
+  position: absolute !important;
+  inset: 0 !important;
+  display: flex !important;
+  border-radius: 3px !important;
+  overflow: hidden !important;
+}
+
+.hero-tl-segment {
+  height: 100% !important;
+}
+
+.hero-tl-segment.on { background: var(--accent-on) !important; }
+.hero-tl-segment.off { background: var(--accent-off) !important; }
+
+/* The Floating Pointer (Synchronized with scrubber) */
+.hero-tl-pointer {
+  position: absolute !important;
+  top: 50% !important;
+  width: 8px !important;
+  height: 8px !important;
+  background: #fff !important;
+  border-radius: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8), 0 0 12px rgba(255, 255, 255, 0.4) !important;
+  z-index: 5 !important;
+  transition: left 0.1s linear !important;
+}
+
+.status-on .hero-tl-pointer { background: #FF7A00 !important; box-shadow: 0 0 8px rgba(255, 122, 0, 0.6) !important; }
+.status-off .hero-tl-pointer { background: #9AA0A6 !important; box-shadow: 0 0 8px rgba(154, 160, 166, 0.6) !important; }
+
+/* --- NEW Dashboard Tablo Redesign (v4.0) --- */
+
+.dash-container {
+  display: flex !important;
+  justify-content: space-between !important; /* Forces items to edges */
+  align-items: center !important;
+  margin: 12px 20px 24px !important; /* Reduced top gap (12px), increased bottom gap (24px) for grouping */
+  padding: 10px 18px !important;
+  border-radius: 16px !important;
+  
+  /* High-end Glassmorphism */
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.1),
+    0 4px 15px rgba(0, 0, 0, 0.05) !important;
+  
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  height: 48px !important; /* Increased from 44px */
+  box-sizing: border-box !important;
+  position: relative !important;
+  z-index: 5 !important;
+}
+
+.dash-segment {
+  display: flex !important;
+  align-items: center !important; /* Perfect vertical centering */
+  gap: 8px !important;
+  flex: 1 !important;
+  line-height: 1 !important; /* Prevents text shifting */
+}
+
+/* Specific alignments */
+.dash-date { justify-content: flex-start !important; }
+.dash-status { justify-content: center !important; }
+.dash-clock { justify-content: flex-end !important; }
+
+/* Date Styling */
+.dash-date {
+  font-family: 'Inter', sans-serif !important;
+}
+.dash-day {
+  font-size: 14px !important; /* Increased from 13px */
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: uppercase !important;
+  transition: color 0.4s ease !important;
+  line-height: normal !important;
+  display: flex !important;
+  align-items: center !important;
+}
+.dash-date-num {
+  font-size: 14px !important; /* Increased from 13px */
+  font-weight: 500 !important;
+  color: #888 !important;
+  letter-spacing: 0.05em !important;
+  line-height: normal !important;
+}
+
+/* Status SVG Styling */
+.dash-status-icon-box {
+  width: 22px !important;
+  height: 22px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.dash-status-svg {
+  width: 100% !important;
+  height: 100% !important;
+  transition: transform 0.3s ease !important;
+  transform: translateY(0.5px) !important; /* Optical adjustment for circle center */
+}
+.dash-status:active .dash-status-svg {
+  transform: translateY(0.5px) scale(0.9) !important;
+}
+
+.dash-status-time {
+  font-size: 14px !important; /* Increased from 13px */
+  font-weight: 600 !important;
+  letter-spacing: -0.1px !important;
+  transition: color 0.4s ease !important;
+}
+
+/* Clock Styling */
+.dash-clock {
+  font-family: 'Inter', sans-serif !important;
+  font-variant-numeric: tabular-nums !important;
+  color: #1a1a1a !important;
+  display: flex !important;
+  align-items: baseline !important; /* Align HH:MM and SEC on one floor */
+  gap: 1px !important;
+}
+#tablo-real-time {
+  font-size: 18px !important; /* Increased from 16px */
+  font-weight: 700 !important;
+  letter-spacing: -0.5px !important;
+  line-height: 1 !important;
+}
+.dash-clock-sec {
+  font-size: 11px !important; /* Increased from 10px */
+  font-weight: 500 !important;
+  opacity: 0.35 !important;
+  line-height: 1 !important;
+}
+
+/* Color Themes based on Global Status */
+.dash-container.status-on .dash-day,
+.dash-container.status-on .dash-status-time {
+  color: #ee7221 !important;
+}
+
+.dash-container.status-off .dash-day,
+.dash-container.status-off .dash-status-time,
+.dash-container.status-off .dash-date-num {
+  color: #888 !important;
+}
+
+/* Specific SVG treatment */
+.dash-container.status-on .dash-status-circle,
+.dash-container.status-on .dash-status-svg {
+  stroke: #ee7221 !important;
+}
+.dash-container.status-off .dash-status-circle,
+.dash-container.status-off .dash-status-svg {
+  stroke: #64748b !important;
+}
+
+/* --- End Dashboard Redesign --- */
+
+/* --- MOBILE OPTIMIZATION (v4.1.2) --- */
+@media (max-width: 380px) {
+  /* Hero Card Adjustments */
+  .hero-card {
+    height: 154px !important;
+    padding: 12px 10px 14px !important;
+  }
+  
+  .hero-timer {
+    font-size: 42px !important;
+  }
+
+  /* Dashboard Tablo Adjustments */
+  .dash-container {
+    padding: 8px 12px !important;
+    margin: 10px 14px 20px !important;
+    gap: 4px !important;
+  }
+
+  .dash-date-num {
+    font-size: 11px !important;
+  }
+  
+  .dash-status-time,
+  #tablo-real-time {
+    font-size: 16px !important;
+  }
+
+  .dash-clock-sec {
+    font-size: 10px !important;
+  }
+
+  .dash-status-icon-box svg {
+    width: 22px !important;
+    height: 22px !important;
+  }
 }
