@@ -114,7 +114,7 @@ function renderSlotsV2() {
             }
 
             return `
-                <div class="v2-slot-card active fade-in" onclick="window.openCustomPushSetup(${index})" style="border: 1px solid var(--accent) !important; box-shadow: 0 4px 15px rgba(238, 114, 33, 0.06) !important; flex-direction: row !important; justify-content: space-between !important; align-items: center !important; gap: 12px; margin-bottom: 12px;">
+                <div class="v2-slot-card active fade-in" onclick="window.openCustomPushSetup(${index})" style="border: 1px solid var(--accent) !important; box-shadow: 0 4px 15px rgba(238, 114, 33, 0.06) !important; flex-direction: row !important; justify-content: space-between !important; align-items: center !important; gap: 12px;">
                     <div style="flex: 1; display: flex; flex-direction: column; gap: 2px;">
                         <span class="v2-slot-label" style="font-size: 15px; font-weight: 700;">${displayLabel}</span>
                         <div class="v2-slot-dnd" style="font-size: 11px; opacity: 0.5;">${dndText} не турбувати</div>
@@ -133,7 +133,7 @@ function renderSlotsV2() {
             `;
         } else {
             return `
-                <div class="v2-slot-card inactive" onclick="window.openCustomPushSetup(${index})" style="flex-direction: row !important; justify-content: space-between !important; align-items: center !important; gap: 12px; margin-bottom: 12px; opacity: 0.8;">
+                <div class="v2-slot-card inactive" onclick="window.openCustomPushSetup(${index})" style="flex-direction: row !important; justify-content: space-between !important; align-items: center !important; gap: 12px; opacity: 0.8;">
                     <div style="flex: 1; display: flex; flex-direction: column; gap: 2px;">
                         <span class="v2-slot-label" style="font-size: 15px; font-weight: 700;">${displayLabel}</span>
                         <div class="v2-slot-dnd" style="font-size: 11px; opacity: 0.4;">Натисніть щоб налаштувати</div>

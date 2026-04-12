@@ -725,3 +725,9 @@ TypeError: can't subtract offset-naive and offset-aware datetimes
 2026-04-10 19:44:50,288 [INFO] SSSK-Main: History API exported.
 2026-04-10 19:44:50,293 [INFO] SSSK-GenerateToday: today.json generated: C:\Users\АТом\Desktop\Antigravity\SSSK\pwa\data\today.json
 2026-04-10 19:44:50,319 [INFO] SSSK-Main: Cycle completed successfully.
+2026-04-12 11:29:46,098 [WARNING] SSSK-GenerateToday: No original schedule for 12.04. Generating Today fallback.
+2026-04-12 11:29:46,099 [INFO] SSSK-GenerateToday: G1 (Today) saved to C:\Users\АТом\Desktop\Antigravity\SSSK\pwa\data\today.json
+2026-04-12 11:29:46,100 [INFO] SSSK-GenerateToday: G2 (Tomorrow) saved to C:\Users\АТом\Desktop\Antigravity\SSSK\pwa\data\tomorrow.json
+2026-04-12 11:45:58,089 [WARNING] SSSK-GenerateToday: No original schedule for 12.04. Generating Today fallback.
+2026-04-12 11:45:58,090 [INFO] SSSK-GenerateToday: G1 (Today) saved to C:\Users\АТом\Desktop\Antigravity\SSSK\pwa\data\today.json
+2026-04-12 11:45:58,091 [INFO] SSSK-GenerateToday: G2 (Tomorrow) saved to C:\Users\АТом\Desktop\Antigravity\SSSK\pwa\data\tomorrow.json
