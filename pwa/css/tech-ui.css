@@ -204,97 +204,185 @@
 }
 
 /* ==========================================================================
-   APPLE-LEVEL HERO REDESIGN (GLASS STYLE v2.0)
+/* ==========================================================================
+   APPLE-LEVEL HERO REDESIGN (GLASS STYLE v3.0 - Grid & Capsule)
    ========================================================================== */
 
-#smart-hero {
+.hero-card {
+  display: grid !important;
+  grid-template-columns: auto 1fr auto !important;
+  align-items: center !important;
+  column-gap: 12px !important;
+
+  padding: 12px 14px !important;
+  height: 96px !important;
+
+  border-radius: var(--hero-radius) !important;
   background: var(--hero-bg) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
-  border-radius: var(--hero-radius) !important;
-  padding: 28px 20px 24px 20px !important; 
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  text-align: center !important;
-  position: relative !important;
-  border: 1px solid rgba(0, 0, 0, 0.05) !important;
-  margin: 0 20px 12px 20px !important; 
+  border: 2px solid rgba(0, 0, 0, 0.05) !important;
+
+  transform: translateY(-2px) !important;
+  margin: 16px 20px 12px 20px !important; 
   transition: all 0.3s ease !important;
-  overflow: hidden !important;
+  box-sizing: border-box !important;
 }
 
-/* Compact Icon 💡 (Resized to 88px per user request) */
-#hero-icon-3d {
-  width: 88px !important;
-  height: 88px !important;
+.hero-card.status-on {
+  border-color: rgba(238, 114, 33, 0.4) !important;
+}
+
+.hero-card.status-off {
+  border-color: rgba(154, 160, 166, 0.4) !important;
+}
+
+@media (max-width: 360px) {
+  .hero-card {
+    padding-left: calc(14px + env(safe-area-inset-left)) !important;
+    padding-right: calc(14px + env(safe-area-inset-right)) !important;
+  }
+}
+
+.hero-icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-right: 2px !important;
+}
+
+.hero-icon img {
+  width: 64px !important;
+  height: 64px !important;
   object-fit: contain !important;
-  margin-bottom: 10px !important;
   filter: drop-shadow(0 4px 8px rgba(0,0,0,0.05)) !important;
 }
 
-/* Status: "Світло є" */
-#hero-title {
-  font-size: 18px !important;
-  font-weight: 600 !important;
-  color: var(--hero-text-primary) !important;
-  margin-bottom: 12px !important;
-  letter-spacing: -0.2px !important;
-}
-
-/* Timer: HERO element 52px */
-#hero-countdown {
-  font-size: 52px !important;
-  font-weight: 700 !important;
-  color: var(--hero-text-primary) !important;
-  margin-bottom: 12px !important;
-  font-variant-numeric: tabular-nums !important;
-  letter-spacing: -1.5px !important;
-  line-height: 1 !important;
-}
-
-/* Sub-queue & Description Details */
-.hero-details-row {
+.hero-text-block {
   display: flex !important;
   flex-direction: column !important;
-  align-items: center !important;
-  margin-bottom: 16px !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
 }
 
-#active-queue-val {
-  font-size: 15px !important;
+.hero-status {
+  font-family: 'Outfit', var(--font-family-hero) !important;
+  font-size: 14px !important;
   font-weight: 500 !important;
+  letter-spacing: -0.2px !important;
+  line-height: 1.1 !important;
   color: var(--hero-text-secondary) !important;
-  margin-bottom: 4px !important;
+  margin-bottom: -2px !important;
 }
 
-#hero-subtitle {
-  font-size: 13px !important;
-  color: var(--hero-text-dim) !important;
+.hero-timer {
+  font-family: 'Inter', var(--font-family-hero) !important;
+  font-size: 42px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  font-variant-numeric: tabular-nums !important;
+  letter-spacing: -1.5px !important;
+  color: var(--hero-text-primary) !important;
 }
 
-/* Progress-bar (Exact User Spec) */
-.progress {
+.hero-context {
+  font-family: 'Inter', var(--font-family-hero) !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 1.1 !important;
+  white-space: nowrap !important;
+  margin-top: 1px !important;
+}
+
+.hero-context--active  { color: var(--hero-text-secondary) !important; }
+.hero-context--passive { color: var(--hero-text-dim) !important; }
+
+/* 7. PROGRESS CAPSULE */
+.hero-phase {
+  position: relative !important;
+  width: 4px !important;
+  height: 60% !important; 
+  align-self: center !important;
+}
+
+.phase-track {
+  position: absolute !important;
   width: 100% !important;
-  height: 8px !important;
-  background: rgba(0, 0, 0, 0.08) !important;
-  border-radius: 999px !important;
-  overflow: hidden !important;
-}
-
-.progress-fill {
   height: 100% !important;
-  width: 0%;
-  border-radius: 999px !important;
-  transition: width 1s linear !important; /* Smooth slow movement */
+  background: rgba(0, 0, 0, 0.08) !important;
+  border-radius: 4px !important;
 }
 
-/* Status Colors Mapping (Linked to smart-hero status) */
-#smart-hero.status-on .progress-fill {
-  background: linear-gradient(90deg, #FF7A00, #FF9A3D) !important;
+.phase-fill {
+  position: absolute !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 0% !important;
+  border-radius: 4px !important;
+  transition: height 0.3s linear !important;
 }
 
-#smart-hero.status-off .progress-fill {
-  background: linear-gradient(90deg, #9AA0A6, #C2C5CA) !important;
+.hero-card.status-on .phase-fill {
+  background: var(--accent-on) !important;
+}
+.hero-card.status-off .phase-fill {
+  background: var(--accent-off) !important;
+}
+
+.phase-dot {
+  position: absolute !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  z-index: 2 !important;
+}
+
+.phase-start {
+  bottom: 2px !important;
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+
+.phase-end {
+  top: 2px !important;
+  border: 1.5px solid rgba(0, 0, 0, 0.2) !important;
+  box-sizing: border-box !important;
+}
+
+.phase-current {
+  bottom: 0% !important;
+  background: var(--hero-text-primary) !important;
+  animation: pulse-phase 2.4s infinite !important;
+  transition: bottom 0.3s linear !important;
+}
+
+.hero-card.status-on .phase-current {
+  background: #FF7A00 !important;
+}
+
+.hero-card.status-off .phase-current {
+  background: #9AA0A6 !important;
+}
+
+@keyframes pulse-phase {
+  0%, 100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 0.95;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.08);
+    opacity: 1;
+  }
+}
+
+/* SOFT MODE */
+.phase-soft .phase-fill,
+.phase-soft .phase-current {
+  opacity: 0.75 !important;
+}
+
+.phase-soft .phase-track {
+  opacity: 0.5 !important;
 }

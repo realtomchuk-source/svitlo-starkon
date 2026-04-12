@@ -72,26 +72,27 @@
                 <!-- Removed Date Badge as per user request to integrate into hero -->
                 <!-- Hero Card below -->
 
-                <!-- Apple-Level Smart Hero Card (Restructured v2.0) -->
-                <div id="smart-hero" class="hero-section status-on">
-                    <!-- Smaller 3D Asset (52px via CSS) -->
-                    <img id="hero-icon-3d" src="assets/power_off.png" alt="Status Icon" data-status="on">
-                    
-                    <!-- Calm Status Title -->
-                    <div id="hero-title">Світло є</div>
-                    
-                    <!-- HERO: Timer (52px) -->
-                    <div id="hero-countdown">0:00</div>
-                    
-                    <!-- Details: Sub-queue & Description -->
-                    <div class="hero-details-row">
-                        <div id="active-queue-val">Підчерга 1.1</div>
-                        <div id="hero-subtitle">завантаження...</div>
+                <!-- Hero component v3 - Status Grid -->
+                <div id="smart-hero" class="hero-card status-on">
+                    <!-- ICON -->
+                    <div class="hero-icon">
+                        <img id="hero-icon-3d" src="assets/power_off.png" alt="Status Icon" data-status="on">
                     </div>
                     
-                    <!-- Premium 8px Progress Bar (Exact User Spec) -->
-                    <div class="progress">
-                        <div id="hero-progress-fill" class="progress-fill" style="width: 0%;"></div>
+                    <!-- TEXT BLOCK -->
+                    <div class="hero-text-block">
+                        <div id="hero-title" class="hero-status">Світло є</div>
+                        <div id="hero-countdown" class="hero-timer">0:00</div>
+                        <div id="hero-subtitle" class="hero-context hero-context--active">завантаження...</div>
+                    </div>
+                    
+                    <!-- PROGRESS CAPSULE -->
+                    <div class="hero-phase" id="hero-phase-capsule">
+                        <div class="phase-track"></div>
+                        <div class="phase-fill" id="hero-phase-fill"></div>
+                        <div class="phase-dot phase-start"></div>
+                        <div class="phase-dot phase-end"></div>
+                        <div class="phase-dot phase-current" id="hero-phase-current"></div>
                     </div>
                 </div>
                 

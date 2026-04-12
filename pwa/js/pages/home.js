@@ -549,72 +549,81 @@ function updateHeroUI(selectedGroup, now, isAllClear, isNoPower, demoMode, sched
     const updateInner = () => {
         const currentTime = new Date();
         const currentHour = currentTime.getHours();
-        
-        // Розрахунок стану (Світло є / немає)
-        let isCurrentlyOn = activeSchedule[currentHour] === '1';
-        if (isAllClear) isCurrentlyOn = true; // "Green" mode is visually "ON"
-        if (demoMode && !isAllClear && !isNoPower) {
-             isCurrentlyOn = !((currentHour + groupIndex) % 10 < 5);
+        const currentFractionalHour = currentHour + (currentTime.getMinutes() / 60) + (currentTime.getSeconds() / 3600);
+
+        let activeEngine = window.activeEngineV2;
+
+        let activeSegment = null;
+        let isCurrentlyOn = true;
+        let nextChangeHour = 24;
+
+        if (isAllClear || isNoPower) {
+            isCurrentlyOn = isAllClear;
+        } else if (activeEngine && activeEngine.segments && activeEngine.segments.length > 0) {
+            // Retrieve segment from active engine
+            activeSegment = activeEngine.segments.find(seg => currentFractionalHour >= seg.start && currentFractionalHour < seg.end) 
+                         || activeEngine.segments[activeEngine.segments.length - 1]; // Fallback to last segment
+
+            isCurrentlyOn = activeSegment.type !== 'off';
+            nextChangeHour = activeSegment.end;
+        } else {
+             // Fallback if engine is not ready
+             isCurrentlyOn = activeSchedule[currentHour] === '1';
+             if (demoMode && !isAllClear && !isNoPower) {
+                 isCurrentlyOn = !((currentHour + groupIndex) % 10 < 5);
+             }
+             for (let i = currentHour + 1; i <= 24; i++) {
+                 if (i === 24) { nextChangeHour = 24; break; }
+                 let stateAtI = activeSchedule[i] === '1';
+                 if (demoMode) stateAtI = !((i + groupIndex) % 10 < 5);
+                 if (stateAtI !== isCurrentlyOn) {
+                     nextChangeHour = i;
+                     break;
+                 }
+             }
         }
 
-        // 1. Оновлення кольорів, тексту та іконок статусу
-        const foundationOrange = '#EE7221';
-        const foundationGrey = '#718096';
-        let color = foundationOrange;
-        let glow = 'rgba(238, 114, 33, 0.15)';
+        // 1. Text & Status Setup
         let statusString = '';
         let statusIconFile = 'assets/power_off.png';
 
         if (isAllClear) {
-            statusString = 'Відключень немає 🎉';
+            statusString = 'Світло є ⚡️';
             statusIconFile = 'assets/power_off.png'; 
-            isCurrentlyOn = true; // Ensure visual parity
+            isCurrentlyOn = true;
         } else if (isNoPower) {
-            color = foundationGrey; 
-            glow = 'rgba(113, 128, 150, 0.15)';
-            statusString = 'Аварійне відключення';
-            statusIconFile = 'assets/power_on.png'; // Visual: Grey with Minus (OFF)
+            statusString = 'Авар. відключення';
+            statusIconFile = 'assets/power_on.png';
+            isCurrentlyOn = false;
         } else {
-            if (!isCurrentlyOn) {
-                color = foundationGrey;
-                glow = 'rgba(113, 128, 150, 0.15)';
-                statusString = 'Світла немає';
-                statusIconFile = 'assets/power_on.png'; // Visual: Grey with Minus (OFF)
-            } else {
-                statusString = 'Світло є';
-                statusIconFile = 'assets/power_off.png'; // Visual: Orange with Plus (ON)
-            }
+            statusString = isCurrentlyOn ? 'Світло є' : 'Світла немає';
+            statusIconFile = isCurrentlyOn ? 'assets/power_off.png' : 'assets/power_on.png';
         }
 
-        // 2. Apply Text & Card States (Strictly synced with statusString)
-        const currentHeroTitle = document.getElementById('hero-title');
+        // 2. DOM Elements
         const currentHeroCard = document.getElementById('smart-hero');
-        const currentHeroIconImg = document.getElementById('hero-icon-3d');
+        const heroIconImg = document.getElementById('hero-icon-3d');
+        const heroStatusEl = document.getElementById('hero-title');
+        const heroTimerEl = document.getElementById('hero-countdown');
+        const heroContextEl = document.getElementById('hero-subtitle');
+        const phaseFill = document.getElementById('hero-phase-fill');
+        const phaseCurrent = document.getElementById('hero-phase-current');
+        const heroPhase = document.getElementById('hero-phase-capsule');
 
-        if (currentHeroTitle) currentHeroTitle.textContent = statusString;
         if (currentHeroCard) {
             currentHeroCard.classList.toggle('status-on', isCurrentlyOn);
             currentHeroCard.classList.toggle('status-off', !isCurrentlyOn);
         }
+        
+        if (heroStatusEl) heroStatusEl.textContent = statusString;
 
-        // --- Update the NEW Dynamic Dashboard Block Foundation ---
-        const dynamicBlock = document.getElementById('dynamic-info-block');
-        if (dynamicBlock) {
-            dynamicBlock.classList.toggle('status-on', isCurrentlyOn);
-            dynamicBlock.classList.toggle('status-off', !isCurrentlyOn);
-        }
-
-        if (currentHeroIconImg) {
-            const lastStatus = currentHeroIconImg.dataset.status;
+        if (heroIconImg) {
+            const lastStatus = heroIconImg.dataset.status;
             const newStatus = isCurrentlyOn ? 'on' : 'off';
-
             if (lastStatus !== newStatus) {
-                // Change the icon file according to the NEW determined status
-                currentHeroIconImg.src = statusIconFile;
-                currentHeroIconImg.dataset.status = newStatus;
-
-                // Animate transition
-                currentHeroIconImg.animate([
+                heroIconImg.src = statusIconFile;
+                heroIconImg.dataset.status = newStatus;
+                heroIconImg.animate([
                     { transform: 'scale(1)', opacity: 0.8 },
                     { transform: 'scale(1.1)', opacity: 1 },
                     { transform: 'scale(1)', opacity: 1 }
@@ -622,73 +631,61 @@ function updateHeroUI(selectedGroup, now, isAllClear, isNoPower, demoMode, sched
             }
         }
 
-        // 3. Розрахунок наступної зміни та таймера
-        let nextChangeHour = 24;
-        if (!isAllClear && !isNoPower) {
-            for (let i = currentHour + 1; i < 24; i++) {
-                let stateAtI = activeSchedule[i] === '1';
-                if (demoMode) stateAtI = !((i + groupIndex) % 10 < 5);
-                
-                if (stateAtI !== isCurrentlyOn) {
-                    nextChangeHour = i;
-                    break;
-                }
-            }
+        const dynamicBlock = document.getElementById('dynamic-info-block');
+        if (dynamicBlock) {
+            dynamicBlock.classList.toggle('status-on', isCurrentlyOn);
+            dynamicBlock.classList.toggle('status-off', !isCurrentlyOn);
         }
 
+        // 3. Timer & Context & Capsule
         const nextTime = new Date();
-        nextTime.setHours(nextChangeHour, 0, 0, 0);
+        nextTime.setHours(nextChangeHour === 24 ? 24 : nextChangeHour, 0, 0, 0);
         const diffMs = nextTime.getTime() - currentTime.getTime();
         const minutesRemaining = Math.max(0, Math.floor(diffMs / 60000));
+        
+        const h = Math.floor(minutesRemaining / 60);
+        const m = minutesRemaining % 60;
+        if (heroTimerEl) heroTimerEl.textContent = `${h}:${m.toString().padStart(2, '0')}`;
 
-        // 3.1 Calculate total interval duration for progress bar (TS 8.2)
-        let totalBlockDuration = 240; // Fallback 4h
-        if (!isAllClear && !isNoPower) {
-            totalBlockDuration = getIntervalDuration(activeSchedule, currentHour, isCurrentlyOn);
+        if (isAllClear || isNoPower) {
+            if (heroContextEl) heroContextEl.textContent = "весь день";
+            if (heroPhase) heroPhase.classList.add('phase-soft');
+            if (phaseFill) phaseFill.style.height = `0%`;
+            if (phaseCurrent) phaseCurrent.style.bottom = `0%`;
         } else {
-            totalBlockDuration = 1440; // 24h block for AllClear/NoPower
-        }
-
-        if (countdownEl) {
-            // Update Timer Text (H:MM format)
-            const h = Math.floor(minutesRemaining / 60);
-            const m = minutesRemaining % 60;
-            countdownEl.textContent = `${h}:${m.toString().padStart(2, '0')}`;
-
-            // Update Description Text
-            if (heroSubtitle) {
+            if (heroPhase) heroPhase.classList.remove('phase-soft');
+            if (heroContextEl) {
                 if (nextChangeHour === 24) {
-                    heroSubtitle.textContent = "до кінця доби";
+                    heroContextEl.textContent = "до кінця доби";
                 } else {
                     const actionText = isCurrentlyOn ? 'вимкнення' : 'увімкнення';
-                    heroSubtitle.textContent = `до ${actionText} о ${nextChangeHour}:00`;
+                    heroContextEl.textContent = `до ${actionText} о ${nextChangeHour}:00`;
                 }
             }
 
-            // Update Progress Bar (TS 8.2: 1 - (remaining_sec / duration_sec))
-            if (progressFill) {
-                const diffSeconds = Math.max(0, Math.floor(diffMs / 1000));
-                const totalBlockSeconds = totalBlockDuration * 60;
-                const progress = 1 - (diffSeconds / totalBlockSeconds);
-                progressFill.style.width = `${Math.max(0, Math.min(1, progress)) * 100}%`;
+            // Capsule calculation
+            if (activeSegment) {
+                let segmentProgress = (currentFractionalHour - activeSegment.start) / (activeSegment.end - activeSegment.start);
+                segmentProgress = Math.max(0, Math.min(1, segmentProgress));
+                const progressPercentage = segmentProgress * 100;
+
+                if (phaseFill) phaseFill.style.height = `${progressPercentage}%`;
+                if (phaseCurrent) phaseCurrent.style.bottom = `${progressPercentage}%`;
             }
-        }
-        // 4. Оновлення Інфо-Табло (Dashboard Tablo) через автономний контролер
-        // Тільки якщо користувач НЕ взаємодіє з повзунком
-        if (!window.isTimelineScrubbing) {
-            updateDashboardTablo(now, isCurrentlyOn, nextChangeHour);
         }
 
-        // 5. Оновлення стану Wheel Picker Tablo (1.0.12)
+        // 4. Оновлення Інфо-Табло (Dashboard Tablo) через автономний контролер
+        if (!window.isTimelineScrubbing) {
+            if (typeof updateDashboardTablo === 'function') {
+                updateDashboardTablo(currentTime, isCurrentlyOn, nextChangeHour);
+            }
+        }
+
+        // 5. Оновлення стану Wheel Picker Tablo
         const queueWheelTablo = document.querySelector('.active-queue-tablo');
         if (queueWheelTablo) {
-            if (isCurrentlyOn) {
-                queueWheelTablo.classList.add('status-on');
-                queueWheelTablo.classList.remove('status-off');
-            } else {
-                queueWheelTablo.classList.add('status-off');
-                queueWheelTablo.classList.remove('status-on');
-            }
+            queueWheelTablo.classList.toggle('status-on', isCurrentlyOn);
+            queueWheelTablo.classList.toggle('status-off', !isCurrentlyOn);
         }
     };
 
