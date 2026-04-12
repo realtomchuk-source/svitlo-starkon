@@ -197,23 +197,25 @@
     margin: 0 0 24px 0;
 }
 
-/* Slots Grid */
+/* Slots Grid (Vertical list) */
 .v2-slots-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 12px;
     margin-bottom: 24px;
 }
 
 .v2-slot-card {
-    border-radius: 16px;
-    padding: 12px;
-    min-height: 92px;
+    background: var(--bg-card);
+    border: 1px solid rgba(128,128,128,0.08);
+    border-radius: 18px;
+    padding: 14px 16px;
+    min-height: 80px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     cursor: pointer;
-    transition: transform 0.1s ease;
+    transition: transform 0.2s, background 0.2s;
     user-select: none;
 }
 

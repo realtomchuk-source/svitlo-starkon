@@ -98,7 +98,7 @@ function renderSlotsV2() {
     const grid = document.getElementById('v2-slots-grid');
     if (!grid) return;
 
-    grid.innerHTML = subscriptions.map((sub, index) => {
+    grid.innerHTML = (subscriptions || []).map((sub, index) => {
         const isActive = sub && sub.active === true;
         const defaultLabel = (index === 0) ? 'Локація 1' : 'Локація 2';
         const displayLabel = (sub && sub.locationName) ? sub.locationName : defaultLabel;
@@ -114,40 +114,36 @@ function renderSlotsV2() {
             }
 
             return `
-                <div class="v2-slot-card active fade-in" onclick="window.openCustomPushSetup(${index})" style="border: 1px solid var(--accent) !important; box-shadow: 0 4px 15px rgba(238, 114, 33, 0.1) !important;">
-                    <div class="v2-slot-header">
-                        <span class="v2-slot-label">${displayLabel}</span>
-                        <div style="display: flex; align-items: center; gap: 6px;">
+                <div class="v2-slot-card active fade-in" onclick="window.openCustomPushSetup(${index})" style="border: 1px solid var(--accent) !important; box-shadow: 0 4px 15px rgba(238, 114, 33, 0.06) !important; flex-direction: row !important; justify-content: space-between !important; align-items: center !important; gap: 12px; margin-bottom: 12px;">
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 2px;">
+                        <span class="v2-slot-label" style="font-size: 15px; font-weight: 700;">${displayLabel}</span>
+                        <div class="v2-slot-dnd" style="font-size: 11px; opacity: 0.5;">${dndText} не турбувати</div>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
                             <span style="font-size: 11px; font-weight: 500; opacity: 0.6;">Підчерга</span>
                             <div class="v2-badge active">${sub.group || '1.1'}</div>
                         </div>
-                    </div>
-                    <div class="v2-slot-footer">
-                        <div class="v2-slot-time">
-                            <div class="v2-card-icon-box v2-icon-bell active" style="width: 20px; height: 20px; border-radius: 6px; gap: 0;">
-                                <i class="fas fa-bell" style="font-size: 10px;"></i>
-                            </div>
-                            <span style="font-family: 'Inter', sans-serif !important;">за ${sub.notifyTime || '10'} хв до змін</span>
+                        <div class="v2-slot-time" style="margin-top: 0; font-size: 12px; font-weight: 700; color: var(--accent);">
+                             ${sub.notifyTime || '10'} хв до змін
                         </div>
-                        <div class="v2-slot-dnd" style="font-variant-numeric: tabular-nums;">${dndText} ${sub.dnd && sub.dnd.active !== false ? 'не турбувати' : ''}</div>
                     </div>
                 </div>
             `;
         } else {
             return `
-                <div class="v2-slot-card inactive" onclick="window.openCustomPushSetup(${index})">
-                    <div class="v2-slot-header">
-                        <span class="v2-slot-label">${displayLabel}</span>
-                         <div class="v2-badge" style="background: rgba(128,128,128,0.1); color: #8E8E93; border: none;">Off</div>
+                <div class="v2-slot-card inactive" onclick="window.openCustomPushSetup(${index})" style="flex-direction: row !important; justify-content: space-between !important; align-items: center !important; gap: 12px; margin-bottom: 12px; opacity: 0.8;">
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 2px;">
+                        <span class="v2-slot-label" style="font-size: 15px; font-weight: 700;">${displayLabel}</span>
+                        <div class="v2-slot-dnd" style="font-size: 11px; opacity: 0.4;">Натисніть щоб налаштувати</div>
                     </div>
-                    <div class="v2-slot-footer">
-                        <div class="v2-slot-time" style="opacity: 0.5; gap: 8px;">
-                            <div class="v2-card-icon-box v2-icon-bell" style="width: 20px; height: 20px; border-radius: 6px; gap: 0; background: rgba(128,128,128,0.1);">
-                                <i class="fas fa-bell" style="font-size: 10px; color: #8E8E93;"></i>
-                            </div>
-                            Натисніть щоб додати
+                    
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="v2-card-icon-box v2-icon-bell" style="width: 32px; height: 32px; border-radius: 10px; background: rgba(128,128,128,0.1);">
+                            <i class="fas fa-plus" style="font-size: 12px; color: #8E8E93;"></i>
                         </div>
-                        <div class="v2-slot-dnd" style="font-variant-numeric: tabular-nums; opacity: 0.4; font-size: 11px;">22:00 — 08:00 не турбувати</div>
+                        <div class="v2-badge" style="background: rgba(128,128,128,0.1); color: #8E8E93; border: none;">Off</div>
                     </div>
                 </div>
             `;
