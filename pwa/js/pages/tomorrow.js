@@ -13,29 +13,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     await initTomorrowApp();
 });
 
+// --- MOCK DATA FOR DEVELOPMENT (FROZEN) ---
+const MOCK_DATA = {
+    date: '13.04',
+    status: 'parser_found',
+    activeGroup: '1.1',
+    queues: {
+        "1.1": "000011110000111100001111", "1.2": "111100001111000011110000",
+        "2.1": "001100110011001100110011", "2.2": "110011001100110011001100",
+        "3.1": "000000111111000000111111", "3.2": "111111000000111111000000",
+        "4.1": "010101010101010101010101", "4.2": "101010101010101010101010",
+        "5.1": "000111000111000111000111", "5.2": "111000111000111000111000",
+        "6.1": "000000001111111100000000", "6.2": "111111110000000011111111"
+    },
+    meta: {
+        state: "parser_found",
+        generated_at: new Date().toISOString()
+    }
+};
+
 async function initTomorrowApp() {
     try {
-        const db = await fetchTomorrowSchedule();
-        if (!db) throw new Error('Data not available');
-
-        // Перевірка статусу "в очікуванні"
-        if (db.status === 'pending') {
-            document.getElementById('tomorrow-timeline').innerHTML = `
-                <div class="pending-notice" style="text-align: center; padding: 40px 20px; color: #666; font-weight: 500;">
-                    Графік на завтра від Обленерго ще не оприлюднено.<br>Зайдіть пізніше (зазвичай після 19:00).
-                </div>
-            `;
-            const tablo = new TomorrowController();
-            tablo.init(null);
-            return;
-        }
+        // --- REAL FETCH FROZEN FOR DEV ---
+        // const db = await fetchTomorrowSchedule();
+        // if (!db) throw new Error('Data not available');
+        const db = MOCK_DATA; 
 
         // А) Ініціалізація Дашборду (Годинник + Статус)
         const tablo = new TomorrowController();
         tablo.init(db);
 
         // Б) Ініціалізація Графіка
-        // Вибираємо початкову підчергу (Default 1.1)
         const activeGroup = db.activeGroup || "1.1";
         const timeline = new TomorrowTimeline({
             containerId: 'tomorrow-timeline',
@@ -48,7 +56,7 @@ async function initTomorrowApp() {
         // В) Ініціалізація Селектора підчерг
         const selector = new TomorrowSelector('tomorrow-selector', {
             onSelect: (queue) => {
-                console.log('Tomorrow: Changing queue to', queue);
+                console.log('Tomorrow (Mock): Changing queue to', queue);
                 if (db.queues[queue]) {
                     timeline.updateSchedule(db.queues[queue]);
                     db.activeGroup = queue;
@@ -62,7 +70,7 @@ async function initTomorrowApp() {
 
     } catch (e) {
         console.error('Failed to init Tomorrow App:', e);
-        document.getElementById('tomorrow-timeline').innerHTML = `<div style="text-align:center; padding: 20px;">Помилка завантаження даних.</div>`;
+        document.getElementById('tomorrow-timeline').innerHTML = `<div style="text-align:center; padding: 20px;">Помилка розробки.</div>`;
     }
 }
 
