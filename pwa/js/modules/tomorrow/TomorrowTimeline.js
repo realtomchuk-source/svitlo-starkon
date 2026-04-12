@@ -16,8 +16,9 @@ export class TomorrowTimeline {
         this.events = [];
         this.scrubberInteracted = false;
         
-        // Додаємо базовий клас контейнера для стилів timeline-v2.css
+        // Додаємо базовий клас контейнера для стилів timeline-v2.css та завтрашній режим
         this.container.classList.add('tl-v2-container');
+        this.container.classList.add('tomorrow-mode');
     }
 
     init() {
@@ -71,8 +72,8 @@ export class TomorrowTimeline {
      */
     renderDOM() {
         this.container.innerHTML = `
-            <div class="tl-v2-scroll-wrapper" style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-                <div class="tl-v2-stage" id="tomorrow-tl-stage" style="width: 100%; min-width: 800px; height: 120px; position: relative; margin: 20px 0;">
+            <div class="tl-v2-scroll-wrapper">
+                <div class="tl-v2-stage" id="tomorrow-tl-stage">
                     <div class="tl-v2-scale"></div>
                     <div class="tl-v2-ticks-layer" id="tomorrow-v2-ticks"></div>
                     <div class="tl-v2-segments-layer" id="tomorrow-v2-segments"></div>
@@ -81,12 +82,12 @@ export class TomorrowTimeline {
                     <!-- Шар взаємодії (Повзунок/Скраббер) -->
                     <div class="tl-v2-interactions">
                         <input type="range" min="0" max="1440" value="0" class="tl-v2-scrubber-raw" id="tomorrow-v2-scrubber-input">
-                        <div class="tl-v2-custom-handle" id="tomorrow-v2-handle" style="position: absolute; top: 50%; width: 6px; margin: 0; transform: translateY(-50%); height: 120px; z-index: 6; pointer-events: none;">
-                            <div class="handle-core" style="width: 4px; height: 100%; background: linear-gradient(to bottom, transparent, #64748B 15%, #64748B 85%, transparent); opacity: 0.5; margin: 0 auto;"></div>
-                            <div class="handle-grip" style="width: 24px; height: 36px; border-radius: 6px; background: rgba(255,255,255,0.95); box-shadow: 0 2px 8px rgba(0,0,0,0.15); border: 1.5px solid #E5E7EB; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px;">
-                                <div style="width: 12px; height: 2px; background: #9CA3AF; border-radius: 1px;"></div>
-                                <div style="width: 12px; height: 2px; background: #9CA3AF; border-radius: 1px;"></div>
-                                <div style="width: 12px; height: 2px; background: #9CA3AF; border-radius: 1px;"></div>
+                        <div class="tl-v2-custom-handle" id="tomorrow-v2-handle">
+                            <div class="handle-core"></div>
+                            <div class="handle-grip">
+                                <div></div>
+                                <div></div>
+                                <div></div>
                             </div>
                         </div>
                     </div>
