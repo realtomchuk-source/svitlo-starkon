@@ -504,12 +504,13 @@ async function loadAndRender(selectedGroup) {
     const displayDate = (data && data.date) ? data.date : `${now.getDate().toString().padStart(2, '0')}.${(now.getMonth() + 1).toString().padStart(2, '0')}`;
     if (dateTitle) dateTitle.textContent = displayDate;
 
-    // Логіка кнопки "Графік на завтра"
+    /* Логіка кнопки "Графік на завтра" - за наявності метаданих про анонс
     const btnTomorrow = document.getElementById('btn-show-tomorrow');
     if (btnTomorrow) {
         if (data && data.has_tomorrow) btnTomorrow.classList.remove('hidden');
         else btnTomorrow.classList.add('hidden');
     }
+    */
 
     // 1.0.14: Використовуємо уніфікований рендер-хелпер
     renderTimelineV2(selectedGroup, data);

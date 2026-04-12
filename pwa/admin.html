@@ -175,6 +175,25 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Pipeline Sync Status (G1/G2) -->
+            <div class="card" style="border: 1px dashed var(--border-strong); background: rgba(0,0,0,0.02);">
+                <div class="card-title" style="font-size: 11px; opacity: 0.8; letter-spacing: 0.05em;">
+                    СТАТУС СИНХРОНІЗАЦІЇ G1/G2 (PIPELINE)
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                    <div class="sync-item">
+                        <div style="font-size: 10px; color: var(--text-secondary); margin-bottom: 4px;">СЬОГОДНІ (G1)</div>
+                        <div id="sync-g1-status" class="status-pill warn" style="font-size: 10px; padding: 2px 8px;">—</div>
+                        <div id="sync-g1-meta" style="font-size: 10px; margin-top: 4px; color: var(--text-muted);">—</div>
+                    </div>
+                    <div class="sync-item">
+                        <div style="font-size: 10px; color: var(--text-secondary); margin-bottom: 4px;">ЗАВТРА (G2)</div>
+                        <div id="sync-g2-status" class="status-pill warn" style="font-size: 10px; padding: 2px 8px;">—</div>
+                        <div id="sync-g2-meta" style="font-size: 10px; margin-top: 4px; color: var(--text-muted);">—</div>
+                    </div>
+                </div>
+            </div>
             
             <!-- News Digest / Announcements -->
             <div class="card" id="announcements-card">

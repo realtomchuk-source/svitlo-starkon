@@ -15,6 +15,7 @@ PWA_DATA_DIR = os.path.join(os.path.dirname(BASE_DIR), "pwa", "data")
 HISTORY_API_FILE = os.path.join(PWA_DATA_DIR, "history_api.json")
 HEALTH_FILE = os.path.join(PWA_DATA_DIR, "health.json")
 TODAY_JSON_FILE = os.path.join(PWA_DATA_DIR, "today.json")
+TOMORROW_JSON_FILE = os.path.join(PWA_DATA_DIR, "tomorrow.json")
 # RAW_TELEGRAM_DIR removed (Telegram purge)
 
 TIMEZONE = "Europe/Kiev"

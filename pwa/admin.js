@@ -150,22 +150,43 @@ async function refreshAll() {
             fetchFile('parser/data/state.json'),
             fetchFile('pwa/data/history_api.json'),
             fetchFile('pwa/data/today.json'),
-            fetchFile('pwa/data/health.json')
+            fetchFile('pwa/data/health.json'),
+            fetchFile('pwa/data/tomorrow.json')
         ]);
 
         parserState = results[0].status === 'fulfilled' ? results[0].value : parserState;
         scheduleData = results[1].status === 'fulfilled' ? results[1].value : scheduleData;
         todayData = results[2].status === 'fulfilled' ? results[2].value : null;
         healthData = results[3].status === 'fulfilled' ? results[3].value : null;
+        const tomorrowRaw = results[4].status === 'fulfilled' ? results[4].value : null;
 
         const todayDateStr = getFormattedDate(0);
         const tomorrowDateStr = getFormattedDate(1);
 
-        // Auto-fallback for Today: if todayData is missing/stale, use scheduleData
+        // 1. G1 status rendering
+        const g1Stat = document.getElementById('sync-g1-status');
+        const g1Meta = document.getElementById('sync-g1-meta');
+        if (todayData && g1Stat && g1Meta) {
+            const state = todayData.meta?.state || 'unknown';
+            g1Stat.textContent = `● ${state.toUpperCase()}`;
+            g1Stat.className = `status-pill ${state === 'parser_found' ? 'ok' : 'warn'}`;
+            g1Meta.textContent = `Date: ${todayData.date} | Gen: ${todayData.meta?.generated_at ? formatRelative(todayData.meta.generated_at) : '—'}`;
+        }
+
+        // 2. G2 status rendering
+        const g2Stat = document.getElementById('sync-g2-status');
+        const g2Meta = document.getElementById('sync-g2-meta');
+        if (tomorrowRaw && g2Stat && g2Meta) {
+            const state = tomorrowRaw.meta?.state || 'unknown';
+            g2Stat.textContent = `● ${state.toUpperCase()}`;
+            g2Stat.className = `status-pill ${state === 'parser_found' ? 'ok' : (state === 'pending' ? 'warn' : 'err')}`;
+            g2Meta.textContent = `Date: ${tomorrowRaw.date} | Gen: ${tomorrowRaw.meta?.generated_at ? formatRelative(tomorrowRaw.meta.generated_at) : '—'}`;
+        }
+
+        // Fallback for Today: if todayData is missing or for different date, try history
         if ((!todayData || todayData.date !== todayDateStr) && scheduleData.length > 0) {
             const matchToday = [...scheduleData].reverse().find(e => e.processed && (e.target_date === todayDateStr || e.date === todayDateStr));
             if (matchToday) {
-                console.log('Today match found in history:', matchToday.target_date);
                 todayData = {
                     date: matchToday.target_date,
                     mode: matchToday.mode || 'schedule',
@@ -175,24 +196,27 @@ async function refreshAll() {
             }
         }
 
-        // 2. Identify Tomorrow's Data
+        // Logic for Tomorrow: Use tomorrow.json if it matches the date and is not pending
         let tomorrowData = null;
-        const matchTomorrow = [...scheduleData].reverse().find(e => e.processed && (e.target_date === tomorrowDateStr || e.date === tomorrowDateStr));
-        if (matchTomorrow) {
-            console.log('Tomorrow match found in history:', matchTomorrow.target_date);
-            tomorrowData = {
-                date: matchTomorrow.target_date,
-                mode: matchTomorrow.mode || 'schedule',
-                queues: matchTomorrow.queues,
-                queues_raw: matchTomorrow.queues_raw || null,
-                message: matchTomorrow.message || `Графік на ${matchTomorrow.target_date}`
-            };
+        if (tomorrowRaw && tomorrowRaw.date === tomorrowDateStr && tomorrowRaw.meta?.state !== 'pending') {
+            tomorrowData = tomorrowRaw;
+        } else if (scheduleData.length > 0) {
+            // Fallback to history projection
+            const matchTomorrow = [...scheduleData].reverse().find(e => e.processed && (e.target_date === tomorrowDateStr || e.date === tomorrowDateStr));
+            if (matchTomorrow) {
+                tomorrowData = {
+                    date: matchTomorrow.target_date,
+                    mode: matchTomorrow.mode || 'schedule',
+                    queues: matchTomorrow.queues,
+                    queues_raw: matchTomorrow.queues_raw || null,
+                    message: matchTomorrow.message || `Графік на ${matchTomorrow.target_date}`
+                };
+            }
         }
 
         renderDashboard(tomorrowData);
         renderScheduleGrid(todayData, 'schedule-grid');
         
-        // Tomorrow handling: show grid or placeholder
         const tomorrowGrid = document.getElementById('tomorrow-grid');
         const aggCard = document.getElementById('tomorrow-aggregated-card');
         const aggGrid = document.getElementById('tomorrow-aggregated-grid');
@@ -200,31 +224,30 @@ async function refreshAll() {
 
         if (tomorrowData) {
             if (tomorrowData.queues_raw) {
-                // We have BOTH: Original in primary, Aggregated in secondary
                 renderScheduleGrid({ ...tomorrowData, queues: tomorrowData.queues_raw }, 'tomorrow-grid');
-                
                 if (aggCard && aggGrid) {
                     aggCard.style.display = 'block';
                     renderScheduleGrid(tomorrowData, 'tomorrow-aggregated-grid');
                     if (aggBadge) aggBadge.textContent = tomorrowData.date;
                 }
             } else {
-                // Only one version available
                 renderScheduleGrid(tomorrowData, 'tomorrow-grid');
                 if (aggCard) aggCard.style.display = 'none';
             }
         } else {
             if (aggCard) aggCard.style.display = 'none';
             if (tomorrowGrid) {
+                const pendingMsg = (tomorrowRaw && tomorrowRaw.meta?.state === 'pending') 
+                    ? 'Анонсу ще не було. Очікуємо...' 
+                    : 'Графік на завтра ще не опублікований.';
                 tomorrowGrid.innerHTML = `
                     <div class="announcement-empty" style="padding: 40px 0;">
-                        Графік на завтра ще не опублікований ОБЛЕНЕРГО.<br>
-                        <span style="font-size: 11px; opacity: 0.7;">Зазвичай з'являється після 18:00. Парсер перевіряє сайт кожні 10 хвилин.</span>
+                        ${pendingMsg}<br>
+                        <span style="font-size: 11px; opacity: 0.7;">Зазвичай з'являється після 18:00.</span>
                     </div>`;
             }
         }
         
-        // Reference grid (Always use constant ETALON_DATA for visual test)
         renderScheduleGrid(ETALON_DATA, 'reference-grid');
         renderAnnouncements();
         renderHistory();
@@ -235,7 +258,7 @@ async function refreshAll() {
             updateHeaderStatus('ok');
         }
 
-        // 4. Update UI labels
+        // Update UI labels
         const todayTitle = document.getElementById('schedule-card-title');
         const todayBadge = document.getElementById('schedule-date-badge');
         if (todayData) {
@@ -243,7 +266,6 @@ async function refreshAll() {
             if (todayBadge) todayBadge.textContent = todayData.date || '—';
         }
 
-        // Update Tomorrow Card UI
         const tomorrowTitle = document.getElementById('tomorrow-card-title');
         const tomorrowBadge = document.getElementById('tomorrow-date-badge');
         if (tomorrowData) {
@@ -254,7 +276,6 @@ async function refreshAll() {
             }
             if (tomorrowBadge) tomorrowBadge.textContent = tomorrowData.date || '—';
         } else {
-            // Placeholder date even if data is missing
             if (tomorrowTitle) tomorrowTitle.textContent = `ГРАФІК НА ЗАВТРА`;
             if (tomorrowBadge) tomorrowBadge.textContent = tomorrowDateStr;
         }

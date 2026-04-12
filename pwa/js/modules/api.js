@@ -1,21 +1,44 @@
-const DATA_URL = './data/today.json';
+/**
+ * SSSK API Module
+ * Handles data fetching with cache-busting and error management.
+ */
 
 /**
- * Fetch the today's schedule data
- * Returns a single object with queues, date, message and mode
+ * Fetch today's schedule (G1)
  */
-export async function fetchScheduleData() {
+export async function fetchTodaySchedule() {
     try {
-        const response = await fetch(`data/today.json?t=${new Date().getTime()}`);
-        if (!response.ok) throw new Error('Schedule data not found');
-        
-        const data = await response.json();
-        return data; 
+        const response = await fetch(`data/today.json?t=${Date.now()}`);
+        if (!response.ok) throw new Error('Today schedule (G1) not found');
+        return await response.json();
     } catch (error) {
-        console.error('Fetch error:', error);
+        console.error('[API] Error fetching G1:', error);
         return null;
     }
 }
 
-// Attach to window for non-module usage
+/**
+ * Fetch tomorrow's schedule (G2)
+ */
+export async function fetchTomorrowSchedule() {
+    try {
+        const response = await fetch(`data/tomorrow.json?t=${Date.now()}`);
+        if (!response.ok) throw new Error('Tomorrow schedule (G2) not found');
+        return await response.json();
+    } catch (error) {
+        console.error('[API] Error fetching G2:', error);
+        return null;
+    }
+}
+
+/**
+ * Legacy wrapper for compatibility with older components
+ */
+export async function fetchScheduleData() {
+    return await fetchTodaySchedule();
+}
+
+// Global exposure for non-module scripts
+window.fetchTodaySchedule = fetchTodaySchedule;
+window.fetchTomorrowSchedule = fetchTomorrowSchedule;
 window.fetchScheduleData = fetchScheduleData;
