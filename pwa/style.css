@@ -26,7 +26,7 @@
     --volume-shadow-glow: 0 0 15px rgba(238, 114, 33, 0.1);
 
     /* Layout Spacing */
-    --block-spacing: 32px;
+    --block-spacing: 12px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -80,10 +80,10 @@ body {
 .content-area {
     max-width: 600px;
     margin: 0 auto;
-    padding: 10px 0 20px 0; /* Standardized top padding for consistency */
+    padding: 16px 16px 0 16px; /* Increased padding to clear system bars */
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 12px; /* Denser gap between main blocks */
     min-height: 80vh;
     justify-content: flex-start; /* Changed from center to align top consistently */
 }
@@ -257,13 +257,13 @@ body {
 }
 
 .cabinet-hero {
-    padding: 32px 24px;
+    padding: 16px 24px; /* Reduced padding */
     display: flex;
     flex-direction: column;
     align-items: center;
     background: linear-gradient(135deg, rgba(255, 149, 0, 0.05) 0%, rgba(0, 0, 0, 0) 100%);
     border-radius: 30px;
-    margin-bottom: 8px;
+    margin-bottom: 4px; /* Tight fit to dashboard */
 }
 
 .profile-avatar-large {

@@ -10,11 +10,11 @@
 /* Sync with Tablo state — Advanced Palette 2026 */
 #subqueue-selector.dark  { 
   --selector-accent: var(--accent-on); 
-  --selector-glass-bg: rgba(255, 248, 240, 0.98); /* Faint Amber Tint */
+  --selector-glass-bg: rgba(255, 255, 255, 0.8); /* Unified Glass */
 }
 #subqueue-selector.light { 
   --selector-accent: var(--accent-off); 
-  --selector-glass-bg: rgba(241, 245, 248, 0.98); /* Faint Slate Tint */
+  --selector-glass-bg: rgba(255, 255, 255, 0.8); /* Unified Glass */
 }
 
 /* Background "Aura" — Maximum Saturation Glow (20%) */
@@ -25,7 +25,7 @@
   left: 20px;
   right: 20px;
   bottom: 48px;
-  border-radius: 20px;
+  border-radius: 24px;
   z-index: -1;
   filter: blur(40px);
   opacity: 0;
@@ -51,18 +51,15 @@
 .selector-container {
   margin: 0 20px 48px 20px;
   padding: 10px 0;
-  border-radius: 20px;
+  border-radius: 24px;
   background: var(--selector-glass-bg);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   
-  /* Industrial Border */
-  border: 2px solid var(--selector-accent); 
+  /* Dynamic Border — Unified Hero style (1px) + System Status Color */
+  border: 1px solid var(--selector-accent); 
   
-  /* Layered Shadow: Neutral + Inset Color Tint + Vivid Outer Glow */
-  box-shadow: 
-    0 8px 30px rgba(0, 0, 0, 0.08),
-    inset 0 0 12px rgba(255, 255, 255, 0.5); /* Surface reflection */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   
   overflow: hidden;
   position: relative;
@@ -72,16 +69,14 @@
 /* State-specific Shadow Overrides for better vibrancy */
 #subqueue-selector.dark .selector-container {
   box-shadow: 
-    0 12px 35px rgba(0, 0, 0, 0.1),
-    0 0 25px rgba(255, 92, 0, 0.2),
-    inset 0 0 15px rgba(255, 92, 0, 0.05); /* Inner tint */
+    0 8px 32px rgba(0, 0, 0, 0.06),
+    0 0 15px rgba(255, 92, 0, 0.1); /* Subtle Orange Glow */
 }
 
 #subqueue-selector.light .selector-container {
   box-shadow: 
-    0 12px 35px rgba(0, 0, 0, 0.1),
-    0 0 25px rgba(71, 85, 105, 0.15),
-    inset 0 0 15px rgba(71, 85, 105, 0.05); /* Inner tint */
+    0 8px 32px rgba(0, 0, 0, 0.04),
+    0 0 15px rgba(71, 85, 105, 0.08); /* Subtle Grey Tint */
 }
 
 /* Edge fade — left/right */

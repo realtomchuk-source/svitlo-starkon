@@ -31,6 +31,7 @@ export class TimelineEngineV2 {
     init() {
         this.buildData();
         this.renderDOM();
+        this.renderHeroMiniGraph(); // NEW: Initial render of Hero 24h bar
         this.setupScrubber();
         if (!this.isTomorrow) {
             this.startTick();
@@ -60,6 +61,8 @@ export class TimelineEngineV2 {
     buildData() {
         this.events = [];
         this.segments = [];
+        // Add 0:00 as a base marker
+        this.events.push({ time: 0, hour: 0, type: this.checkIsOffAtHour(0) ? 'off' : 'on' });
 
         let currentType = this.checkIsOffAtHour(0) ? 'off' : 'on';
         let segmentStart = 0;
@@ -82,6 +85,13 @@ export class TimelineEngineV2 {
                         time: h * 60, // in minutes
                         hour: h,
                         type: type // The new state we transition TO
+                    });
+                } else {
+                    // Always add 24:00 marker for visual clarity
+                    this.events.push({
+                        time: 24 * 60,
+                        hour: 24,
+                        type: 'end'
                     });
                 }
                 
@@ -196,6 +206,35 @@ export class TimelineEngineV2 {
         this.updateTime();
     }
 
+    renderHeroMiniGraph() {
+        const segmentsContainer = document.getElementById('hero-tl-segments');
+        const bubblesContainer = document.getElementById('hero-tl-bubbles');
+        if (!segmentsContainer || !bubblesContainer) return;
+
+        segmentsContainer.innerHTML = '';
+        bubblesContainer.innerHTML = '';
+
+        // 1. Render Segments (Tube)
+        this.segments.forEach(seg => {
+            const widthPerc = ((seg.end - seg.start) / 24) * 100;
+            const segmentEl = document.createElement('div');
+            segmentEl.className = `hero-tl-segment ${seg.type}`;
+            segmentEl.style.width = `${widthPerc}%`;
+            segmentsContainer.appendChild(segmentEl);
+        });
+
+        // 2. Render Bubbles (Transition points)
+        this.events.forEach(ev => {
+            const perc = (ev.time / 1440) * 100;
+            const bubbleEl = document.createElement('div');
+            bubbleEl.className = 'hero-tl-bubble';
+            bubbleEl.style.left = `${perc}%`;
+            bubbleEl.textContent = `${ev.hour}:00`;
+            bubbleEl.id = `hero-bubble-${ev.hour}`;
+            bubblesContainer.appendChild(bubbleEl);
+        });
+    }
+
     updateTime() {
         if (this.isTomorrow) return;
         if (!this.nowLine) return;
@@ -221,7 +260,26 @@ export class TimelineEngineV2 {
             
             // Sync dashboard to real time
             this.updateDashboard(mins);
+            this.syncHeroPointer(mins);
         }
+    }
+
+    syncHeroPointer(mins) {
+        const pointer = document.getElementById('hero-tl-pointer');
+        if (!pointer) return;
+        const perc = (mins / 1440) * 100;
+        pointer.style.left = `${perc}%`;
+
+        // Update bubble transparency (past = transparent)
+        const bubbles = document.querySelectorAll('.hero-tl-bubble');
+        bubbles.forEach(b => {
+            const bPerc = parseFloat(b.style.left);
+            if (bPerc < perc - 0.5) { // Slight buffer
+                b.classList.add('is-past');
+            } else {
+                b.classList.remove('is-past');
+            }
+        });
     }
 
     getNextTransitionTime(totalMinutes) {
@@ -322,6 +380,7 @@ export class TimelineEngineV2 {
             
             // Sync Dashboard UI
             this.updateDashboard(val);
+            this.syncHeroPointer(val);
         };
 
         this.scrubberInput.addEventListener('input', updateHandle);
