@@ -648,7 +648,7 @@ function updateHeroUI(selectedGroup, now, isAllClear, isNoPower, demoMode, sched
         if (heroTimerEl) heroTimerEl.textContent = `${h}:${m.toString().padStart(2, '0')}`;
 
         if (isAllClear || isNoPower) {
-            if (heroContextEl) heroContextEl.textContent = "весь день";
+            if (heroContextEl) heroContextEl.textContent = isAllClear ? "без відключень" : "до кінця доби";
             if (heroPhase) heroPhase.classList.add('phase-soft');
             if (phaseFill) phaseFill.style.height = `0%`;
             if (phaseCurrent) phaseCurrent.style.bottom = `0%`;

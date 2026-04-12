@@ -221,8 +221,9 @@
   background: var(--hero-bg) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
-  border: 2px solid rgba(0, 0, 0, 0.05) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid rgba(0, 0, 0, 0.04) !important;
+  -webkit-font-smoothing: antialiased !important;
 
   transform: translateY(-2px) !important;
   margin: 0 20px !important; 
@@ -283,11 +284,11 @@
 
 .hero-timer {
   font-family: 'Inter', var(--font-family-hero) !important;
-  font-size: 42px !important;
+  font-size: 38px !important;
   font-weight: 700 !important;
   line-height: 1 !important;
   font-variant-numeric: tabular-nums !important;
-  letter-spacing: -1.5px !important;
+  letter-spacing: -1.2px !important;
   color: var(--hero-text-primary) !important;
 }
 
@@ -298,6 +299,7 @@
   line-height: 1.1 !important;
   white-space: nowrap !important;
   margin-top: 1px !important;
+  opacity: 0.7 !important;
 }
 
 .hero-context--active  { color: var(--hero-text-secondary) !important; }
@@ -317,6 +319,8 @@
   height: 100% !important;
   background: rgba(0, 0, 0, 0.08) !important;
   border-radius: 4px !important;
+  opacity: 0.7 !important;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.08), inset 0 -1px 1px rgba(0,0,0,0.04) !important;
 }
 
 .phase-fill {
@@ -325,7 +329,8 @@
   width: 100% !important;
   height: 0% !important;
   border-radius: 4px !important;
-  transition: height 0.3s linear !important;
+  transition: height 0.6s ease-out, background-color 0.4s !important;
+  opacity: 0.95 !important;
 }
 
 .hero-card.status-on .phase-fill {
@@ -353,7 +358,22 @@
 .phase-end {
   top: 2px !important;
   border: 1.5px solid rgba(0, 0, 0, 0.2) !important;
+  background: rgba(0,0,0,0.15) !important;
   box-sizing: border-box !important;
+}
+
+.phase-current {
+  position: absolute !important;
+  bottom: 0%;
+  width: 7px !important;
+  height: 7px !important;
+  left: 50% !important;
+  transform: translate(-50%, 50%) !important;
+  background: white !important;
+  border-radius: 50% !important;
+  border: 1px solid white !important;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.6) !important;
+  z-index: 5 !important;
 }
 
 .phase-current {
