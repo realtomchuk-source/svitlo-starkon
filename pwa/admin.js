@@ -163,12 +163,23 @@ async function refreshAll() {
         const todayDateStr = getFormattedDate(0);
         const tomorrowDateStr = getFormattedDate(1);
 
+        const translateState = (state) => {
+            const states = {
+                'parser_found': 'ЗНАЙДЕНО (ПАРСЕР)',
+                'no_outages_fallback': 'ОК: БЕЗ ВІДКЛЮЧЕНЬ',
+                'pending': 'ОЧІКУЄТЬСЯ АНОНС',
+                'unknown': 'НЕВІДОМО',
+                'error': 'ПОМИЛКА'
+            };
+            return states[state.toLowerCase()] || state.toUpperCase();
+        };
+
         // 1. G1 status rendering
         const g1Stat = document.getElementById('sync-g1-status');
         const g1Meta = document.getElementById('sync-g1-meta');
         if (todayData && g1Stat && g1Meta) {
             const state = todayData.meta?.state || 'unknown';
-            g1Stat.textContent = `● ${state.toUpperCase()}`;
+            g1Stat.textContent = `● ${translateState(state)}`;
             g1Stat.className = `status-pill ${state === 'parser_found' ? 'ok' : 'warn'}`;
             g1Meta.textContent = `Date: ${todayData.date} | Gen: ${todayData.meta?.generated_at ? formatRelative(todayData.meta.generated_at) : '—'}`;
         }
@@ -178,7 +189,7 @@ async function refreshAll() {
         const g2Meta = document.getElementById('sync-g2-meta');
         if (tomorrowRaw && g2Stat && g2Meta) {
             const state = tomorrowRaw.meta?.state || 'unknown';
-            g2Stat.textContent = `● ${state.toUpperCase()}`;
+            g2Stat.textContent = `● ${translateState(state)}`;
             g2Stat.className = `status-pill ${state === 'parser_found' ? 'ok' : (state === 'pending' ? 'warn' : 'err')}`;
             g2Meta.textContent = `Date: ${tomorrowRaw.date} | Gen: ${tomorrowRaw.meta?.generated_at ? formatRelative(tomorrowRaw.meta.generated_at) : '—'}`;
         }
