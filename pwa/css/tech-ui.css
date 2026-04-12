@@ -225,9 +225,14 @@
   border: 2px solid rgba(0, 0, 0, 0.05) !important;
 
   transform: translateY(-2px) !important;
-  margin: 16px 20px 12px 20px !important; 
+  margin: 0 20px !important; 
   transition: all 0.3s ease !important;
   box-sizing: border-box !important;
+}
+
+/* Exception: Narrow gap between Page Title and Hero to keep them grouped */
+.pwa-page-label + #smart-hero {
+  margin-top: -16px !important;
 }
 
 .hero-card.status-on {

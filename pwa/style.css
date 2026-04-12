@@ -24,6 +24,9 @@
     /* Volume Shadows (Industrial Standard) */
     --volume-shadow: 0 8px 32px rgba(0, 0, 0, 0.24);
     --volume-shadow-glow: 0 0 15px rgba(238, 114, 33, 0.1);
+
+    /* Layout Spacing */
+    --block-spacing: 32px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -80,9 +83,16 @@ body {
     padding: 10px 0 20px 0; /* Standardized top padding for consistency */
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
     min-height: 80vh;
     justify-content: flex-start; /* Changed from center to align top consistently */
+}
+
+#home-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--block-spacing);
+    width: 100%;
 }
 
 /* PWA Page Labels (Unified Header System) */
