@@ -76,22 +76,24 @@ export function updateDashboardTablo(now, isCurrentlyOn, nextChangeHour) {
     if (capStatusContainer) {
         const statusColor = isCurrentlyOn ? '#ee7221' : '#64748b';
         
-        // Premium Bulb Icons (Styled)
-        // Icon ON: Bulb with +
-        // Icon OFF: Bulb with -
-        const bulbSvg = isCurrentlyOn 
-            ? `<svg viewBox="0 0 24 24" fill="none" class="dash-status-svg" stroke="${statusColor}">
-                 <path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7z" stroke-width="1.5" stroke-linecap="round"/>
-                 <path d="M9 21h6" stroke-width="1.5" stroke-linecap="round"/>
-                 <path d="M12 7v4M10 9h4" stroke-width="2" stroke-linecap="round"/> 
-               </svg>`
-            : `<svg viewBox="0 0 24 24" fill="none" class="dash-status-svg" stroke="${statusColor}">
-                 <path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7z" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
-                 <path d="M9 21h6" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
-                 <path d="M10 9h4" stroke-width="2" stroke-linecap="round"/>
-               </svg>`;
+        // Solid Premium Bulb Icons (Digitized from Screenshot)
+        const bulbOn = `
+            <svg viewBox="0 0 24 24" class="dash-status-svg">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7z" fill="${statusColor}"/>
+                <path d="M9 19h6v1a1 1 0 01-1 1h-4a1 1 0 01-1-1v-1z" fill="${statusColor}" opacity="0.8"/>
+                <circle cx="12" cy="9" r="4.5" fill="black" opacity="0.4"/>
+                <path d="M12 6.5v5M9.5 9h5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>`;
+
+        const bulbOff = `
+            <svg viewBox="0 0 24 24" class="dash-status-svg">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7z" fill="${statusColor}"/>
+                <path d="M9 19h6v1a1 1 0 01-1 1h-4a1 1 0 01-1-1v-1z" fill="${statusColor}" opacity="0.8"/>
+                <circle cx="12" cy="9" r="4.5" fill="black" opacity="0.4"/>
+                <path d="M9.5 9h5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>`;
             
-        capStatusContainer.innerHTML = bulbSvg;
+        capStatusContainer.innerHTML = isCurrentlyOn ? bulbOn : bulbOff;
     }
 
     // 2.3 Clock Segment
