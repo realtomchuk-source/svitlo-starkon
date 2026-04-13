@@ -76,7 +76,8 @@ export function updateDashboardTablo(now, isCurrentlyOn, nextChangeHour) {
     if (capStatusContainer) {
         // FIXED: Only use orange if light is ON. Otherwise, use a neutral grey.
         const statusColor = isCurrentlyOn ? '#ee7221' : '#64748b';
-        // Now + is definitely for ON state (orange), and - is for OFF state (grey)
+        // Inverting logic because ON state was showing MINUS. 
+        // Now: if isCurrentlyOn is true, show PLUS.
         const symbolPath = isCurrentlyOn 
             ? '<line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>' 
             : '<line x1="8" y1="12" x2="16" y2="12"/>';
