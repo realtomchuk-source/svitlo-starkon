@@ -7,7 +7,7 @@
   --dark-bg: #0B0B0C;
   --dark-card: #1C1C1E;
   --orange-bg: #F97316;
-  
+
   /* NEW Design Tokens for Hero Redesign */
   --hero-bg: rgba(255, 255, 255, 0.92);
   --hero-text-primary: #111111;
@@ -30,11 +30,11 @@
 }
 
 /* Scope the font ban strictly to the Hero section (Industrial Rule 7.4) */
-#smart-hero, 
+#smart-hero,
 #smart-hero * {
-    font-family: var(--font-family-hero) !important;
-    -webkit-text-stroke: 0 !important;
-    text-shadow: none !important;
+  font-family: var(--font-family-hero) !important;
+  -webkit-text-stroke: 0 !important;
+  text-shadow: none !important;
 }
 
 .tech-ui-font {
@@ -42,19 +42,26 @@
 }
 
 /* Base Card Style (Discreet Industrial) - Compact 26px Height */
-.clock-card, .date-card, .status-card {
+.clock-card,
+.date-card,
+.status-card {
   position: absolute;
-  top: 6px; /* Offset for compact 49px layer height */
+  top: 6px;
+  /* Offset for compact 49px layer height */
   display: inline-flex;
-  border-radius: 8px; /* Slightly tighter radius for smaller height */
-  padding: 4px 10px;  /* Vertical padding reduced for 26px target */
+  border-radius: 8px;
+  /* Slightly tighter radius for smaller height */
+  padding: 4px 10px;
+  /* Vertical padding reduced for 26px target */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid transparent;
-  transition: none; /* INSTANT switching as requested */
+  transition: none;
+  /* INSTANT switching as requested */
   z-index: 10;
   align-items: center;
-  height: 26px; /* Explicit height to ensure uniformity */
+  height: 26px;
+  /* Explicit height to ensure uniformity */
   box-sizing: border-box;
 }
 
@@ -67,7 +74,8 @@
 }
 
 /* Themes per TZ */
-.clock-card.light, .date-card.light {
+.clock-card.light,
+.date-card.light {
   background: var(--glass-light);
   border-color: var(--glass-border-light);
 }
@@ -83,7 +91,8 @@
   border-color: var(--glass-border-milky);
 }
 
-.status-card.light, .status-card.dark {
+.status-card.light,
+.status-card.dark {
   background: transparent !important;
   border: none !important;
 }
@@ -96,7 +105,8 @@
 }
 
 .clock-text {
-  font-size: 16px; /* Compact size */
+  font-size: 16px;
+  /* Compact size */
   font-weight: 600;
   letter-spacing: 0.04em;
   line-height: 1;
@@ -111,26 +121,33 @@
 }
 
 @keyframes tech-blink {
-  50% { opacity: 0; }
+  50% {
+    opacity: 0;
+  }
 }
 
 .clock-text .seconds {
-  font-size: 1em; /* Same size as hours/mins */
+  font-size: 1em;
+  /* Same size as hours/mins */
   font-weight: 400;
   color: var(--green-primary);
-  opacity: 0.3; /* Paler/dimmed as requested */
+  opacity: 0.3;
+  /* Paler/dimmed as requested */
   margin-left: 2px;
 }
 
 .date-card {
   left: 20px;
-  flex-direction: row; /* Single line */
+  flex-direction: row;
+  /* Single line */
   align-items: center;
-  gap: 6px; /* Harmonized distance as requested */
+  gap: 6px;
+  /* Harmonized distance as requested */
 }
 
 .date-main {
-  font-size: 14px; /* Compact size */
+  font-size: 14px;
+  /* Compact size */
   font-weight: 500;
   letter-spacing: 0.05em;
   white-space: nowrap;
@@ -140,7 +157,8 @@
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.05em;
-  color: #ee7221 !important; /* Industrial Orange */
+  color: #ee7221 !important;
+  /* Industrial Orange */
   text-transform: uppercase;
   display: flex;
   align-items: center;
@@ -148,12 +166,27 @@
 }
 
 /* Variant Specific Date Colors */
-.date-card.light .date-main { color: var(--gray-200); }
-.date-card.dark .date-main { color: #000; } /* Pure black for maximum contrast on milky glass */
+.date-card.light .date-main {
+  color: var(--gray-200);
+}
+
+.date-card.dark .date-main {
+  color: #000;
+}
+
+/* Pure black for maximum contrast on milky glass */
 
 /* Day text colors for high contrast */
-.date-day { color: #ee7221 !important; } /* Default: Industrial Orange */
-.date-card.dark .date-day { color: #ee7221 !important; } /* Unified: same Industrial Orange as on dark BG */
+.date-day {
+  color: #ee7221 !important;
+}
+
+/* Default: Industrial Orange */
+.date-card.dark .date-day {
+  color: #ee7221 !important;
+}
+
+/* Unified: same Industrial Orange as on dark BG */
 
 /* Status Card (Centerpiece) */
 .status-card {
@@ -185,22 +218,51 @@
   font-weight: 400 !important;
 }
 
-.status-card.light .status-text { color: #fff; }
-.status-card.dark .status-text { color: #fff; }
+.status-card.light .status-text {
+  color: #fff;
+}
+
+.status-card.dark .status-text {
+  color: #fff;
+}
 
 /* Responsive (Discreet bases) */
 @media (max-width: 480px) {
-  .clock-text { font-size: 28px; }
-  .date-main { font-size: 16px; }
-  .date-day { font-size: 12px; }
-  .clock-card, .date-card { padding: 6px 10px; }
+  .clock-text {
+    font-size: 28px;
+  }
+
+  .date-main {
+    font-size: 16px;
+  }
+
+  .date-day {
+    font-size: 12px;
+  }
+
+  .clock-card,
+  .date-card {
+    padding: 6px 10px;
+  }
 }
 
 @media (max-width: 320px) {
-  .clock-text { font-size: 22px; }
-  .date-main { font-size: 14px; }
-  .date-day { display: none; }
-  .clock-card, .date-card { padding: 4px 8px; }
+  .clock-text {
+    font-size: 22px;
+  }
+
+  .date-main {
+    font-size: 14px;
+  }
+
+  .date-day {
+    display: none;
+  }
+
+  .clock-card,
+  .date-card {
+    padding: 4px 8px;
+  }
 }
 
 /* ==========================================================================
@@ -210,13 +272,18 @@
 
 .hero-card {
   display: grid !important;
-  grid-template-columns: auto 1fr auto !important; /* 3 columns for Top Row content */
-  grid-template-rows: 1fr auto !important; /* Row 1: Content components, Row 2: Horizontal Graph Area */
+  grid-template-columns: auto 1fr auto !important;
+  /* 3 columns for Top Row content */
+  grid-template-rows: 1fr auto !important;
+  /* Row 1: Content components, Row 2: Horizontal Graph Area */
   align-items: center !important;
   column-gap: 12px !important;
-  row-gap: 2px !important; /* Minimized gap to bring bubbles closer to graph */
-  padding: 16px 14px 18px !important; /* Increased bottom padding to 18px for better "foundation" */
-  height: 160px !important; /* Increased from 140px for better vertical balance with wide graph */
+  row-gap: 2px !important;
+  /* Minimized gap to bring bubbles closer to graph */
+  padding: 16px 14px 18px !important;
+  /* Increased bottom padding to 18px for better "foundation" */
+  height: 160px !important;
+  /* Increased from 140px for better vertical balance with wide graph */
 
   border-radius: var(--hero-radius) !important;
   background: var(--hero-bg) !important;
@@ -227,7 +294,7 @@
   -webkit-font-smoothing: antialiased !important;
 
   transform: translateY(-2px) !important;
-  margin: 0 20px !important; 
+  margin: 0 20px !important;
   transition: all 0.3s ease !important;
   box-sizing: border-box !important;
 }
@@ -253,13 +320,15 @@
   align-items: center !important;
   justify-content: center !important;
   margin-right: 2px !important;
+  grid-column: 1 !important;
+  grid-row: 1 !important;
 }
 
 .hero-icon img {
   width: 64px !important;
   height: 64px !important;
   object-fit: contain !important;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.05)) !important;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.05)) !important;
 }
 
 .hero-text-block {
@@ -267,6 +336,8 @@
   flex-direction: column !important;
   justify-content: center !important;
   align-items: flex-start !important;
+  grid-column: 2 !important;
+  grid-row: 1 !important;
 }
 
 .hero-status {
@@ -299,15 +370,22 @@
   opacity: 0.7 !important;
 }
 
-.hero-context--active  { color: var(--hero-text-secondary) !important; }
-.hero-context--passive { color: var(--hero-text-dim) !important; }
+.hero-context--active {
+  color: var(--hero-text-secondary) !important;
+}
+
+.hero-context--passive {
+  color: var(--hero-text-dim) !important;
+}
 
 /* 7. PROGRESS CAPSULE */
 .hero-phase {
   position: relative !important;
   width: 4px !important;
-  height: 60% !important; 
+  height: 60% !important;
   align-self: center !important;
+  grid-column: 3 !important;
+  grid-row: 1 !important;
 }
 
 .phase-track {
@@ -317,7 +395,7 @@
   background: rgba(0, 0, 0, 0.08) !important;
   border-radius: 4px !important;
   opacity: 0.7 !important;
-  box-shadow: inset 0 1px 1px rgba(0,0,0,0.08), inset 0 -1px 1px rgba(0,0,0,0.04) !important;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.08), inset 0 -1px 1px rgba(0, 0, 0, 0.04) !important;
 }
 
 .phase-fill {
@@ -333,6 +411,7 @@
 .hero-card.status-on .phase-fill {
   background: var(--accent-on) !important;
 }
+
 .hero-card.status-off .phase-fill {
   background: var(--accent-off) !important;
 }
@@ -355,7 +434,7 @@
 .phase-end {
   top: 2px !important;
   border: 1.5px solid rgba(0, 0, 0, 0.2) !important;
-  background: rgba(0,0,0,0.15) !important;
+  background: rgba(0, 0, 0, 0.15) !important;
   box-sizing: border-box !important;
 }
 
@@ -389,10 +468,13 @@
 }
 
 @keyframes pulse-phase {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateX(-50%) scale(1);
     opacity: 0.95;
   }
+
   50% {
     transform: translateX(-50%) scale(1.08);
     opacity: 1;
@@ -401,29 +483,54 @@
 
 /* 8. HORIZONTAL MINI-GRAPH (24H CAPSULE) */
 .hero-timeline-capsule {
-  grid-column: 1 / span 3 !important; /* Stretch across all columns */
+  grid-column: 1 / span 3 !important;
+  /* Stretch across all columns */
   grid-row: 2 !important;
   display: flex !important;
   flex-direction: column !important;
   width: 100% !important;
   margin-top: 4px !important;
   position: relative !important;
-  padding: 0 5px 12px 5px !important; /* Balanced vertical space: top (bubbles) vs bottom */
+  padding: 0 20px 12px 20px !important;
+  /* Restored 20px to match Main Timeline precisely */
   box-sizing: border-box !important;
+}
+
+/* NEW: Interactive Timeline Block Container */
+.interactive-timeline-container {
+  width: calc(100% - 40px) !important;
+  margin: 8px 20px 12px 20px !important;
+  padding: 0 !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+  border-radius: var(--hero-radius) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+  display: block !important;
+  min-height: 105px !important;
+}
+
+.interactive-timeline-container svitlo-timeline-block {
+  width: 100% !important;
+  padding: 0 !important;
 }
 
 /* Bubbles Container */
 .hero-tl-bubbles {
   position: relative !important;
   height: 20px !important;
-  width: 100% !important; /* Spans exactly the padding-to-padding width */
+  width: 100% !important;
+  /* Spans exactly the padding-to-padding width */
   margin: 0 auto 5px !important;
 }
 
 /* Individual Time Bubble */
 .hero-tl-bubble {
   position: absolute !important;
-  top: -4px !important; /* Slightly adjusted for better alignment with new height */
+  top: -4px !important;
+  /* Slightly adjusted for better alignment with new height */
   transform: translateX(-50%) !important;
   background: rgba(255, 255, 255, 0.45) !important;
   backdrop-filter: blur(4px) !important;
@@ -452,11 +559,12 @@
 .hero-tl-track {
   position: relative !important;
   height: 6px !important;
-  width: 100% !important; /* Spans across entire 20px-padded corridor */
+  width: 100% !important;
+  /* Spans across entire 20px-padded corridor */
   background: rgba(0, 0, 0, 0.08) !important;
   border-radius: 3px !important;
   overflow: visible !important;
-  box-shadow: inset 0 1px 1px rgba(0,0,0,0.1) !important;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1) !important;
 }
 
 .hero-tl-segments {
@@ -471,8 +579,13 @@
   height: 100% !important;
 }
 
-.hero-tl-segment.on { background: var(--accent-on) !important; }
-.hero-tl-segment.off { background: var(--accent-off) !important; }
+.hero-tl-segment.on {
+  background: var(--accent-on) !important;
+}
+
+.hero-tl-segment.off {
+  background: var(--accent-off) !important;
+}
 
 /* The Floating Pointer (Synchronized with scrubber) */
 .hero-tl-pointer {
@@ -488,30 +601,40 @@
   transition: left 0.1s linear !important;
 }
 
-.status-on .hero-tl-pointer { background: #FF7A00 !important; box-shadow: 0 0 8px rgba(255, 122, 0, 0.6) !important; }
-.status-off .hero-tl-pointer { background: #9AA0A6 !important; box-shadow: 0 0 8px rgba(154, 160, 166, 0.6) !important; }
+.status-on .hero-tl-pointer {
+  background: #FF7A00 !important;
+  box-shadow: 0 0 8px rgba(255, 122, 0, 0.6) !important;
+}
+
+.status-off .hero-tl-pointer {
+  background: #9AA0A6 !important;
+  box-shadow: 0 0 8px rgba(154, 160, 166, 0.6) !important;
+}
 
 /* --- NEW Dashboard Tablo Redesign (v4.0) --- */
 
 .dash-container {
   display: flex !important;
-  justify-content: space-between !important; /* Forces items to edges */
+  justify-content: space-between !important;
+  /* Forces items to edges */
   align-items: center !important;
-  margin: 12px 20px 24px !important; /* Restored original healthy margins */
+  margin: 12px 20px 24px !important;
+  /* Restored original healthy margins */
   padding: 10px 18px !important;
   background: rgba(255, 255, 255, 0.05) !important;
   border-radius: 16px !important;
-  
+
   /* High-end Glassmorphism */
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 
+  box-shadow:
     inset 0 1px 1px rgba(255, 255, 255, 0.1),
     0 4px 15px rgba(0, 0, 0, 0.05) !important;
-  
+
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  height: 48px !important; /* Increased from 44px */
+  height: 48px !important;
+  /* Increased from 44px */
   box-sizing: border-box !important;
   position: relative !important;
   z-index: 5 !important;
@@ -519,23 +642,35 @@
 
 .dash-segment {
   display: flex !important;
-  align-items: center !important; /* Perfect vertical centering */
+  align-items: center !important;
+  /* Perfect vertical centering */
   gap: 8px !important;
   flex: 1 !important;
-  line-height: 1 !important; /* Prevents text shifting */
+  line-height: 1 !important;
+  /* Prevents text shifting */
 }
 
 /* Specific alignments */
-.dash-date { justify-content: flex-start !important; }
-.dash-status { justify-content: center !important; }
-.dash-clock { justify-content: flex-end !important; }
+.dash-date {
+  justify-content: flex-start !important;
+}
+
+.dash-status {
+  justify-content: center !important;
+}
+
+.dash-clock {
+  justify-content: flex-end !important;
+}
 
 /* Date Styling */
 .dash-date {
   font-family: 'Inter', sans-serif !important;
 }
+
 .dash-day {
-  font-size: 14px !important; /* Increased from 13px */
+  font-size: 14px !important;
+  /* Increased from 13px */
   font-weight: 700 !important;
   letter-spacing: 0.02em !important;
   text-transform: uppercase !important;
@@ -544,8 +679,10 @@
   display: flex !important;
   align-items: center !important;
 }
+
 .dash-date-num {
-  font-size: 14px !important; /* Increased from 13px */
+  font-size: 14px !important;
+  /* Increased from 13px */
   font-weight: 500 !important;
   color: #888 !important;
   letter-spacing: 0.05em !important;
@@ -560,18 +697,22 @@
   align-items: center !important;
   justify-content: center !important;
 }
+
 .dash-status-svg {
   width: 100% !important;
   height: 100% !important;
   transition: transform 0.3s ease !important;
-  transform: translateY(0.5px) !important; /* Optical adjustment for circle center */
+  transform: translateY(0.5px) !important;
+  /* Optical adjustment for circle center */
 }
+
 .dash-status:active .dash-status-svg {
   transform: translateY(0.5px) scale(0.9) !important;
 }
 
 .dash-status-time {
-  font-size: 14px !important; /* Increased from 13px */
+  font-size: 14px !important;
+  /* Increased from 13px */
   font-weight: 600 !important;
   letter-spacing: -0.1px !important;
   transition: color 0.4s ease !important;
@@ -583,17 +724,22 @@
   font-variant-numeric: tabular-nums !important;
   color: #1a1a1a !important;
   display: flex !important;
-  align-items: baseline !important; /* Align HH:MM and SEC on one floor */
+  align-items: baseline !important;
+  /* Align HH:MM and SEC on one floor */
   gap: 1px !important;
 }
+
 #tablo-real-time {
-  font-size: 18px !important; /* Increased from 16px */
+  font-size: 18px !important;
+  /* Increased from 16px */
   font-weight: 700 !important;
   letter-spacing: -0.5px !important;
   line-height: 1 !important;
 }
+
 .dash-clock-sec {
-  font-size: 11px !important; /* Increased from 10px */
+  font-size: 11px !important;
+  /* Increased from 10px */
   font-weight: 500 !important;
   opacity: 0.35 !important;
   line-height: 1 !important;
@@ -616,6 +762,7 @@
 .dash-container.status-on .dash-status-svg {
   stroke: #ee7221 !important;
 }
+
 .dash-container.status-off .dash-status-circle,
 .dash-container.status-off .dash-status-svg {
   stroke: #64748b !important;
@@ -625,12 +772,13 @@
 
 /* --- MOBILE OPTIMIZATION (v4.1.2) --- */
 @media (max-width: 380px) {
+
   /* Hero Card Adjustments */
   .hero-card {
     height: 154px !important;
     padding: 12px 10px 14px !important;
   }
-  
+
   .hero-timer {
     font-size: 42px !important;
   }
@@ -645,7 +793,7 @@
   .dash-date-num {
     font-size: 11px !important;
   }
-  
+
   .dash-status-time,
   #tablo-real-time {
     font-size: 16px !important;

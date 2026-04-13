@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         setTimeout(() => {
             loader.classList.add('fade-out');
             setTimeout(() => loader.remove(), 600);
-        }, 800); 
+        }, 800);
     }
 
     // 5. Подальша логіка для Home (за потреби)
@@ -62,15 +62,15 @@ function initUI(selectedGroup) {
     if (window._sssk_ui_init_done) return;
     window._sssk_ui_init_done = true;
     console.log('Initializing UI for group:', selectedGroup);
-    
+
     const homeQueueBtn = document.getElementById('home-queue-btn');
     const homePickerOverlay = document.getElementById('home-queue-picker-overlay');
     const closePickerBtn = document.getElementById('btn-close-picker');
     if (homeQueueBtn) {
         homeQueueBtn.style.display = 'flex'; // Fail-safe
         homeQueueBtn.addEventListener('click', () => {
-             console.log('Queue button clicked');
-             openSheet('home-queue-picker-overlay');
+            console.log('Queue button clicked');
+            openSheet('home-queue-picker-overlay');
         });
     }
     if (closePickerBtn) closePickerBtn.addEventListener('click', () => closeSheet('home-queue-picker-overlay'));
@@ -94,7 +94,7 @@ function initUI(selectedGroup) {
 
     // Налаштування свайпів по головній картці
 
-    initHeroSwipes('smart-hero', 
+    initHeroSwipes('smart-hero',
         () => swipeToGroup(1),   // Left 
         () => swipeToGroup(-1)   // Right
     );
@@ -121,7 +121,7 @@ function initQueueWheelController(selectedGroup) {
     if (!wheel || !track || !activeVal) return;
 
     track.innerHTML = '';
-    
+
     // Setup 24 slots (12 queues + 12 ticks) for higher density.
     // We still use 3 buffers for 360-degree seamless rotation.
     const fullGroups = [];
@@ -132,8 +132,8 @@ function initQueueWheelController(selectedGroup) {
 
     const triplet = [...fullGroups, ...fullGroups, ...fullGroups];
     const angleStep = 15; // 360 / 24 items
-    const radius = 240; 
-    
+    const radius = 240;
+
     triplet.forEach((slot, i) => {
         const item = document.createElement('div');
         item.className = slot.type === 'tick' ? 'wheel-item is-tick' : 'wheel-item';
@@ -143,9 +143,9 @@ function initQueueWheelController(selectedGroup) {
         }
         item.dataset.index = i;
         item.dataset.type = slot.type;
-        
+
         // Circular placement
-        const angle = (i - fullGroups.length) * angleStep; 
+        const angle = (i - fullGroups.length) * angleStep;
         item.style.transform = `rotateY(${angle}deg) translateZ(${radius}px)`;
         track.appendChild(item);
     });
@@ -167,27 +167,27 @@ function initQueueWheelController(selectedGroup) {
             const idx = parseInt(item.dataset.index);
             const itemAngle = (idx - fullGroups.length) * angleStep;
             const totalAngle = itemAngle + currentRot;
-            
+
             // Normalize to [-180, 180] for visibility/lighting
             let norm = totalAngle % 360;
             if (norm > 180) norm -= 360;
             if (norm < -180) norm += 360;
-            
+
             const absNorm = Math.abs(norm);
             const isQueue = item.dataset.type === 'queue';
-            
+
             // High-density optical lighting
             const fadeThreshold = isQueue ? 85 : 45; // Ticks fade out much earlier
-            const opacity = Math.max(0.01, 1 - Math.pow(absNorm / fadeThreshold, 1.4)); 
+            const opacity = Math.max(0.01, 1 - Math.pow(absNorm / fadeThreshold, 1.4));
             item.style.opacity = opacity;
-            
+
             if (isQueue) {
                 if (absNorm < 10) { // Lens focus
-                    item.style.color = '#FF7A00'; 
+                    item.style.color = '#FF7A00';
                     item.classList.add('is-active');
-                    if (absNorm < minDiff) { 
-                        minDiff = absNorm; 
-                        closest = item.dataset.group; 
+                    if (absNorm < minDiff) {
+                        minDiff = absNorm;
+                        closest = item.dataset.group;
                     }
                 } else {
                     item.style.color = absNorm < 45 ? '#FFFFFF' : '#808080';
@@ -205,16 +205,16 @@ function initQueueWheelController(selectedGroup) {
     const rotateTo = (group, behavior = 'smooth') => {
         const idx = groups.indexOf(group);
         if (idx === -1) return;
-        
+
         // Find rotation shift to reach queue idx (even slots at 30deg intervals)
         const targetRot = -idx * 30;
-        
+
         if (behavior === 'smooth') {
             track.style.transition = 'transform 0.6s cubic-bezier(0.2, 0.8, 0.3, 1)';
         } else {
             track.style.transition = 'none';
         }
-        
+
         currentRot = targetRot;
         track.style.transform = `rotateY(${currentRot}deg)`;
         setTimeout(updateUI, behavior === 'smooth' ? 300 : 0);
@@ -244,7 +244,7 @@ function initQueueWheelController(selectedGroup) {
         const totalDx = e.clientX - startX;
         const sensitivity = 0.18; // Degrees per pixel
         currentRot = startRot + (totalDx * sensitivity);
-        
+
         track.style.transform = `rotateY(${currentRot}deg)`;
         lastX = e.clientX;
         lastTime = now;
@@ -254,25 +254,25 @@ function initQueueWheelController(selectedGroup) {
     const onEnd = () => {
         if (!isDragging) return;
         isDragging = false;
-        
+
         // Inertia Snap - strictly to queues (30deg steps)
         const inertia = velocity * 150;
         const target = Math.round((currentRot + inertia) / 30) * 30;
-        
+
         currentRot = target;
         track.style.transition = 'transform 0.6s cubic-bezier(0.15, 0.85, 0.35, 1)';
         track.style.transform = `rotateY(${currentRot}deg)`;
 
         // Silent Infinite Reset
         setTimeout(() => {
-            const circle = 360; 
+            const circle = 360;
             if (Math.abs(currentRot) > circle * 0.7) {
                 track.style.transition = 'none';
                 if (currentRot > 0) currentRot -= circle;
                 else currentRot += circle;
                 track.style.transform = `rotateY(${currentRot}deg)`;
             }
-            
+
             // Persistence
             const finalGroup = activeVal.textContent;
             localStorage.setItem('sssk_group', finalGroup);
@@ -322,7 +322,7 @@ function swipeToGroup(direction) {
 
 function handleGroupChange(newGroup, source) {
     localStorage.setItem('sssk_group', newGroup);
-    
+
     // Оновити мітку на кнопці головної сторінки
     const queueLabel = document.getElementById('current-queue-label');
     if (queueLabel) {
@@ -336,7 +336,7 @@ function handleGroupChange(newGroup, source) {
     closeSheet('overlay');
 
     closeSheet('home-queue-picker-overlay');
-    
+
     // 1.0.11: Синхронізація нового Wheel Picker
     const activeVal = document.getElementById('active-queue-val');
     if (activeVal) {
@@ -350,7 +350,7 @@ function handleGroupChange(newGroup, source) {
     if (selectorInstance && source !== 'selector') {
         selectorInstance.scrollTo(newGroup);
     }
-    
+
     // Перемалювати графік для нової черги (1.0.14 CORE FIX)
     if (cachedScheduleData) {
         // Миттєвий апдейт без запиту до сервера
@@ -380,7 +380,7 @@ function renderTimelineV2(selectedGroup, data) {
         scheduleString: isAllClearDay ? "1".repeat(24) : (isNoPowerDay ? "0".repeat(24) : scheduleString),
         selectedGroup: selectedGroup,
         groups: groups,
-        demoMode: !data, 
+        demoMode: !data,
         isAllClearDay: isAllClearDay
     });
     engineV2.init();
@@ -388,6 +388,38 @@ function renderTimelineV2(selectedGroup, data) {
 
     // Оновлення Hero UI (колір картки, таймер)
     updateHeroUI(selectedGroup, now, isAllClearDay, isNoPowerDay, !data, scheduleString);
+
+    // Оновлення Svitlo Timeline Block
+    updateSvitloTimeline(selectedGroup, data, scheduleString, isAllClearDay, isNoPowerDay);
+}
+
+/**
+ * Оновлення інтерактивного Svitlo Timeline Block
+ */
+function updateSvitloTimeline(selectedGroup, data, scheduleString, isAllClearDay, isNoPowerDay) {
+    const timelineEl = document.getElementById('interactive-timeline-component');
+    if (!timelineEl) return;
+
+    // Визначаємо ефективний графік
+    let effectiveSchedule = scheduleString;
+    if (isAllClearDay) effectiveSchedule = "1".repeat(24);
+    else if (isNoPowerDay) effectiveSchedule = "0".repeat(24);
+    else if (!effectiveSchedule) effectiveSchedule = "1".repeat(24);
+
+    // Конвертуємо scheduleString у intervals
+    const intervals = window.scheduleStringToIntervals ? window.scheduleStringToIntervals(effectiveSchedule) : [];
+
+    // Отримуємо поточний час
+    const now = new Date();
+    const currentTimeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+
+    // Оновлюємо компонент
+    timelineEl.removeAttribute('loading');
+    timelineEl.removeAttribute('error');
+    timelineEl.setAttribute('data-intervals', JSON.stringify(intervals));
+    timelineEl.setAttribute('current-time', currentTimeStr);
+
+    console.log('[Svitlo Timeline] Updated with intervals:', intervals.length, 'for group:', selectedGroup);
 }
 
 function renderPickerButtons(containerId, selectedGroup) {
@@ -397,7 +429,7 @@ function renderPickerButtons(containerId, selectedGroup) {
     container.innerHTML = '';
     const now = new Date();
     const currentHour = now.getHours();
-    
+
     // Check if we have cached data for dot status calculation
     let scheduleDataObj = null;
     if (typeof cachedScheduleData !== 'undefined' && cachedScheduleData) {
@@ -407,7 +439,7 @@ function renderPickerButtons(containerId, selectedGroup) {
     groups.forEach(group => {
         const btn = document.createElement('button');
         const isActive = (group === selectedGroup);
-        
+
         // Determine if light is ON for this group right now
         let isOn = (currentHour % 2 === 0); // Fallback
         const scheduleString = scheduleDataObj ? scheduleDataObj[group] : null;
@@ -439,8 +471,8 @@ function updateDateDisplay() {
 
     // Центральна кнопка дати: 3 колонки
     const bottomDay = document.getElementById('bottom-date-day');
-    const bottomDM  = document.getElementById('bottom-date-dm');
-    const bottomWD  = document.getElementById('bottom-date-wd');
+    const bottomDM = document.getElementById('bottom-date-dm');
+    const bottomWD = document.getElementById('bottom-date-wd');
 
     if (bottomDay) {
         bottomDay.textContent = now.getDate();
@@ -463,7 +495,7 @@ async function loadAndRender(selectedGroup) {
     cachedScheduleData = data; // 1.0.10: Update cache
 
     const now = new Date();
-    
+
     let hasOutageMessage = false;
     let isAllClearDay = false;
     let isNoPowerDay = false;
@@ -522,7 +554,7 @@ function updateHeroUI(selectedGroup, now, isAllClear, isNoPower, demoMode, sched
     const heroSubtitle = document.getElementById('hero-subtitle');
     const countdownEl = document.getElementById('hero-countdown');
     const progressFill = document.getElementById('hero-progress-fill');
-    
+
     const activeQueueVal = document.getElementById('active-queue-val');
     if (activeQueueVal) activeQueueVal.textContent = `Підчерга ${selectedGroup}`;
 
@@ -561,26 +593,26 @@ function updateHeroUI(selectedGroup, now, isAllClear, isNoPower, demoMode, sched
             isCurrentlyOn = isAllClear;
         } else if (activeEngine && activeEngine.segments && activeEngine.segments.length > 0) {
             // Retrieve segment from active engine
-            activeSegment = activeEngine.segments.find(seg => currentFractionalHour >= seg.start && currentFractionalHour < seg.end) 
-                         || activeEngine.segments[activeEngine.segments.length - 1]; // Fallback to last segment
+            activeSegment = activeEngine.segments.find(seg => currentFractionalHour >= seg.start && currentFractionalHour < seg.end)
+                || activeEngine.segments[activeEngine.segments.length - 1]; // Fallback to last segment
 
             isCurrentlyOn = activeSegment.type !== 'off';
             nextChangeHour = activeSegment.end;
         } else {
-             // Fallback if engine is not ready
-             isCurrentlyOn = activeSchedule[currentHour] === '1';
-             if (demoMode && !isAllClear && !isNoPower) {
-                 isCurrentlyOn = !((currentHour + groupIndex) % 10 < 5);
-             }
-             for (let i = currentHour + 1; i <= 24; i++) {
-                 if (i === 24) { nextChangeHour = 24; break; }
-                 let stateAtI = activeSchedule[i] === '1';
-                 if (demoMode) stateAtI = !((i + groupIndex) % 10 < 5);
-                 if (stateAtI !== isCurrentlyOn) {
-                     nextChangeHour = i;
-                     break;
-                 }
-             }
+            // Fallback if engine is not ready
+            isCurrentlyOn = activeSchedule[currentHour] === '1';
+            if (demoMode && !isAllClear && !isNoPower) {
+                isCurrentlyOn = !((currentHour + groupIndex) % 10 < 5);
+            }
+            for (let i = currentHour + 1; i <= 24; i++) {
+                if (i === 24) { nextChangeHour = 24; break; }
+                let stateAtI = activeSchedule[i] === '1';
+                if (demoMode) stateAtI = !((i + groupIndex) % 10 < 5);
+                if (stateAtI !== isCurrentlyOn) {
+                    nextChangeHour = i;
+                    break;
+                }
+            }
         }
 
         // 1. Text & Status Setup
@@ -589,7 +621,7 @@ function updateHeroUI(selectedGroup, now, isAllClear, isNoPower, demoMode, sched
 
         if (isAllClear) {
             statusString = 'Світло є ⚡️';
-            statusIconFile = 'assets/power_off.png'; 
+            statusIconFile = 'assets/power_off.png';
             isCurrentlyOn = true;
         } else if (isNoPower) {
             statusString = 'Авар. відключення';
@@ -614,7 +646,7 @@ function updateHeroUI(selectedGroup, now, isAllClear, isNoPower, demoMode, sched
             currentHeroCard.classList.toggle('status-on', isCurrentlyOn);
             currentHeroCard.classList.toggle('status-off', !isCurrentlyOn);
         }
-        
+
         if (heroStatusEl) heroStatusEl.textContent = statusString;
 
         if (heroIconImg) {
@@ -642,7 +674,7 @@ function updateHeroUI(selectedGroup, now, isAllClear, isNoPower, demoMode, sched
         nextTime.setHours(nextChangeHour === 24 ? 24 : nextChangeHour, 0, 0, 0);
         const diffMs = nextTime.getTime() - currentTime.getTime();
         const minutesRemaining = Math.max(0, Math.floor(diffMs / 60000));
-        
+
         const h = Math.floor(minutesRemaining / 60);
         const m = minutesRemaining % 60;
         if (heroTimerEl) heroTimerEl.textContent = `${h}:${m.toString().padStart(2, '0')}`;
