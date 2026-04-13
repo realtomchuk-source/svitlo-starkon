@@ -408,7 +408,7 @@
   width: 100% !important;
   margin-top: 4px !important;
   position: relative !important;
-  padding: 0 5px !important; /* Maximized width, reduced from 20px to 5px */
+  padding: 0 5px 12px 5px !important; /* Balanced vertical space: top (bubbles) vs bottom */
   box-sizing: border-box !important;
 }
 
