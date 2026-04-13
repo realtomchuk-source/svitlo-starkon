@@ -408,7 +408,7 @@
   width: 100% !important;
   margin-top: 4px !important;
   position: relative !important;
-  padding: 0 16px !important; /* Reduced to 16px to align start/end points with wider bottom timeline */
+  padding: 0 20px !important; /* Unified 20px corridor to match Main Timeline precisely */
   box-sizing: border-box !important;
 }
 
@@ -416,7 +416,7 @@
 .hero-tl-bubbles {
   position: relative !important;
   height: 20px !important;
-  width: 100% !important; /* Now respects parent's 20px padding */
+  width: 100% !important; /* Spans exactly the padding-to-padding width */
   margin: 0 auto 5px !important;
 }
 
@@ -452,7 +452,7 @@
 .hero-tl-track {
   position: relative !important;
   height: 6px !important;
-  width: 100% !important;
+  width: 100% !important; /* Spans across entire 20px-padded corridor */
   background: rgba(0, 0, 0, 0.08) !important;
   border-radius: 3px !important;
   overflow: visible !important;
@@ -497,12 +497,12 @@
   display: flex !important;
   justify-content: space-between !important; /* Forces items to edges */
   align-items: center !important;
-  margin: 12px 20px 24px !important; /* Reduced top gap (12px), increased bottom gap (24px) for grouping */
+  margin: 12px 20px 24px !important; /* Restored original healthy margins */
   padding: 10px 18px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
   border-radius: 16px !important;
   
   /* High-end Glassmorphism */
-  background: rgba(255, 255, 255, 0.05) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
