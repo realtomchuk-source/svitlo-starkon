@@ -408,7 +408,7 @@
   width: 100% !important;
   margin-top: 4px !important;
   position: relative !important;
-  padding: 0 !important; /* Back to 100% width to match the bottom timeline scale exactly */
+  padding: 0 20px !important; /* Unified 20px side padding for perfect vertical alignment with Main Timeline */
   box-sizing: border-box !important;
 }
 
@@ -416,8 +416,8 @@
 .hero-tl-bubbles {
   position: relative !important;
   height: 20px !important;
-  width: calc(100% - 32px) !important; /* Safety zone: 16px from each side */
-  margin: 0 auto 5px !important; /* Center the bubbles bubble area */
+  width: 100% !important; /* Now respects parent's 20px padding */
+  margin: 0 auto 5px !important;
 }
 
 /* Individual Time Bubble */
