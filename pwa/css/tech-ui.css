@@ -408,7 +408,7 @@
   width: 100% !important;
   margin-top: 4px !important;
   position: relative !important;
-  padding: 0 20px !important; /* Unified 20px corridor to match Main Timeline precisely */
+  padding: 0 5px !important; /* Maximized width, reduced from 20px to 5px */
   box-sizing: border-box !important;
 }
 
