@@ -74,20 +74,24 @@ export function updateDashboardTablo(now, isCurrentlyOn, nextChangeHour) {
     }
 
     if (capStatusContainer) {
-        // FIXED: Only use orange if light is ON. Otherwise, use a neutral grey.
         const statusColor = isCurrentlyOn ? '#ee7221' : '#64748b';
-        // Inverting logic because ON state was showing MINUS. 
-        // Now: if isCurrentlyOn is true, show PLUS.
-        const symbolPath = isCurrentlyOn 
-            ? '<line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>' 
-            : '<line x1="8" y1="12" x2="16" y2="12"/>';
+        
+        // Premium Bulb Icons (Styled)
+        // Icon ON: Bulb with +
+        // Icon OFF: Bulb with -
+        const bulbSvg = isCurrentlyOn 
+            ? `<svg viewBox="0 0 24 24" fill="none" class="dash-status-svg" stroke="${statusColor}">
+                 <path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7z" stroke-width="1.5" stroke-linecap="round"/>
+                 <path d="M9 21h6" stroke-width="1.5" stroke-linecap="round"/>
+                 <path d="M12 7v4M10 9h4" stroke-width="2" stroke-linecap="round"/> 
+               </svg>`
+            : `<svg viewBox="0 0 24 24" fill="none" class="dash-status-svg" stroke="${statusColor}">
+                 <path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7z" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+                 <path d="M9 21h6" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+                 <path d="M10 9h4" stroke-width="2" stroke-linecap="round"/>
+               </svg>`;
             
-        capStatusContainer.innerHTML = `
-            <svg viewBox="0 0 24 24" fill="none" class="dash-status-svg" stroke="${statusColor}">
-                <circle cx="12" cy="12" r="10" stroke-width="1.5" class="dash-status-circle" opacity="0.3"/>
-                <path d="${symbolPath}" stroke-width="2.5" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-            </svg>
-        `;
+        capStatusContainer.innerHTML = bulbSvg;
     }
 
     // 2.3 Clock Segment
