@@ -76,21 +76,19 @@ export function updateDashboardTablo(now, isCurrentlyOn, nextChangeHour) {
     if (capStatusContainer) {
         const statusColor = isCurrentlyOn ? '#ee7221' : '#64748b';
         
-        // Solid Premium Bulb Icons (Digitized from Screenshot)
+        // Custom Vector Bulb Icons (Directly from User)
         const bulbOn = `
-            <svg viewBox="0 0 24 24" class="dash-status-svg">
-                <path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7z" fill="${statusColor}"/>
-                <path d="M9 19h6v1a1 1 0 01-1 1h-4a1 1 0 01-1-1v-1z" fill="${statusColor}" opacity="0.8"/>
-                <circle cx="12" cy="9" r="4.5" fill="black" opacity="0.4"/>
-                <path d="M12 6.5v5M9.5 9h5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <svg viewBox="0 0 358.9 495.1" class="dash-status-svg">
+                <path fill="${statusColor}" d="M269.45,420.1c0,41.44-33.56,75-75,75h-30c-41.44,0-75-33.56-75-75v-15h180v15Z"/>
+                <path fill="${statusColor}" d="M179.45.1C24.98-5.24-59.54,197.44,48.86,303.95c15.46,16.31,29.24,35.25,35.99,56.15h189.19c6.84-20.91,20.53-39.84,36-56.16C418.46,197.45,333.89-5.27,179.45.1ZM179.45,305.69c-67.65,0-122.5-54.85-122.5-122.5s54.85-122.5,122.5-122.5,122.5,54.85,122.5,122.5-54.85,122.5-122.5,122.5Z"/>
+                <path fill="${statusColor}" d="M234.02,169.58h-40.83v-40.83c0-7.49-6.12-13.61-13.61-13.61s-13.61,6.12-13.61,13.61v40.83h-40.83c-7.49,0-13.61,6.12-13.61,13.61s6.12,13.61,13.61,13.61h40.83v40.83c0,7.49,6.12,13.61,13.61,13.61s13.61-6.12,13.61-13.61v-40.83h40.83c7.49,0,13.61-6.12,13.61-13.61s-6.12-13.61-13.61-13.61Z"/>
             </svg>`;
 
         const bulbOff = `
-            <svg viewBox="0 0 24 24" class="dash-status-svg">
-                <path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7z" fill="${statusColor}"/>
-                <path d="M9 19h6v1a1 1 0 01-1 1h-4a1 1 0 01-1-1v-1z" fill="${statusColor}" opacity="0.8"/>
-                <circle cx="12" cy="9" r="4.5" fill="black" opacity="0.4"/>
-                <path d="M9.5 9h5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <svg viewBox="0 0 358.9 495.1" class="dash-status-svg">
+                <path fill="${statusColor}" d="M269.45,405.1H89.45v15c0,41.44,33.56,75,75,75h30c41.44,0,75-33.56,75-75v-15Z"/>
+                <path fill="${statusColor}" d="M247.51,183.21c0,7.49-6.12,13.61-13.61,13.61h-108.89c-7.49,0-13.61-6.12-13.61-13.61s6.12-13.61,13.61-13.61h108.89c7.49,0,13.61,6.12,13.61,13.61Z"/>
+                <path fill="${statusColor}" d="M179.45.1C24.98-5.24-59.54,197.44,48.86,303.95c15.46,16.31,29.24,35.25,35.99,56.15h189.19c6.84-20.91,20.53-39.84,36-56.16C418.46,197.45,333.89-5.27,179.45.1ZM179.45,305.71c-67.65,0-122.5-54.85-122.5-122.5s54.85-122.5,122.5-122.5,122.5,54.85,122.5,122.5-54.85,122.5-122.5,122.5Z"/>
             </svg>`;
             
         capStatusContainer.innerHTML = isCurrentlyOn ? bulbOn : bulbOff;
