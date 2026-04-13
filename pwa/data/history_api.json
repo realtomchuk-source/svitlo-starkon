@@ -2235,5 +2235,20 @@
       "6.1": "111111111111111111111111",
       "6.2": "111111111111111111111111"
     }
+  },
+  {
+    "timestamp": "2026-04-13T20:04:55.464155+03:00",
+    "target_date": "14.04",
+    "source": "system",
+    "change_desc": "Створено заготовку (очікуємо 14.04)",
+    "is_update": false,
+    "processed": false,
+    "queues": {},
+    "mode": "schedule",
+    "date": "",
+    "date_full": "",
+    "message": "Очікування публікації графіка на 14.04",
+    "announcements": [],
+    "queues_raw": {}
   }
 ]
