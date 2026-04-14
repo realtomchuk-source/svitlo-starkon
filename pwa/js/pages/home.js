@@ -390,13 +390,13 @@ function renderTimelineV2(selectedGroup, data) {
     updateHeroUI(selectedGroup, now, isAllClearDay, isNoPowerDay, !data, scheduleString);
 
     // Оновлення Svitlo Timeline Block
-    updateSvitloTimeline(selectedGroup, data, scheduleString, isAllClearDay, isNoPowerDay);
+    updateSvitloTimeline(selectedGroup, data, scheduleString, isAllClearDay, isNoPowerDay, engineV2);
 }
 
 /**
- * Оновлення інтерактивного Svitlo Timeline Block
+ * Оновлення інтерактивного Svitlo Timeline Block та підключення подій
  */
-function updateSvitloTimeline(selectedGroup, data, scheduleString, isAllClearDay, isNoPowerDay) {
+function updateSvitloTimeline(selectedGroup, data, scheduleString, isAllClearDay, isNoPowerDay, engineV2) {
     const timelineEl = document.getElementById('interactive-timeline-component');
     if (!timelineEl) return;
 
@@ -419,7 +419,50 @@ function updateSvitloTimeline(selectedGroup, data, scheduleString, isAllClearDay
     timelineEl.setAttribute('data-intervals', JSON.stringify(intervals));
     timelineEl.setAttribute('current-time', currentTimeStr);
 
-    console.log('[Svitlo Timeline] Updated with intervals:', intervals.length, 'for group:', selectedGroup);
+    // --- Time Machine Binding ---
+    
+    // Видаляємо старі обробники через зберігання посилання, або простіше — 
+    // використовуємо властивість елемента для збереження поточного engine
+    timelineEl._activeEngine = engineV2;
+
+    if (!timelineEl._hasTimelineListeners) {
+        timelineEl.addEventListener('change', (e) => {
+            const mins = e.detail.minutes;
+            window.isTimelineScrubbing = true;
+            
+            const engine = timelineEl._activeEngine;
+            if (engine) {
+                engine.scrubberInteracted = true;
+                engine.syncHeroPointer(mins);
+                engine.updateDashboard(mins);
+            }
+        });
+
+        timelineEl.addEventListener('commit', () => {
+            const engine = timelineEl._activeEngine;
+            if (engine) {
+                clearTimeout(engine.scrubberTimeout);
+                engine.scrubberTimeout = setTimeout(() => {
+                    engine.scrubberInteracted = false;
+                    window.isTimelineScrubbing = false;
+                    engine.updateTime();
+                }, 8000);
+            }
+        });
+
+        timelineEl.addEventListener('autoreturn', () => {
+            const engine = timelineEl._activeEngine;
+            if (engine) {
+                engine.scrubberInteracted = false;
+                window.isTimelineScrubbing = false;
+                engine.updateTime();
+            }
+        });
+        
+        timelineEl._hasTimelineListeners = true;
+    }
+
+    console.log('[Svitlo Timeline] Synced with engine for group:', selectedGroup);
 }
 
 function renderPickerButtons(containerId, selectedGroup) {

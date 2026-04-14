@@ -32,7 +32,6 @@ export class TimelineEngineV2 {
         this.buildData();
         this.renderDOM();
         this.renderHeroMiniGraph(); // NEW: Initial render of Hero 24h bar
-        this.setupScrubber();
         if (!this.isTomorrow) {
             this.startTick();
         }
@@ -267,11 +266,8 @@ export class TimelineEngineV2 {
             stage.style.setProperty('--tl-v2-now-perc', `${perc}%`);
         }
 
-        // If not interacted, sync the scrubber and handle to NOW
-        if (!this.scrubberInteracted && this.scrubberInput && this.handle) {
-            this.scrubberInput.value = mins;
-            const handlePerc = mins / 1440;
-            this.handle.style.left = `calc(${handlePerc * 100}% - 3px)`;
+        // If not interacted, sync the dashboard to NOW
+        if (!this.scrubberInteracted) {
             window.isTimelineScrubbing = false;
             
             // Sync dashboard to real time
@@ -371,11 +367,8 @@ export class TimelineEngineV2 {
             }
         }
 
-        // 3. Колір повзунка (синхронно зі станом)
-        if (this.scrubberInput) {
-            const scrubberColor = isOff ? '#8E8E93' : '#FF9500';
-            this.scrubberInput.style.setProperty('--scrubber-color', scrubberColor);
-        }
+        // 3. Колір повзунка (синхронно зі станом) - тепер через зовнішній компонент
+        // (Логіка кольору перенесена в svitlo-timeline-block або home.js за потреби)
     }
 
     startTick() {
@@ -383,39 +376,6 @@ export class TimelineEngineV2 {
         this.timerId = setInterval(() => this.updateTime(), 60000);
     }
 
-    setupScrubber() {
-        this.scrubberInput = document.getElementById('v2-scrubber-input');
-        this.handle = document.getElementById('v2-handle');
 
-        if (!this.scrubberInput || !this.handle) return;
-
-        const updateHandle = () => {
-            this.scrubberInteracted = true;
-            window.isTimelineScrubbing = true;
-            clearTimeout(this.scrubberTimeout);
-
-            const val = parseInt(this.scrubberInput.value);
-            const perc = val / 1440;
-            this.handle.style.left = `calc(${perc * 100}% - 3px)`; 
-            
-            // Sync Dashboard UI
-            this.updateDashboard(val);
-            this.syncHeroPointer(val);
-        };
-
-        this.scrubberInput.addEventListener('input', updateHandle);
-
-        this.scrubberInput.addEventListener('change', () => {
-            clearTimeout(this.scrubberTimeout);
-            this.scrubberTimeout = setTimeout(() => {
-                this.scrubberInteracted = false;
-                this.updateTime();
-                // We should also trigger the visual updates here if needed
-                // (e.g. notify other components through events or window properties)
-            }, 15000); // 15 seconds cooldown
-        });
-
-        // initial sync
-        this.updateTime();
-    }
+    // setupScrubber REMOVED - Logic moved to home.js for svitlo-timeline-block integration
 }
