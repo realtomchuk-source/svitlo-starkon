@@ -724,11 +724,23 @@
 }
 
 .dash-status-time {
-  font-size: 14px !important;
-  /* Increased from 13px */
+  display: flex !important;
+  align-items: baseline !important;
+  gap: 4px !important;
+  transition: color 0.4s ease !important;
+}
+
+.dash-status-label {
+  font-size: 11px !important;
+  font-weight: 400 !important;
+  opacity: 0.7 !important;
+  text-transform: lowercase !important;
+}
+
+.dash-status-value {
+  font-size: 13px !important;
   font-weight: 600 !important;
   letter-spacing: -0.1px !important;
-  transition: color 0.4s ease !important;
 }
 
 /* Clock Styling */
@@ -807,7 +819,17 @@
     font-size: 11px !important;
   }
 
-  .dash-status-time,
+  .dash-status-time {
+    display: flex !important;
+    align-items: baseline !important;
+    gap: 3px !important;
+  }
+
+  .dash-status-label {
+    font-size: 10px !important;
+  }
+
+  .dash-status-value,
   #tablo-real-time {
     font-size: 16px !important;
   }

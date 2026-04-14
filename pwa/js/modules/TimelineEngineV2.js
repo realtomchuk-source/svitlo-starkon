@@ -360,7 +360,11 @@ export class TimelineEngineV2 {
                 capStatusCard.style.pointerEvents = 'auto';
                 
                 const nextTime = this.getNextTransitionTime(mins);
-                if (capStatusText) capStatusText.textContent = nextTime ? `до\u2009${nextTime}` : "—";
+                if (capStatusText) {
+                    capStatusText.innerHTML = nextTime 
+                        ? `<span class="dash-status-label">до</span> <span class="dash-status-value">${nextTime}</span>` 
+                        : "—";
+                }
                 if (capStatusIcon) {
                     capStatusIcon.src = isOff ? 'assets/dashboard_off.svg' : 'assets/dashboard_on.svg';
                 }
