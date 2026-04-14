@@ -2294,5 +2294,16 @@
     "message": "Очікування публікації графіка на 14.04",
     "queues": {},
     "change_desc": "Створено заготовку (очікуємо 14.04)"
+  },
+  {
+    "timestamp": "2026-04-14T20:11:27.726947+03:00",
+    "target_date": "15.04",
+    "source": "system",
+    "type": "schedule",
+    "processed": false,
+    "is_placeholder": true,
+    "message": "Очікування публікації графіка на 15.04",
+    "queues": {},
+    "change_desc": "Створено заготовку (очікуємо 15.04)"
   }
 ]
