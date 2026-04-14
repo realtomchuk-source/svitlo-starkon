@@ -214,25 +214,41 @@ export class TimelineEngineV2 {
         segmentsContainer.innerHTML = '';
         bubblesContainer.innerHTML = '';
 
-        // 1. Render Segments (Tube)
-        this.segments.forEach(seg => {
-            const widthPerc = ((seg.end - seg.start) / 24) * 100;
+        // 1. Render 48 Sectors (Solid Continuous Tube)
+        // Each sector represents 30 minutes
+        for (let i = 0; i < 48; i++) {
+            const hour = i / 2;
+            const isOff = this.checkIsOffAtHour(hour);
             const segmentEl = document.createElement('div');
-            segmentEl.className = `hero-tl-segment ${seg.type}`;
-            segmentEl.style.width = `${widthPerc}%`;
+            segmentEl.className = `hero-tl-segment ${isOff ? 'off' : 'on'}`;
+            // individual width is handled by flex: 1 in CSS
             segmentsContainer.appendChild(segmentEl);
-        });
+        }
 
-        // 2. Render Bubbles (Transition points)
-        this.events.forEach(ev => {
-            const perc = (ev.time / 1440) * 100;
+        // 2. Render Bubbles (Transition points + Start/End)
+        // We ensure 0 and 24 are always there, and then add actual events
+        const eventHours = [...new Set([0, ...this.events.map(ev => ev.hour), 24])].sort((a, b) => a - b);
+        
+        eventHours.forEach(h => {
+            const perc = (h / 24) * 100;
             const bubbleEl = document.createElement('div');
-            bubbleEl.className = 'hero-tl-bubble';
+            
+            // Add 'start' and 'end' classes for special edge alignment in CSS
+            let edgeClass = '';
+            if (h === 0) edgeClass = 'start';
+            else if (h === 24) edgeClass = 'end';
+            
+            bubbleEl.className = `hero-tl-bubble ${edgeClass}`.trim();
             bubbleEl.style.left = `${perc}%`;
-            bubbleEl.textContent = `${ev.hour}:00`;
-            bubbleEl.id = `hero-bubble-${ev.hour}`;
+            bubbleEl.textContent = `${h}:00`;
+            bubbleEl.id = `hero-bubble-${h}`;
             bubblesContainer.appendChild(bubbleEl);
         });
+
+        // 3. Ensure pointer is synced and visible
+        if (typeof this.currentTimeMinutes !== 'undefined') {
+            this.syncHeroPointer(this.currentTimeMinutes);
+        }
     }
 
     updateTime() {

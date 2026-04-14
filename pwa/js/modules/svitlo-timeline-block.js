@@ -396,21 +396,20 @@ class SvitloTimelineBlock extends HTMLElement {
 
     if (!thumb || !cursor) return;
 
+    // Calculate percentage relative to the track width
     const percent = (this._selectedSlot / SvitloTimelineBlock.SLOTS_COUNT) * 100;
 
-    // Використовуємо transform для GPU acceleration
-    const transform = `translateX(calc(${percent}% - 50%))`;
-
     if (animate && !this._prefersReducedMotion()) {
-      thumb.style.transition = 'transform 0.1s ease-out';
-      cursor.style.transition = 'transform 0.1s ease-out';
+      thumb.style.transition = 'left 0.1s ease-out';
+      cursor.style.transition = 'left 0.1s ease-out';
     } else {
       thumb.style.transition = 'none';
       cursor.style.transition = 'none';
     }
 
-    thumb.style.transform = transform;
-    cursor.style.transform = transform;
+    // Apply left position instead of transform, because transform (%) is relative to the thumb's width
+    thumb.style.left = `${percent}%`;
+    cursor.style.left = `${percent}%`;
 
     // Update ARIA
     this._updateAriaValues();
@@ -658,7 +657,7 @@ class SvitloTimelineBlock extends HTMLElement {
         }
 
         .timeline-block {
-          padding: 12px 0;
+          padding: 12px 14px;
           background: var(--svitlo-bg);
           user-select: none;
           touch-action: pan-y;

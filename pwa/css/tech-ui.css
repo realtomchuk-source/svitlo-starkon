@@ -13,8 +13,8 @@
   --hero-text-primary: #111111;
   --hero-text-secondary: #666666;
   --hero-text-dim: #888888;
-  --accent-on: linear-gradient(90deg, #FF7A00, #FF9A3D);
-  --accent-off: linear-gradient(90deg, #9AA0A6, #C2C5CA);
+  --accent-on: #FF7A00;
+  --accent-off: #9AA0A6;
   --color-track: rgba(0, 0, 0, 0.08);
   --hero-radius: 24px;
   --font-family-hero: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -491,8 +491,8 @@
   width: 100% !important;
   margin-top: 4px !important;
   position: relative !important;
-  padding: 0 20px 12px 20px !important;
-  /* Restored 20px to match Main Timeline precisely */
+  padding: 0 0 12px 0 !important;
+  /* Removed 20px padding to align with Hero icon/text and match lower graph visual flow */
   box-sizing: border-box !important;
 }
 
@@ -546,6 +546,16 @@
   white-space: nowrap !important;
 }
 
+.hero-tl-bubble.start {
+  transform: none !important;
+  left: 0 !important;
+}
+
+.hero-tl-bubble.end {
+  transform: translateX(-100%) !important;
+  left: 100% !important;
+}
+
 /* Remove vertical tick to achieve cleaner centered look */
 .hero-tl-bubble::after {
   display: none !important;
@@ -562,7 +572,7 @@
   width: 100% !important;
   /* Spans across entire 20px-padded corridor */
   background: rgba(0, 0, 0, 0.08) !important;
-  border-radius: 3px !important;
+  border-radius: 4px !important;
   overflow: visible !important;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1) !important;
 }
@@ -570,13 +580,16 @@
 .hero-tl-segments {
   position: absolute !important;
   inset: 0 !important;
-  display: flex !important;
-  border-radius: 3px !important;
+  border-radius: 4px !important;
   overflow: hidden !important;
+  /* Ensuring no gaps between 48 flex items */
+  gap: 0 !important;
 }
 
 .hero-tl-segment {
   height: 100% !important;
+  flex: 1 !important;
+  /* Solid continuous tube with 48 sectors */
 }
 
 .hero-tl-segment.on {
