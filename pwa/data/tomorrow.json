@@ -1,10 +1,10 @@
 {
-  "date": "15.04",
-  "updated_at": "2026-04-14T23:35:19.175094+03:00",
+  "date": "16.04",
+  "updated_at": "2026-04-15T02:12:27.021514+03:00",
   "status": "pending",
   "meta": {
-    "generated_at": "14.04.2026 23:35",
+    "generated_at": "15.04.2026 02:12",
     "state": "pending",
-    "target_date": "15.04"
+    "target_date": "16.04"
   }
 }
