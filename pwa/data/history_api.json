@@ -2265,5 +2265,20 @@
     "message": "Очікування публікації графіка на 15.04",
     "announcements": [],
     "queues_raw": {}
+  },
+  {
+    "timestamp": "2026-04-15T19:06:07.717790+03:00",
+    "target_date": "16.04",
+    "source": "system",
+    "change_desc": "Створено заготовку (очікуємо 16.04)",
+    "is_update": false,
+    "processed": false,
+    "queues": {},
+    "mode": "schedule",
+    "date": "",
+    "date_full": "",
+    "message": "Очікування публікації графіка на 16.04",
+    "announcements": [],
+    "queues_raw": {}
   }
 ]
