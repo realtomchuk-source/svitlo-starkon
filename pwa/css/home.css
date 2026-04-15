@@ -11,122 +11,7 @@
     height: 60px;
 }
 
-/* --- NEW DYNAMIC DASHBOARD BLOCK --- */
-/* --- NEW FLAT GLASS DASHBOARD (v2.0) --- */
-.dash-container {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    height: 24px;
-    margin: 4px 0; /* Fully expanded to match dashboard grid width */
-    padding: 0 12px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-    z-index: 5;
-    box-sizing: border-box;
-    font-weight: 500;
-}
 
-/* Dynamic State Colors */
-.dash-container.status-on {
-    --dash-accent: #FF7A00;
-}
-.dash-container.status-off {
-    --dash-accent: #808080;
-}
-
-.dash-segment {
-    display: flex;
-    flex-direction: row !important;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
-    gap: 6px;
-}
-
-/* Interactivity Feedback */
-.dash-segment:active {
-    transform: scale(0.95) !important;
-    opacity: 0.8;
-}
-
-/* Typography & Sub-elements */
-.dash-clock-hhmm {
-    font-size: 15px;
-    font-weight: 600;
-    font-family: 'Tektur', sans-serif;
-}
-
-.dash-clock-ss {
-    font-size: 11px;
-    opacity: 0.7;
-    margin-left: 2px;
-    font-family: 'Tektur', sans-serif;
-}
-
-.dash-day {
-    font-weight: 600;
-    font-size: 11px;
-    text-transform: uppercase;
-    opacity: 0.8;
-}
-
-.dash-date-num {
-    font-size: 14px;
-    font-family: 'Tektur', sans-serif;
-    letter-spacing: -0.2px;
-}
-
-.dash-status-icon {
-    width: 12px;
-    height: 12px;
-    transition: filter 0.3s ease;
-}
-
-.dash-status-time {
-    font-size: 13px;
-    letter-spacing: -0.2px;
-}
-
-/* Colorize White Icon -> Orange (#FF7A00) */
-.status-on .dash-status-icon {
-    filter: invert(48%) sepia(85%) saturate(3015%) hue-rotate(15deg) brightness(101%) contrast(106%);
-    drop-shadow: 0 0 5px rgba(255, 122, 0, 0.4);
-}
-
-/* Colorize White Icon -> Grey (#808080) */
-.status-off .dash-status-icon {
-    filter: invert(53%) sepia(0%) saturate(0%) hue-rotate(175deg) brightness(95%) contrast(88%);
-}
-
-.dash-status-time {
-    font-family: 'Inter', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--dash-accent);
-}
-
-.dash-clock {
-    font-family: 'Tektur', sans-serif;
-    font-size: 16px;
-    color: var(--dash-accent);
-    font-weight: 600;
-    flex-direction: row !important;
-    gap: 2px;
-}
-
-.dash-clock-sec {
-    font-size: 12px;
-    opacity: 0.6;
-    margin-top: 2px;
-}
 
 /* Legend Styles */
 .legend-content {
@@ -189,35 +74,9 @@
     margin-left: 2px;
 }
 
-/* Status: ON (Orange) */
-.dynamic-info-block.status-on {
-    background-color: #ee7221;
-    box-shadow: 0 8px 20px rgba(238, 114, 33, 0.2);
-}
 
-/* Status: OFF (Grey) */
-.dynamic-info-block.status-off {
-    background-color: #374151;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-}
 
-/* Premium Inner Glow Effect */
-.dynamic-info-block::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, transparent 60%);
-    pointer-events: none;
-}
 
-/* Subtle Bottom Shine */
-.dynamic-info-block::after {
-    content: "";
-    position: absolute;
-    bottom: 0; left: 0; right: 0; height: 1px;
-    background: rgba(255, 255, 255, 0.05);
-    pointer-events: none;
-}
 
 /* --- Queue Selector (Active Toggle) --- */
 .home-queue-btn {
@@ -458,14 +317,14 @@
     color: #ee7221; /* Matte Orange */
 }
 
-#tablo-month-txt {
+.tablo-month-txt {
     font-size: 13px;
     font-weight: 900;
     text-transform: uppercase;
     color: #FFFFFF;
 }
 
-#tablo-wd-txt {
+.tablo-wd-txt {
     font-size: 10px;
     font-weight: 750;
     text-transform: uppercase;

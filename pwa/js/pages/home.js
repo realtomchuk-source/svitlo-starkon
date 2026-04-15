@@ -6,7 +6,6 @@
 
 import { fetchScheduleData } from '../modules/api.js';
 import { updateDashboardTablo } from './home-tablo.js';
-import { TimelineEngineV2 } from '../modules/TimelineEngineV2.js';
 import { openSheet, closeSheet, initHeroSwipes } from '../modules/ui-utils.js';
 import { SubQueueCarousel } from '../modules/SubQueueCarousel.js';
 import { SelectorEngine } from '../modules/SelectorEngine.js';
@@ -19,6 +18,35 @@ let hasInteractedWithScrubber = false;
 let globalScrubberTimeout = null;
 let cachedScheduleData = null; // 1.0.10: Cache for instant UI updates
 let selectorInstance = null; // Pill-селектор підчерг
+
+// ПРЕ-КАЛЬКУЛЯЦІЯ: Глобальний кеш для миттєвого перемикання 12 підчерг
+window.sssk_intervals_cache = {};
+
+/**
+ * ПРЕ-КАЛЬКУЛЯЦІЯ: Розраховує інтервали для всіх 12 підчерг один раз
+ * (v1.0.15 Optimization)
+ */
+function precalculateAllQueues(data) {
+    if (!data || !data.queues) return;
+    
+    // Враховуємо глобальні режими дня (all_clear / no_power)
+    const isAllClearDay = data.mode === 'all_clear';
+    const isNoPowerDay = data.mode === 'no_power';
+
+    groups.forEach(group => {
+        let scheduleString = data.queues[group];
+        let effectiveSchedule = scheduleString;
+        
+        if (isAllClearDay) effectiveSchedule = "1".repeat(24);
+        else if (isNoPowerDay) effectiveSchedule = "0".repeat(24);
+
+        if (effectiveSchedule && typeof window.scheduleStringToIntervals === 'function') {
+            window.sssk_intervals_cache[group] = window.scheduleStringToIntervals(effectiveSchedule);
+        }
+    });
+
+    console.log('SSSK Cache: Pre-calculated 12 sub-queues.');
+}
 
 // --- INITIALIZATION --- (v1.0.13)
 
@@ -354,7 +382,7 @@ function handleGroupChange(newGroup, source) {
     // Перемалювати графік для нової черги (1.0.14 CORE FIX)
     if (cachedScheduleData) {
         // Миттєвий апдейт без запиту до сервера
-        renderTimelineV2(newGroup, cachedScheduleData);
+        renderInteractiveTimeline(newGroup, cachedScheduleData);
     } else {
         // Фоллбек, якщо даних ще немає
         loadAndRender(newGroup);
@@ -362,107 +390,182 @@ function handleGroupChange(newGroup, source) {
 }
 
 /**
- * Логіка швидкого перемальовування Timeline V2 без повторного запиту даних (v1.0.14)
+ * Конвертує 24-символьний рядок бота у формат інтервалів для компонента (48 слотів)
  */
-function renderTimelineV2(selectedGroup, data) {
-    if (window.activeEngineV2 && typeof window.activeEngineV2.stopAutoUpdate === 'function') {
-        window.activeEngineV2.stopAutoUpdate();
+function convertScheduleToIntervals(scheduleString) {
+    if (!scheduleString || scheduleString.length !== 24) {
+        return [{ start: "00:00", end: "24:00", status: "unknown" }];
     }
 
-    const scheduleString = data && data.queues ? data.queues[selectedGroup] : null;
-    const isAllClearDay = data.mode === 'all_clear';
-    const isNoPowerDay = data.mode === 'no_power';
-    const now = new Date();
+    const intervals = [];
+    let currentStatus = scheduleString[0] === '1' ? 'available' : 'unavailable';
+    let startHour = 0;
 
-    const engineV2 = new TimelineEngineV2({
-        containerId: 'main-timeline-v2',
-        scheduleData: data,
-        scheduleString: isAllClearDay ? "1".repeat(24) : (isNoPowerDay ? "0".repeat(24) : scheduleString),
-        selectedGroup: selectedGroup,
-        groups: groups,
-        demoMode: !data,
-        isAllClearDay: isAllClearDay
-    });
-    engineV2.init();
-    window.activeEngineV2 = engineV2;
-
-    // Оновлення Hero UI (колір картки, таймер)
-    updateHeroUI(selectedGroup, now, isAllClearDay, isNoPowerDay, !data, scheduleString);
-
-    // Оновлення Svitlo Timeline Block
-    updateSvitloTimeline(selectedGroup, data, scheduleString, isAllClearDay, isNoPowerDay, engineV2);
+    for (let i = 1; i <= 24; i++) {
+        const status = (i < 24 && scheduleString[i] === '1') ? 'available' : 'unavailable';
+        if (i === 24 || status !== currentStatus) {
+            intervals.push({
+                start: `${String(startHour).padStart(2, '0')}:00`,
+                end: `${String(i).padStart(2, '0')}:00`,
+                status: currentStatus
+            });
+            startHour = i;
+            currentStatus = status;
+        }
+    }
+    return intervals;
 }
 
 /**
- * Оновлення інтерактивного Svitlo Timeline Block та підключення подій
+ * Рендерить 48 сегментів для міні-графіка в Hero-картці
  */
-function updateSvitloTimeline(selectedGroup, data, scheduleString, isAllClearDay, isNoPowerDay, engineV2) {
+/**
+ * Рендерить 48 сегментів для міні-графіка в Hero-картці та додає бабли часу
+ * @param {string} scheduleString - 24-символьний рядок графіка
+ * @param {number|null} virtualTotalMinutes - Хвилини для скраббінгу (якщо null, береться поточний час)
+ */
+function renderHeroSegments(scheduleString, virtualTotalMinutes = null) {
+    const segmentsContainer = document.getElementById('hero-tl-segments');
+    const bubblesContainer = document.getElementById('hero-tl-bubbles');
+    if (!segmentsContainer || !bubblesContainer) return;
+
+    segmentsContainer.innerHTML = '';
+    bubblesContainer.innerHTML = '';
+
+    const now = new Date();
+    // Визначаємо "реперний" час для підсвічування минулого
+    const referenceMinutes = (virtualTotalMinutes !== null) 
+        ? virtualTotalMinutes 
+        : (now.getHours() * 60 + now.getMinutes());
+    
+    const currentSegment = Math.floor(referenceMinutes / 30);
+
+    // Функція створення бабла
+    const createBubble = (hour, label, type) => {
+        const bubble = document.createElement('div');
+        bubble.className = 'hero-tl-bubble ' + type;
+        bubble.textContent = label;
+        
+        const posPercent = (hour / 24) * 100;
+        bubble.style.left = `${posPercent}%`;
+        
+        // Логіка "минулого часу" для баблів
+        if (hour * 60 < referenceMinutes) {
+            bubble.classList.add('is-past');
+        }
+        
+        bubblesContainer.appendChild(bubble);
+    };
+
+    // 1. Завжди малюємо крайні бабли
+    createBubble(0, '0:00', 'start');
+    createBubble(24, '24:00', 'end');
+
+    // 2. Рендеримо сегменти та шукаємо точки зміни
+    for (let i = 0; i < 48; i++) {
+        const hour = Math.floor(i / 2);
+        const statusChar = scheduleString ? scheduleString[hour] : '1';
+        
+        // Створення сегмента
+        const segment = document.createElement('div');
+        // ТУТ КРИТИЧНО: Використовуємо .on / .off для помаранчевого кольору
+        segment.className = 'hero-tl-segment ' + (statusChar === '1' ? 'on' : 'off');
+        
+        if (i === currentSegment) {
+            segment.classList.add('current');
+            const heroPointer = document.getElementById('hero-tl-pointer');
+            if (heroPointer) {
+                heroPointer.style.left = `${(i / 48) * 100}%`;
+            }
+        }
+        segmentsContainer.appendChild(segment);
+
+        // Перевірка зміни стану для баблів
+        if (i > 0 && i < 47) {
+            const prevHour = Math.floor((i - 1) / 2);
+            if (scheduleString && scheduleString[hour] !== scheduleString[prevHour]) {
+                const totalMins = i * 30;
+                const h = Math.floor(totalMins / 60);
+                const m = totalMins % 60;
+                if (h > 1 && h < 23) {
+                    createBubble(h + m/60, `${h}:${m.toString().padStart(2, '0')}`, '');
+                }
+            }
+        }
+    }
+}
+
+
+/**
+ * MODERN RENDERER: Ініціалізує Web Component svitlo-timeline-block (v2.0)
+ */
+function renderInteractiveTimeline(selectedGroup, data) {
     const timelineEl = document.getElementById('interactive-timeline-component');
     if (!timelineEl) return;
 
-    // Визначаємо ефективний графік
-    let effectiveSchedule = scheduleString;
+    const scheduleString = data && data.queues ? data.queues[selectedGroup] : null;
+    const isAllClearDay = data && data.mode === 'all_clear';
+    const isNoPowerDay = data && data.mode === 'no_power';
+    
+    // Формуємо ефективний графік
+    let effectiveSchedule = scheduleString || "1".repeat(24);
     if (isAllClearDay) effectiveSchedule = "1".repeat(24);
     else if (isNoPowerDay) effectiveSchedule = "0".repeat(24);
-    else if (!effectiveSchedule) effectiveSchedule = "1".repeat(24);
 
-    // Конвертуємо scheduleString у intervals
-    const intervals = window.scheduleStringToIntervals ? window.scheduleStringToIntervals(effectiveSchedule) : [];
-
-    // Отримуємо поточний час
-    const now = new Date();
-    const currentTimeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-
-    // Оновлюємо компонент
-    timelineEl.removeAttribute('loading');
-    timelineEl.removeAttribute('error');
+    // 1. Конвертуємо та передаємо дані в атрибути
+    const intervals = convertScheduleToIntervals(effectiveSchedule);
     timelineEl.setAttribute('data-intervals', JSON.stringify(intervals));
-    timelineEl.setAttribute('current-time', currentTimeStr);
+    timelineEl.removeAttribute('loading');
 
-    // --- Time Machine Binding ---
-    
-    // Видаляємо старі обробники через зберігання посилання, або простіше — 
-    // використовуємо властивість елемента для збереження поточного engine
-    timelineEl._activeEngine = engineV2;
-
-    if (!timelineEl._hasTimelineListeners) {
-        timelineEl.addEventListener('change', (e) => {
-            const mins = e.detail.minutes;
-            window.isTimelineScrubbing = true;
+        // 2. Налаштовуємо обробник "Скраббінгу" (Тайм-машина)
+        if (!timelineEl._hasInitSync) {
+            const heroPointer = document.getElementById('hero-tl-pointer');
             
-            const engine = timelineEl._activeEngine;
-            if (engine) {
-                engine.scrubberInteracted = true;
-                engine.syncHeroPointer(mins);
-                engine.updateDashboard(mins);
-            }
-        });
+            timelineEl.addEventListener('input', (e) => {
+                const scrubValue = (e.detail && typeof e.detail.slot !== 'undefined') ? e.detail.slot : -1;
+                if (scrubValue === -1) return;
 
-        timelineEl.addEventListener('commit', () => {
-            const engine = timelineEl._activeEngine;
-            if (engine) {
-                clearTimeout(engine.scrubberTimeout);
-                engine.scrubberTimeout = setTimeout(() => {
-                    engine.scrubberInteracted = false;
-                    window.isTimelineScrubbing = false;
-                    engine.updateTime();
-                }, 8000);
-            }
-        });
+                window.isTimelineScrubbing = true;
+                
+                // Розраховуємо відсоток для синхронізації точки в Герої (48 слотів)
+                const percent = (scrubValue / 48) * 100;
+                if (heroPointer) {
+                    heroPointer.style.left = `${percent}%`;
+                }
 
-        timelineEl.addEventListener('autoreturn', () => {
-            const engine = timelineEl._activeEngine;
-            if (engine) {
-                engine.scrubberInteracted = false;
+                // Розраховуємо віртуальний час на основі сектора
+                const hour = Math.floor(scrubValue / 2);
+                const minutes = (scrubValue % 2) * 30;
+                const virtualDate = new Date();
+                virtualDate.setHours(hour, minutes, 0, 0);
+
+                const isCurrentlyOn = effectiveSchedule[hour] === '1';
+                let nextChange = 24;
+                for (let i = hour + 1; i < 24; i++) {
+                    if (effectiveSchedule[i] !== effectiveSchedule[hour]) {
+                        nextChange = i;
+                        break;
+                    }
+                }
+
+                if (typeof window.updateDashboardTablo === 'function') {
+                    window.updateDashboardTablo(virtualDate, isCurrentlyOn, nextChange);
+                }
+            });
+
+            // Повернення до реального часу
+            timelineEl.addEventListener('autoreturn', () => {
                 window.isTimelineScrubbing = false;
-                engine.updateTime();
-            }
-        });
-        
-        timelineEl._hasTimelineListeners = true;
-    }
+                // Скидаємо Hero-графік на реальний час (null)
+                renderHeroSegments(effectiveSchedule, null);
+            });
 
-    console.log('[Svitlo Timeline] Synced with engine for group:', selectedGroup);
+            timelineEl._hasInitSync = true;
+        }
+
+    // Оновлення Hero UI та міні-графіка
+    updateHeroUI(selectedGroup, new Date(), isAllClearDay, isNoPowerDay, !data, effectiveSchedule);
+    renderHeroSegments(effectiveSchedule);
 }
 
 function renderPickerButtons(containerId, selectedGroup) {
@@ -587,8 +690,11 @@ async function loadAndRender(selectedGroup) {
     }
     */
 
-    // 1.0.14: Використовуємо уніфікований рендер-хелпер
-    renderTimelineV2(selectedGroup, data);
+    // 1.0.15: Pre-calculate all queues for instant switching
+    precalculateAllQueues(data);
+
+    // 2.0: Використовуємо сучасний рендерер компонента
+    renderInteractiveTimeline(selectedGroup, data);
 }
 
 function updateHeroUI(selectedGroup, now, isAllClear, isNoPower, demoMode, scheduleString) {
@@ -620,6 +726,9 @@ function updateHeroUI(selectedGroup, now, isAllClear, isNoPower, demoMode, sched
 
     const groupsList = ['1.1', '1.2', '2.1', '2.2', '3.1', '3.2', '4.1', '4.2', '5.1', '5.2', '6.1', '6.2'];
     const groupIndex = groupsList.indexOf(selectedGroup);
+
+    // Оновлюємо міні-графік при кожному оновленні інтерфейсу
+    renderHeroSegments(activeSchedule);
 
     const updateInner = () => {
         const currentTime = new Date();

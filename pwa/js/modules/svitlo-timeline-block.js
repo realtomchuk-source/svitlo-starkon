@@ -30,7 +30,7 @@ class SvitloTimelineBlock extends HTMLElement {
   static SLOTS_COUNT = 48;
   static SLOT_MINUTES = 30;
   static MINUTES_PER_DAY = 1440;
-  static IDLE_TIMEOUT = 60000; // 1 хвилина
+  static IDLE_TIMEOUT = 10000; // 10 секунд
   static AUTO_RETURN_DURATION = 1500; // 1.5 секунди
   static STATUS_LABELS = {
     'available': 'світло є',
@@ -382,6 +382,12 @@ class SvitloTimelineBlock extends HTMLElement {
       this._updateThumbPosition(true);
       this._updateStatus();
 
+      this.dispatchEvent(new CustomEvent('input', {
+        detail: { value: this.value, slot: this._selectedSlot },
+        bubbles: true,
+        composed: true
+      }));
+
       this.dispatchEvent(new CustomEvent('change', {
         detail: { value: this.value, slot: this._selectedSlot },
         bubbles: true,
@@ -680,7 +686,6 @@ class SvitloTimelineBlock extends HTMLElement {
         .track-wrap {
           position: relative;
           height: 75px;
-          margin-bottom: 8px;
           cursor: grab;
           padding-top: 18px;
           box-sizing: border-box;
@@ -830,6 +835,7 @@ class SvitloTimelineBlock extends HTMLElement {
           color: var(--svitlo-text-secondary);
           text-align: center;
           padding: 6px 0;
+          margin-bottom: 14px;
           font-variant-numeric: tabular-nums;
           font-weight: 500;
         }
@@ -889,6 +895,7 @@ class SvitloTimelineBlock extends HTMLElement {
 
     return `
       <div class="timeline-block">
+        <div class="status">00:00 — завантаження...</div>
         <div class="track-wrap">
           <div class="scale">
             ${scaleHTML}
@@ -897,7 +904,6 @@ class SvitloTimelineBlock extends HTMLElement {
           <div class="cursor"></div>
           <div class="thumb" tabindex="0" role="slider"></div>
         </div>
-        <div class="status">00:00 — завантаження...</div>
       </div>
     `;
   }

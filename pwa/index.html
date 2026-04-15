@@ -11,11 +11,10 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;600;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=4.3.4">
-    <link rel="stylesheet" href="css/home.css?v=4.3.4">
-    <link rel="stylesheet" href="css/tech-ui.css?v=4.3.4">
-    <link rel="stylesheet" href="css/selector.css?v=4.3.4">
-    <link rel="stylesheet" href="css/timeline-v2.css?v=4.3.4">
+    <link rel="stylesheet" href="style.css?v=4.3.5">
+    <link rel="stylesheet" href="css/home.css?v=4.3.5">
+    <link rel="stylesheet" href="css/tech-ui.css?v=4.3.5">
+    <link rel="stylesheet" href="css/selector.css?v=4.3.5">
     <style>
         /* Inline fail-safe styles for v1.0.10 */
         .home-bottom-controls {
@@ -138,14 +137,10 @@
                     </div>
                 </div>
 
-                <!-- NEW: Interactive Timeline Block (Svitlo Timeline) -->
-                <div id="interactive-timeline-block" class="interactive-timeline-container">
-                    <svitlo-timeline-block id="interactive-timeline-component" loading></svitlo-timeline-block>
-                </div>
 
-                <!-- MAIN INDUSTRIAL TIMELINE V2 -->
+                <!-- MODERN INTERACTIVE TIMELINE (48 SECTORS) -->
                 <div class="section-container" style="padding: 0 34px;">
-                    <div id="main-timeline-v2" class="fade-in" style="animation-delay: 0.1s; position: relative;"></div>
+                    <svitlo-timeline-block id="interactive-timeline-component" loading></svitlo-timeline-block>
                 </div>
 
                 <!-- Solid Bottom Area (Spaced for Subqueue Selector) -->
@@ -252,13 +247,10 @@
             </div>
         </div>
     </div>
-
-    <!-- Svitlo Timeline Block Web Component -->
     <script src="js/modules/svitlo-timeline-block.js"></script>
-
     <script src="js/pages/home-tablo.js?v=1.0.0"></script>
     <script src="js/tech-ui.js"></script>
-    <script type="module" src="js/pages/home.js?v=1.0.11"></script>
+    <script src="js/pages/home.js?v=4.3.5" type="module"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -268,6 +260,25 @@
             });
         }
     </script>
+    <!-- SVG Filters for Advanced UI Effects -->
+    <svg style="position: absolute; width: 0; height: 0; pointer-events: none;" aria-hidden="true" focusable="false">
+      <defs>
+        <filter id="bloom-glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="blur" />
+
+          <feColorMatrix in="blur" type="matrix" values="
+            1 0 0 0 0
+            0 1 0 0 0
+            0 0 1 0 0
+            0 0 0 1.5 0" result="glow" />
+          <feMerge>
+            <feMergeNode in="glow" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+    </svg>
 </body>
+
 
 </html>

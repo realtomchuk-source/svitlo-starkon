@@ -80,7 +80,8 @@ body {
 .content-area {
     max-width: 600px;
     margin: 0 auto;
-    padding: 16px 16px 0 16px; /* Increased padding to clear system bars */
+    padding: 16px 0 0 0; /* Horizontal padding removed to unify with 20px blocks margin */
+
     display: flex;
     flex-direction: column;
     gap: 12px; /* Denser gap between main blocks */
@@ -97,7 +98,7 @@ body {
 
 /* PWA Page Labels (Unified Header System) */
 .pwa-page-label {
-    margin: 0;
+    margin: 0 20px 8px; /* Added 20px side margins for alignment */
     padding: 0;
     font-size: 11px;
     font-weight: 600;
@@ -105,7 +106,8 @@ body {
     letter-spacing: 3px;
     text-transform: uppercase;
     text-align: center;
-    width: 100%;
+    /* width: auto; effectively via margin */
+
     line-height: 1.2;
     font-family: 'Inter', sans-serif;
 }
@@ -379,8 +381,10 @@ body {
 .glass-nav {
     position: fixed;
     bottom: 20px;
-    left: 20px;
-    right: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 40px);
+    max-width: 560px; /* Aligns with 600px - 40px margin */
     display: flex;
     justify-content: space-around;
     padding: 12px;
@@ -388,7 +392,9 @@ body {
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
     z-index: 1000;
+    box-sizing: border-box;
 }
+
 
 /* Typography */
 .headline-hero {
