@@ -2327,5 +2327,16 @@
     "message": "Очікування публікації графіка на 17.04",
     "queues": {},
     "change_desc": "Створено заготовку (очікуємо 17.04)"
+  },
+  {
+    "timestamp": "2026-04-17T19:02:09.739673+03:00",
+    "target_date": "18.04",
+    "source": "system",
+    "type": "schedule",
+    "processed": false,
+    "is_placeholder": true,
+    "message": "Очікування публікації графіка на 18.04",
+    "queues": {},
+    "change_desc": "Створено заготовку (очікуємо 18.04)"
   }
 ]
