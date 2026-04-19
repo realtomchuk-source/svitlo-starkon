@@ -240,8 +240,7 @@
     font-size: 12px;
   }
 
-  .clock-card,
-  .date-card {
+  .clock-card,\n  .date-card {
     padding: 6px 10px;
   }
 }
@@ -266,25 +265,18 @@
 }
 
 /* ==========================================================================
-/* ==========================================================================
    APPLE-LEVEL HERO REDESIGN (GLASS STYLE v3.0 - Grid & Capsule)
    ========================================================================== */
 
 .hero-card {
   display: grid !important;
   grid-template-columns: auto 1fr auto !important;
-  /* 3 columns for Top Row content */
   grid-template-rows: 1fr auto !important;
-  /* Row 1: Content components, Row 2: Horizontal Graph Area */
   align-items: center !important;
   column-gap: 12px !important;
   row-gap: 2px !important;
-  /* Minimized gap to bring bubbles closer to graph */
   padding: 16px 14px 18px !important;
-  /* Increased bottom padding to 18px for better "foundation" */
   height: 160px !important;
-  /* Increased from 140px for better vertical balance with wide graph */
-
   border-radius: var(--hero-radius) !important;
   background: var(--hero-bg) !important;
   backdrop-filter: blur(12px) !important;
@@ -292,13 +284,11 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
   -webkit-font-smoothing: antialiased !important;
-
   transform: translateY(-2px) !important;
   margin: 0 20px !important;
   transition: all 0.3s ease !important;
   box-sizing: border-box !important;
 }
-
 
 .hero-card.status-on {
   border-color: rgba(238, 114, 33, 0.4) !important;
@@ -378,7 +368,6 @@
   color: var(--hero-text-dim) !important;
 }
 
-/* 7. PROGRESS CAPSULE */
 .hero-phase {
   position: relative !important;
   width: 4px !important;
@@ -440,21 +429,16 @@
 
 .phase-current {
   position: absolute !important;
-  bottom: 0%;
+  bottom: 0% !important;
   width: 7px !important;
   height: 7px !important;
   left: 50% !important;
   transform: translate(-50%, 50%) !important;
-  background: white !important;
+  background: var(--hero-text-primary) !important;
   border-radius: 50% !important;
   border: 1px solid white !important;
   box-shadow: 0 0 6px rgba(255, 255, 255, 0.6) !important;
   z-index: 5 !important;
-}
-
-.phase-current {
-  bottom: 0% !important;
-  background: var(--hero-text-primary) !important;
   animation: pulse-phase 2.4s infinite !important;
   transition: bottom 0.3s linear !important;
 }
@@ -468,20 +452,16 @@
 }
 
 @keyframes pulse-phase {
-
-  0%,
-  100% {
+  0%, 100% {
     transform: translateX(-50%) scale(1);
     opacity: 0.95;
   }
-
   50% {
     transform: translateX(-50%) scale(1.08);
     opacity: 1;
   }
 }
 
-/* 8. HORIZONTAL MINI-GRAPH (24H CAPSULE) */
 .hero-timeline-capsule {
   grid-column: 1 / span 3 !important;
   grid-row: 2 !important;
@@ -490,14 +470,10 @@
   width: 100% !important;
   margin-top: 4px !important;
   position: relative !important;
-  /* Sync with lower timeline: 20px (container) + 14px (internal) = 34px from screen edge */
-  /* Hero section has 20px, so we need 14px more inside */
   padding: 0 14px 12px 14px !important;
   box-sizing: border-box !important;
 }
 
-
-/* NEW: Interactive Timeline Block Container */
 .interactive-timeline-container {
   width: calc(100% - 40px) !important;
   margin: 8px 20px 12px 20px !important;
@@ -513,18 +489,13 @@
   min-height: 105px !important;
 }
 
-/* Hero Timelines unified boundaries placeholder */
-
-/* Bubbles Container */
 .hero-tl-bubbles {
   position: relative !important;
   height: 20px !important;
   width: 100% !important;
-  /* Spans exactly the padding-to-padding width */
   margin: 0 auto 5px !important;
 }
 
-/* Individual Time Bubble */
 .hero-tl-bubble {
   position: absolute !important;
   top: -4px !important;
@@ -545,21 +516,15 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
 }
 
-/* We remove the .start/.end pinning to match the component's centered labels */
-/* This ensures perfect vertical stacking of 00:00 and 24:00 */
-
 .hero-tl-bubble.is-past {
   opacity: 0.35 !important;
   filter: grayscale(0.5) !important;
 }
 
-
-/* The Horizontal "Tube" */
 .hero-tl-track {
   position: relative !important;
   height: 6px !important;
   width: 100% !important;
-  /* Spans across entire 20px-padded corridor */
   background: rgba(0, 0, 0, 0.08) !important;
   border-radius: 4px !important;
   overflow: visible !important;
@@ -571,14 +536,12 @@
   inset: 0 !important;
   border-radius: 4px !important;
   overflow: hidden !important;
-  /* Ensuring no gaps between 48 flex items */
   gap: 0 !important;
 }
 
 .hero-tl-segment {
   height: 100% !important;
   flex: 1 !important;
-  /* Solid continuous tube with 48 sectors */
 }
 
 .hero-tl-segment.available,
@@ -591,8 +554,6 @@
   background: var(--accent-off) !important;
 }
 
-
-/* The Floating Pointer (Synchronized with scrubber) */
 .hero-tl-pointer {
   position: absolute !important;
   top: 50% !important;
@@ -616,87 +577,44 @@
   box-shadow: 0 0 8px rgba(154, 160, 166, 0.6) !important;
 }
 
-/* --- NEW Dashboard Tablo Redesign (v4.0) --- */
-
 /* --- PREMIUM BRANDED DASHBOARD (v2.1) --- */
 .dash-container, 
 .dynamic-info-block {
-  /* Branding Tokens */
-  --dash-accent: #374151; /* Default/Off state: Matte Dark Grey */
-  --dash-clock-col: #000000; /* Engineering Contrast Black */
-  --dash-date-col: #374151; /* Unified Secondary Grey */
+  --dash-accent: #374151;
+  --dash-clock-col: #000000;
+  --dash-date-col: #374151;
   --dash-bg-alpha: 0.45;
   --dash-blur: 16px;
-  --dash-glow-radius: 10px;
   --dash-edge-glow: rgba(255, 255, 255, 0.5);
   --dash-inner-shadow: rgba(0, 0, 0, 0.05);
 
-
   display: grid !important; 
-  grid-template-columns: 1fr auto 1fr !important; /* Absolute mathematical centering */
+  grid-template-columns: 1fr 1fr !important;
   align-items: center !important; 
-
   margin: 12px 20px 24px !important;
   padding: 10px 18px !important;
   border-radius: 16px !important;
-
-
-  /* Performance: Force GPU Layer + Optimization */
   will-change: backdrop-filter, transform !important;
   transform: translateZ(0) !important;
-
-  /* Balanced Glass (Optimized for Mobile GPU) */
   backdrop-filter: blur(var(--dash-blur)) !important;
   -webkit-backdrop-filter: blur(var(--dash-blur)) !important;
-  box-shadow:
-    inset 0 1px 1px var(--dash-edge-glow),
-    0 4px 15px var(--dash-inner-shadow) !important;
-
-
-  /* Quartz-Out Transition Hierarchy */
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
-
   height: 48px !important;
   box-sizing: border-box !important;
   position: relative !important;
   z-index: 5 !important;
-
-  /* Advanced Industrial Material */
-  background: 
-    linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 40%, rgba(255, 255, 255, 0.05) 100%),
-    rgba(255, 255, 255, 0.45) !important; /* Specular Highlight + Milky Glass */
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 40%, rgba(255, 255, 255, 0.05) 100%), rgba(255, 255, 255, 0.45) !important;
   border: 1px solid rgba(255, 255, 255, 0.5) !important;
-  
-  /* Inner Bevel Definition + Soft Volume Shadow */
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.05),
-    0 4px 15px rgba(0, 0, 0, 0.05) !important;
-
-  transition: 
-    background 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-    color 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 -1px 0 rgba(0, 0, 0, 0.05), 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-
-/* Updated ON state for whiter, more active glass */
 .dash-container.status-on,
 .dynamic-info-block.status-on {
-  --dash-accent: #ee7221; /* Branding Orange */
+  --dash-accent: #ee7221;
   --dash-bg-alpha: 0.65;
-  background: 
-    linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 40%, rgba(255, 255, 255, 0.05) 100%),
-    rgba(255, 255, 255, var(--dash-bg-alpha)) !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 40%, rgba(255, 255, 255, 0.05) 100%), rgba(255, 255, 255, var(--dash-bg-alpha)) !important;
   border-color: rgba(255, 255, 255, 0.6) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.6),
-    0 8px 25px rgba(0, 0, 0, 0.08) !important;
-  
-  /* Glass Ripple Pulse on State Change */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 8px 25px rgba(0, 0, 0, 0.08) !important;
   animation: dash-glass-ripple 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -705,35 +623,22 @@
   100% { box-shadow: inset 0 0 0 40px rgba(238, 114, 33, 0); }
 }
 
-}
-
-
-
-
 .dash-segment {
   display: flex !important;
   align-items: baseline !important;
   gap: 8px !important;
-  white-space: nowrap !important; /* Forces single line for Day + Date */
+  white-space: nowrap !important;
   line-height: 1 !important;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-
-/* Specific alignments & Dividers */
-.dash-segment {
   position: relative !important;
   cursor: pointer !important;
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
   user-select: none !important;
 }
 
-/* Premium Interaction: Micro-scaling on Tab */
 .dash-segment:active {
   transform: scale(0.96) !important;
 }
 
-/* Premium Interaction: Light Flash (Specular Pulse) */
 .dash-segment:active::after {
   content: "";
   position: absolute;
@@ -742,7 +647,7 @@
   right: -18px;
   bottom: -10px;
   background: radial-gradient(circle at center, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
-  animation: dash-specular-flash 0.3s Quart-Out;
+  animation: dash-specular-flash 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
 }
 
@@ -752,57 +657,16 @@
   100% { opacity: 0; transform: scale(1.2); }
 }
 
-/* Subtle Hover Elevation */
 @media (hover: hover) {
   .dash-segment:hover {
     opacity: 0.8;
   }
 }
 
-}
-
-
-
-
 .dash-date {
   display: flex !important;
   justify-content: flex-start !important;
   align-items: center !important;
-}
-
-
-.dash-status {
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
-  justify-content: center !important;
-  align-items: center !important;
-  gap: 8px !important;
-  padding: 0 10px !important;
-  filter: none !important; /* Original lamp graphics only */
-}
-
-/* Status text (e.g. "until 24:00") */
-.dash-status-time {
-  color: var(--dash-accent) !important;
-  font-weight: 500 !important;
-  font-size: clamp(14px, 4vw, 16px) !important;
-  filter: none !important; /* Clean text */
-}
-
-
-.dash-clock {
-  display: flex !important;
-  justify-content: flex-end !important;
-  align-items: center !important;
-}
-
-
-
-
-
-/* Date Styling */
-.dash-date {
   font-family: 'Inter', sans-serif !important;
 }
 
@@ -811,102 +675,60 @@
   font-weight: 700 !important;
   letter-spacing: 0.02em !important;
   text-transform: uppercase !important;
-  transition: color 0.4s ease !important;
+  transition: color 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
   line-height: normal !important;
 }
 
-
 .dash-container.status-on .dash-day {
-  color: var(--dash-accent) !important; /* State Accent */
+  color: var(--dash-accent) !important;
 }
 
-.dash-container.status-on .dash-date-val {
-  color: #555 !important; /* Neutral Dark for Date */
+.status-on .dash-date-val {
+  color: #555 !important;
 }
 
 .dash-container.status-off .dash-day {
-  color: var(--dash-accent) !important; /* State Gray */
+  color: var(--dash-accent) !important;
 }
 
-.dash-container.status-off .dash-date-val {
-  color: #aaa !important; /* Dimmed for Date */
+.status-off .dash-date-val {
+  color: #aaa !important;
 }
-
-
-
-.dash-container.status-off .dash-day,
-.dynamic-info-block.status-off .dash-day {
-  color: var(--dash-accent) !important; 
-  text-shadow: none !important;
-}
-
-
-/* Warming transition for typography accents */
-.dash-day, .dash-status-time {
-  transition: 
-    color 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
-    text-shadow 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-
 
 .dash-date-num {
-  font-size: clamp(14px, 4vw, 16px) !important; /* Adaptive Baseline */
+  font-size: clamp(14px, 4vw, 16px) !important;
   font-weight: 500 !important;
   color: var(--dash-date-col) !important; 
   letter-spacing: 0.05em !important;
-  line-height: normal !important;
 }
 
-
-
-
-
-/* Status SVG Styling */
-.dash-status-icon-box {
-  width: 22px !important;
-  height: 22px !important;
+.dash-status {
   display: flex !important;
-  align-items: center !important;
   justify-content: center !important;
-  align-self: center !important; /* Keep icon centered while text is baseline-aligned */
-}
-
-.dash-status-svg {
-  width: 100% !important;
-  height: 100% !important;
-  transition: transform 0.3s ease !important;
-  transform: translateY(0.5px) !important;
-  /* Optical adjustment for circle center */
-}
-
-.dash-status:active .dash-status-svg {
-  transform: translateY(0.5px) scale(0.9) !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 0 10px !important;
 }
 
 .dash-status-time {
+  color: var(--dash-accent) !important;
+  font-weight: 500 !important;
+  font-size: clamp(14px, 4vw, 16px) !important;
   display: flex !important;
   align-items: baseline !important;
   gap: 4px !important;
-  transition: color 0.4s ease !important;
+  transition: color 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .dash-status-label {
   font-size: 11px !important;
   font-weight: 500 !important;
-  opacity: 1 !important; /* Removed transparency to unify with status color */
   text-transform: lowercase !important;
 }
 
-/* Accent Glow for active status label */
-.dash-container.status-on .dash-status-label,
-.dynamic-info-block.status-on .dash-status-label {
+.status-on .dash-status-label {
   color: var(--dash-accent) !important;
 }
-
-
-
-
 
 .dash-status-value {
   font-size: 13px !important;
@@ -914,28 +736,33 @@
   letter-spacing: -0.1px !important;
 }
 
-/* Clock Styling */
-.dash-clock {
-  font-family: 'Inter', sans-serif !important;
-  font-variant-numeric: tabular-nums !important;
+.dash-status-icon-box {
+  width: 22px !important;
+  height: 22px !important;
   display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.dash-status-svg {
+  width: 100% !important;
+  height: 100% !important;
+  transition: transform 0.3s ease !important;
+  transform: translateY(0.5px) !important;
+}
+
+.dash-clock {
+  display: flex !important;
+  justify-content: flex-end !important;
   align-items: baseline !important;
   gap: 1px !important;
-  /* Strict Black Override for Premium look */
+  font-family: 'Inter', sans-serif !important;
+  font-variant-numeric: tabular-nums !important;
   color: #000000 !important; 
 }
 
-/* Ensure color remains black even if parent has .status-on */
-.dash-container.status-on .dash-clock,
-.dash-container.status-on #tablo-real-time {
-  color: #000000 !important;
-}
-
-
-
 #tablo-real-time {
   font-size: 18px !important;
-  /* Increased from 16px */
   font-weight: 700 !important;
   letter-spacing: -0.5px !important;
   line-height: 1 !important;
@@ -944,21 +771,15 @@
 .dash-clock-sec {
   font-size: 10.5px !important;
   font-weight: 500 !important;
-  opacity: 0.3 !important; /* Restored specific legibility fade */
-  line-height: 1 !important;
+  opacity: 0.3 !important; 
 }
 
-
-/* Color Themes based on Global Status */
-.dash-container.status-on .dash-day,
 .dash-container.status-on {
-  --dash-accent: #ff9500; /* Power ON (Orange) */
-  --dash-accent-glow: rgba(255, 149, 0, 0.3);
+  --dash-accent: #ff9500;
 }
 
 .dash-container.status-off {
-  --dash-accent: #b0b0b0; /* Power OFF (Gray) */
-  --dash-accent-glow: rgba(176, 176, 176, 0.2);
+  --dash-accent: #b0b0b0;
 }
 
 .dash-container.status-off .dash-status-time,
@@ -966,65 +787,34 @@
   color: #888 !important;
 }
 
-/* Specific SVG treatment */
-.dash-container.status-on .dash-status-circle,
-.dash-container.status-on .dash-status-svg {
+.status-on .dash-status-circle,
+.status-on .dash-status-svg {
   stroke: #ee7221 !important;
 }
 
-.dash-container.status-off .dash-status-circle,
-.dash-container.status-off .dash-status-svg {
+.status-off .dash-status-circle,
+.status-off .dash-status-svg {
   stroke: #64748b !important;
 }
 
-/* --- End Dashboard Redesign --- */
-
-/* --- MOBILE OPTIMIZATION (v4.1.2) --- */
 @media (max-width: 380px) {
-
-  /* Hero Card Adjustments */
   .hero-card {
     height: 154px !important;
     padding: 12px 10px 14px !important;
   }
-
   .hero-timer {
     font-size: 42px !important;
   }
-
-  /* Dashboard Tablo Adjustments */
   .dash-container {
     padding: 8px 12px !important;
     margin: 10px 20px 20px !important;
-
     gap: 4px !important;
   }
-
   .dash-date-num {
     font-size: 11px !important;
   }
-
-  .dash-status-time {
-    display: flex !important;
-    align-items: baseline !important;
-    gap: 3px !important;
-  }
-
-  .dash-status-label {
-    font-size: 10px !important;
-  }
-
   .dash-status-value,
   #tablo-real-time {
     font-size: 16px !important;
-  }
-
-  .dash-clock-sec {
-    font-size: 10px !important;
-  }
-
-  .dash-status-icon-box svg {
-    width: 22px !important;
-    height: 22px !important;
   }
 }

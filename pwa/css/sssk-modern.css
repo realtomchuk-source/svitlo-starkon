@@ -1,0 +1,63 @@
+/* 
+ * SSSK MODERN DASHBOARD - FINAL RECOVERY LAYER
+ * Aesthetic: Light Chrome / Pure Silver
+ * Removed: Legend interactions and redundant containers
+ */
+
+:root {
+    --chrome-bg: #F2F4F7;
+    --chrome-border: rgba(0, 0, 0, 0.08);
+    --pure-silver: #E0E0E0;
+    --silver-glow: rgba(255, 255, 255, 0.8);
+    --text-primary: #1C1C1E;
+    --text-muted: #8E8E93;
+}
+
+/* Aesthetics only, layout comes from tech-ui.css Grid */
+/* We keep only specific colors if they enhance the Silver theme without breaking the 450px grid */
+
+
+/* DASHBOARD TABLO (DATE/TIME) - Overrides pruned to respect tech-ui.css heights */
+
+
+/* SECTION SPACING */
+.section-container {
+    padding: 0; 
+}
+
+#subqueue-selector {
+    margin: 10px 0 20px;
+}
+
+/* PURE SILVER AESTHETICS (User Request) */
+/* Hero Pointer - Status-independent (10px, Neon Glow) */
+.status-on .hero-tl-pointer,
+.status-off .hero-tl-pointer,
+.hero-tl-pointer {
+    width: 10px !important;
+    height: 10px !important;
+    background: #FFFFFF !important;
+    box-shadow: 0 0 10px #FFFFFF, 0 0 20px rgba(255,255,255,0.4) !important;
+    border: 1px solid var(--pure-silver) !important;
+}
+
+/* Bottom Scrubber (Slider) - Pure Silver */
+.timeline-scrubber::-webkit-slider-thumb {
+    background: #FFFFFF !important;
+    border: 2px solid var(--pure-silver) !important;
+    box-shadow: 0 0 10px rgba(255,255,255,0.5), 0 4px 12px rgba(0,0,0,0.1) !important;
+}
+
+.timeline-scrubber::-moz-range-thumb {
+    background: #FFFFFF !important;
+    border: 2px solid var(--pure-silver) !important;
+    box-shadow: 0 0 10px rgba(255,255,255,0.5), 0 4px 12px rgba(0,0,0,0.1) !important;
+}
+
+/* HIDE LOADING SCREEN */
+.loading-screen.fade-out {
+    display: none !important;
+}
+
+/* REMOVE LEGACY INDICATORS */
+.btn-legend-call { display: none !important; }

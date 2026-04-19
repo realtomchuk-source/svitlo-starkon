@@ -1,16 +1,12 @@
-const CACHE_NAME = 'sssk-pwa-v1.2.0-g1g2';
+const CACHE_NAME = 'sssk-cache-v1.5.4';
 const ASSETS = [
-  'index.html',
-  'style.css',
-  'js/pages/home.js',
-  'js/pages/home-tablo.js',
-  'js/modules/TimelineEngine.js',
-  'js/tech-ui.js',
-  'assets/logo.png',
-  'assets/power_on.png',
-  'assets/power_off.png',
-  'assets/dashboard_on.svg',
-  'assets/dashboard_off.svg'
+  'index.html?v=1.5.1',
+  'style.css?v=1.5.1',
+  'js/pages/home.js?v=1.5.1',
+  'js/pages/home-tablo.js?v=1.5.1',
+  'js/modules/TimelineEngine.js?v=1.5.1',
+  'js/tech-ui.js?v=1.5.1',
+  'assets/power_off.png'
 ];
 
 self.addEventListener('install', (event) => {

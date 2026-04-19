@@ -57,24 +57,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     let selectedGroup = '1.1';
     localStorage.setItem('sssk_group', selectedGroup);
 
-    // 2. Ініціалізація UI
+    // 1. Initial Data & Tablo Render (Priority)
+    try {
+        if (typeof updateDashboardTablo === 'function') {
+            updateDashboardTablo();
+        }
+        await loadAndRender(selectedGroup);
+    } catch (e) {
+        console.error("Dashboard primary load failed:", e);
+    }
+
+    // 2. UI & Selector Initialization
     initUI(selectedGroup);
 
-
-    // Ініціалізація Pill-селектора підчерг
-    selectorInstance = new SelectorEngine('subqueue-selector', {
-        onSelect: (val) => {
-            console.log('Sub-queue selected via Selector:', val);
-            handleGroupChange(val, 'selector');
+    const selContainer = document.getElementById('subqueue-selector');
+    if (selContainer) {
+        try {
+            selectorInstance = new SelectorEngine('subqueue-selector', {
+                onSelect: (val) => {
+                    console.log('Sub-queue change:', val);
+                    handleGroupChange(val, 'selector');
+                }
+            });
+            setTimeout(() => selectorInstance.scrollTo(selectedGroup, false), 100);
+        } catch (e) {
+            console.warn("SelectorEngine skip:", e);
         }
-    });
-    // Центрування на поточній підчерзі (без анімації при старті)
-    setTimeout(() => selectorInstance.scrollTo(selectedGroup, false), 100);
+    }
 
-    // 3. Завантаження даних та малювання графіка
-    await loadAndRender(selectedGroup);
-
-    // 4. Приховування екрану завантаження
+    // 3. Global Loader Cleanup
     const loader = document.getElementById('loading-screen');
     if (loader) {
         setTimeout(() => {
@@ -426,53 +437,30 @@ function convertScheduleToIntervals(scheduleString) {
  */
 function renderHeroSegments(scheduleString, virtualTotalMinutes = null) {
     const segmentsContainer = document.getElementById('hero-tl-segments');
-    const bubblesContainer = document.getElementById('hero-tl-bubbles');
-    if (!segmentsContainer || !bubblesContainer) return;
+    const bubblesContainer = document.getElementById('hero-tl-bubbles'); // May be null now
+    if (!segmentsContainer) return;
 
     segmentsContainer.innerHTML = '';
-    bubblesContainer.innerHTML = '';
+    if (bubblesContainer) bubblesContainer.innerHTML = '';
 
     const now = new Date();
-    // Визначаємо "реперний" час для підсвічування минулого
     const referenceMinutes = (virtualTotalMinutes !== null) 
         ? virtualTotalMinutes 
         : (now.getHours() * 60 + now.getMinutes());
     
     const currentSegment = Math.floor(referenceMinutes / 30);
 
-    // Функція створення бабла
-    const createBubble = (hour, label, type) => {
-        const bubble = document.createElement('div');
-        bubble.className = 'hero-tl-bubble ' + type;
-        bubble.textContent = label;
-        
-        const posPercent = (hour / 24) * 100;
-        bubble.style.left = `${posPercent}%`;
-        
-        // Логіка "минулого часу" для баблів
-        if (hour * 60 < referenceMinutes) {
-            bubble.classList.add('is-past');
-        }
-        
-        bubblesContainer.appendChild(bubble);
-    };
-
-    // 1. Завжди малюємо крайні бабли
-    createBubble(0, '0:00', 'start');
-    createBubble(24, '24:00', 'end');
-
-    // 2. Рендеримо сегменти та шукаємо точки зміни
+    // Render 48 segments
     for (let i = 0; i < 48; i++) {
         const hour = Math.floor(i / 2);
         const statusChar = scheduleString ? scheduleString[hour] : '1';
         
-        // Створення сегмента
         const segment = document.createElement('div');
-        // ТУТ КРИТИЧНО: Використовуємо .on / .off для помаранчевого кольору
         segment.className = 'hero-tl-segment ' + (statusChar === '1' ? 'on' : 'off');
         
         if (i === currentSegment) {
             segment.classList.add('current');
+            // Look for pointer and update its position
             const heroPointer = document.getElementById('hero-tl-pointer');
             if (heroPointer) {
                 heroPointer.style.left = `${(i / 48) * 100}%`;
@@ -480,20 +468,26 @@ function renderHeroSegments(scheduleString, virtualTotalMinutes = null) {
         }
         segmentsContainer.appendChild(segment);
 
-        // Перевірка зміни стану для баблів
-        if (i > 0 && i < 47) {
+        // Optional bubbles if container exists
+        if (bubblesContainer && i > 0 && i < 47) {
             const prevHour = Math.floor((i - 1) / 2);
             if (scheduleString && scheduleString[hour] !== scheduleString[prevHour]) {
                 const totalMins = i * 30;
                 const h = Math.floor(totalMins / 60);
                 const m = totalMins % 60;
-                if (h > 1 && h < 23) {
-                    createBubble(h + m/60, `${h}:${m.toString().padStart(2, '0')}`, '');
-                }
+                const timeLabel = `${h}:${m === 0 ? '00' : m}`;
+                
+                const bubble = document.createElement('div');
+                bubble.className = 'hero-tl-bubble transition';
+                bubble.textContent = timeLabel;
+                bubble.style.left = `${(i / 48) * 100}%`;
+                if (totalMins < referenceMinutes) bubble.classList.add('is-past');
+                bubblesContainer.appendChild(bubble);
             }
         }
     }
 }
+
 
 
 /**

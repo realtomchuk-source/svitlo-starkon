@@ -9,7 +9,8 @@ let lastNextHour = null;
  * Updates the Dashboard Tablo with current or preview state data.
  * Optimized with atomic updates to prevent unnecessary DOM redraws.
  */
-export function updateDashboardTablo(now, isCurrentlyOn, nextChangeHour) {
+export function updateDashboardTablo(now = new Date(), isCurrentlyOn = true, nextChangeHour = 0) {
+    if (!now || !(now instanceof Date)) now = new Date();
     // Export to global for reliability
     window.updateDashboardTablo = updateDashboardTablo;
     
@@ -21,24 +22,19 @@ export function updateDashboardTablo(now, isCurrentlyOn, nextChangeHour) {
             block.classList.add(isCurrentlyOn ? 'status-on' : 'status-off');
         }
         
-        // Update Icon (Only on status change)
-        const capStatusContainer = document.getElementById('capsule-status-container');
-        if (capStatusContainer) {
-            const iconUrl = isCurrentlyOn ? 'assets/status_on.svg' : 'assets/status_off.svg';
-            capStatusContainer.innerHTML = `<img src="${iconUrl}" class="dash-status-icon">`;
-        }
-        
         lastStatusOn = isCurrentlyOn;
     }
 
-    // 2. Click Handlers (Once)
+    // 2. Click Handlers (Safe registration)
     const clockSeg = document.getElementById('dash-segment-clock');
-    const statusSeg = document.getElementById('dash-segment-status');
-    if (clockSeg && !clockSeg.onclick) {
-        clockSeg.onclick = () => document.getElementById('home-queue-picker-overlay')?.classList.add('active');
-    }
-    if (statusSeg && !statusSeg.onclick) {
-        statusSeg.onclick = () => document.getElementById('legend-overlay')?.classList.add('active');
+    
+    if (clockSeg && !clockSeg._hasListener) {
+        clockSeg.addEventListener('click', () => {
+            const overlay = document.getElementById('home-queue-picker-overlay');
+            if (overlay) overlay.classList.add('active');
+        });
+        clockSeg._hasListener = true;
+        clockSeg.style.cursor = 'pointer';
     }
 
     // 3. Atomic Data Updates
@@ -62,12 +58,8 @@ export function updateDashboardTablo(now, isCurrentlyOn, nextChangeHour) {
         lastDateStr = currentDateStr;
     }
 
-    // 3.2 Status Time (Update only if Change Hour changes)
+    // 3.2 Status Time (Logical state only, UI removed from center)
     if (nextChangeHour !== lastNextHour) {
-        const capStatusText = document.getElementById('capsule-status-text');
-        if (capStatusText) {
-            capStatusText.textContent = nextChangeHour === 24 ? "до 24:00" : `до ${nextChangeHour}:00`;
-        }
         lastNextHour = nextChangeHour;
     }
 

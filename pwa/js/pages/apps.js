@@ -24,23 +24,27 @@ function renderCard(project, index) {
 
   return `
     <article class="app-card glass-card fade-in" style="animation-delay: ${index * 0.12}s;">
-      <div class="app-card__thumb-wrap">
-        <img
-          src="${project.image}"
-          alt="${project.name}"
-          class="app-card__thumb"
-          onerror="this.style.display='none'; this.parentElement.classList.add('app-card__thumb-wrap--error');"
-        />
-      </div>
-      <div class="app-card__body">
-        <div class="app-card__header">
+      <div class="app-card__header-row">
+        <div class="app-card__thumb-wrap">
+          <img
+            src="${project.image}"
+            alt="${project.name}"
+            class="app-card__thumb"
+            onerror="this.style.display='none'; this.parentElement.classList.add('app-card__thumb-wrap--error');"
+          />
+        </div>
+        <div class="app-card__title-area">
           <h2 class="app-card__title">${project.name}</h2>
           ${getStatusBadge(project.status)}
         </div>
+      </div>
+      
+      <div class="app-card__desc-row">
         <p class="app-card__desc body-neutral">${project.description}</p>
-        <div class="app-card__links">
-          ${linksHTML}
-        </div>
+      </div>
+      
+      <div class="app-card__footer">
+        ${linksHTML}
       </div>
     </article>
   `;

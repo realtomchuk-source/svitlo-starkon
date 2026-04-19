@@ -138,10 +138,9 @@
 }
 
 .v2-card-icon-box {
-    width: 32px;
+    width: 28px;
     height: 32px;
-    border-radius: 10px;
-    background: rgba(142, 142, 147, 0.12); /* Base neutral grey */
+    background: transparent !important;
     color: #8E8E93;
     display: flex;
     align-items: center;
@@ -150,22 +149,20 @@
 }
 
 .v2-icon-home.active {
-    background: rgba(238, 114, 33, 0.1) !important;
     color: var(--accent) !important;
 }
 
 .v2-card-icon-box i {
-    font-size: 14px;
+    font-size: 20px;
 }
 
 .v2-icon-bell {
-    background: rgba(142, 142, 147, 0.12);
+    background: transparent !important;
     color: #8E8E93;
     transition: all 0.3s ease;
 }
 
 .v2-icon-bell.active {
-    background: rgba(238, 114, 33, 0.1) !important;
     color: var(--accent) !important;
 }
 

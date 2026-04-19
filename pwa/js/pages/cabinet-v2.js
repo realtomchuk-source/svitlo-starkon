@@ -77,7 +77,6 @@ async function updateAuthStateV2() {
                     <i class="fas fa-user"></i>
                 </div>
                 <div class="v2-profile-guest">
-                    <div class="v2-guest-caption">Ви не увійшли</div>
                     <div class="v2-auth-buttons">
                         <button class="v2-button-auth" onclick="window.signInWithGoogle()">
                             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="14" height="14">
@@ -88,6 +87,7 @@ async function updateAuthStateV2() {
                             Telegram
                         </button>
                     </div>
+                    <div class="v2-guest-caption" style="margin-top: 2px;">Ви не увійшли</div>
                 </div>
             </div>
         `;

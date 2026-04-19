@@ -783,14 +783,21 @@ class SvitloTimelineBlock extends HTMLElement {
           top: 50%;
           width: var(--thumb-size);
           height: var(--thumb-height);
-          background: #FFFFFF;
-          border: 2px solid var(--svitlo-text-secondary);
+          /* Градієнт для ефекту "шліфованої сталі" (Pure Silver / Steel) */
+          background: linear-gradient(145deg, #FFFFFF 0%, #F5F7FA 50%, #E6E9EF 100%);
+          /* Виразна сталева рамка (Chrome Bevel) */
+          border: 1.5px solid #A0AEC0;
           border-radius: 8px;
           transform: translate(-50%, -50%);
-          box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+          /* Комбінована тінь для об'єму та бліків */
+          box-shadow: 
+            inset 0 1px 2px rgba(255,255,255,1),
+            0 2px 8px rgba(0,0,0,0.2),
+            0 0 3px rgba(255,255,255,0.6);
           pointer-events: auto;
           touch-action: none;
           z-index: 10;
+          transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .thumb::before {
@@ -803,11 +810,13 @@ class SvitloTimelineBlock extends HTMLElement {
           background: var(--svitlo-accent);
           border-radius: 3px;
           transform: translate(-50%, -50%);
+          /* Ефект світіння внутрішнього індикатора */
+          box-shadow: 0 0 4px var(--svitlo-accent);
         }
 
         .thumb--dragging {
-          box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-          border-color: var(--svitlo-accent);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2), 0 0 8px rgba(255, 255, 255, 0.4);
+          border-color: #FFFFFF; /* Блик при захопленні */
         }
 
         .thumb--halo {

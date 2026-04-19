@@ -1,0 +1,319 @@
+<!-- Overlays at Root Level -->
+
+    <!-- New Custom Push Setup Overlay -->
+    <div id="custom-push-setup-overlay" class="overlay" style="display: none; z-index: 4000;">
+        <div class="picker-container fade-in-up" style="background: var(--system-bg-light); border-radius: 32px 32px 0 0; max-height: 90vh; overflow-y: auto; padding: 20px; max-width: 400px; width: 100%; font-family: 'Inter', sans-serif; color: var(--matte-dark-grey);">
+            <!-- Header -->
+            <div class="picker-header" style="margin-bottom: 24px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <button class="picker-close" onclick="window.closeCustomPushSetup()" style="background: rgba(128,128,128,0.1); border: none; width: 36px; height: 36px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--matte-dark-grey);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </button>
+                    <h2 class="picker-title" style="font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 800; letter-spacing: -0.5px;">╨Э╨░╨╗╨░╤И╤В╤Г╨▓╨░╨╜╨╜╤П ╨┐╤Г╤И</h2>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                <!-- Location Input Section -->
+                <div class="hide-in-minimal" style="display: flex; flex-direction: column; gap: 8px;">
+                    <label style="font-size: 13px; font-weight: 600; color: var(--matte-dark-grey); opacity: 0.6; padding-left: 4px;">╨п╨║ ╨╜╨░╨╖╨▓╨╡╨╝╨╛ ╨╗╨╛╨║╨░╤Ж╤Ц╤О?</label>
+                    <input type="text" id="custom-push-location" placeholder="╨Э╨░╨┐╤А╨╕╨║╨╗╨░╨┤: ╨Ф╤Ц╨╝" maxlength="20"
+                        style="width: 100%; padding: 12px 16px; border-radius: 14px; border: 1px solid rgba(128,128,128,0.15); background: #FFFFFF; color: #374151; font-family: inherit; font-size: 16px; font-weight: 500; outline: none; transition: 0.2s;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;">
+                        <button class="chip-btn" onclick="document.getElementById('custom-push-location').value='╨Ф╤Ц╨╝'" style="padding: 6px 12px; font-size: 12px; border-radius: 10px;">╨Ф╤Ц╨╝</button>
+                        <button class="chip-btn" onclick="document.getElementById('custom-push-location').value='╨а╨╛╨▒╨╛╤В╨░'" style="padding: 6px 12px; font-size: 12px; border-radius: 10px;">╨а╨╛╨▒╨╛╤В╨░</button>
+                        <button class="chip-btn" onclick="document.getElementById('custom-push-location').value='╨Ю╤Д╤Ц╤Б'" style="padding: 6px 12px; font-size: 12px; border-radius: 10px;">╨Ю╤Д╤Ц╤Б</button>
+                        <button class="chip-btn" onclick="document.getElementById('custom-push-location').value='╨С╨░╤В╤М╨║╨╕'" style="padding: 6px 12px; font-size: 12px; border-radius: 10px;">╨С╨░╤В╤М╨║╨╕</button>
+                    </div>
+                </div>
+
+                <!-- Subqueue Selection Section (Open Grid - TZ 2.1) -->
+                <div id="custom-push-sq-container" style="display: flex; flex-direction: column; gap: 16px;">
+                    <div style="padding: 12px 16px; background: #FFFFFF; border: 1px solid rgba(128,128,128,0.15); border-radius: 14px; display: flex; justify-content: space-between; align-items: center;">
+                        <span id="custom-push-sq-summary-text" style="font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 600; color: var(--accent);">╨Ю╨▒╨╡╤А╤Ц╤В╤М ╨┐╤Ц╨┤╤З╨╡╤А╨│╤Г</span>
+                    </div>
+
+                    <div style="padding: 4px 0px 0px 0px;">
+                        <input type="hidden" id="custom-push-subqueue" value="">
+                        <div id="custom-push-sq-grid" class="sq-grid">
+                            <div class="sq-btn" onclick="window.selectCustomPushSubqueue('1.1', this)">1.1</div>
+                            <div class="sq-btn" onclick="window.selectCustomPushSubqueue('1.2', this)">1.2</div>
+                            <div class="sq-btn" onclick="window.selectCustomPushSubqueue('2.1', this)">2.1</div>
+                            <div class="sq-btn" onclick="window.selectCustomPushSubqueue('2.2', this)">2.2</div>
+                            <div class="sq-btn" onclick="window.selectCustomPushSubqueue('3.1', this)">3.1</div>
+                            <div class="sq-btn" onclick="window.selectCustomPushSubqueue('3.2', this)">3.2</div>
+                            <div class="sq-btn" onclick="window.selectCustomPushSubqueue('4.1', this)">4.1</div>
+                            <div class="sq-btn" onclick="window.selectCustomPushSubqueue('4.2', this)">4.2</div>
+                            <div class="sq-btn" onclick="window.selectCustomPushSubqueue('5.1', this)">5.1</div>
+                            <div class="sq-btn" onclick="window.selectCustomPushSubqueue('5.2', this)">5.2</div>
+                            <div class="sq-btn" onclick="window.selectCustomPushSubqueue('6.1', this)">6.1</div>
+                            <div class="sq-btn" onclick="window.selectCustomPushSubqueue('6.2', this)">6.2</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notify Time Section (Custom Dropdown) -->
+                <div class="hide-in-minimal" style="display: flex; flex-direction: column; gap: 8px;">
+                    <label style="font-size: 13px; font-weight: 600; color: var(--matte-dark-grey); opacity: 0.6; padding-left: 4px;">╨Я╨╛╨┐╨╡╤А╨╡╨┤╨╕╤В╨╕ ╨┐╤А╨╛ ╨╖╨╝╤Ц╨╜╨╕ ╨▓ ╨│╤А╨░╤Д╤Ц╨║╤Г ╨╖╨░</label>
+                    <style>#custom-push-time-details summary::-webkit-details-marker { display: none; }</style>
+                    <details id="custom-push-time-details" style="background: #FFFFFF; border: 1px solid rgba(128,128,128,0.15); border-radius: 14px; overflow: hidden; transition: 0.2s;">
+                        <summary style="padding: 12px 16px; font-size: 16px; font-weight: 600; color: #374151; cursor: pointer; outline: none; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                            <span id="custom-push-time-summary-text" style="font-family: 'Inter', sans-serif;">╨Ю╨▒╨╡╤А╤Ц╤В╤М ╤З╨░╤Б</span>
+                            <div style="opacity: 0.5;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </div>
+                        </summary>
+                        <div style="padding: 4px 12px 12px 12px;">
+                            <input type="hidden" id="custom-notify-time" value="">
+                            <div id="custom-push-time-grid" class="sq-grid" style="grid-template-columns: repeat(3, 1fr);">
+                                <div class="sq-btn" onclick="window.selectCustomPushTime('5', this)">5 ╤Е╨▓</div>
+                                <div class="sq-btn" onclick="window.selectCustomPushTime('10', this)">10 ╤Е╨▓</div>
+                                <div class="sq-btn" onclick="window.selectCustomPushTime('15', this)">15 ╤Е╨▓</div>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <!-- Notification Mode & DND Section -->
+                <div class="hide-in-minimal" style="display: flex; flex-direction: column; gap: 16px;">
+                    <!-- 24/7 Toggle -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 4px 4px 4px 4px;">
+                        <div>
+                            <div style="font-size: 13px; font-weight: 600; color: var(--matte-dark-grey); opacity: 0.6; padding-left: 4px;">╨б╨┐╨╛╨▓╤Ц╤Й╨░╤В╨╕ 24/7</div>
+                            <div style="font-size: 11px; opacity: 0.4; color: var(--matte-dark-grey); padding-left: 4px;">╨С╨╡╨╖ ╨╛╨▒╨╝╨╡╨╢╨╡╨╜╤М ╨╖╨░ ╤З╨░╤Б╨╛╨╝</div>
+                        </div>
+                        <label class="ios-toggle" style="flex-shrink: 0;"><input type="checkbox" id="custom-dnd-247-toggle" onchange="window.toggleCustom247Mode(this.checked)"><span class="slider"></span></label>
+                    </div>
+
+                    <!-- DND Time Controllers (Ultra Compact) -->
+                    <div id="custom-dnd-container" style="display: flex; flex-direction: column; gap: 4px;">
+                        <label style="font-size: 13px; font-weight: 600; color: var(--matte-dark-grey); opacity: 0.6; padding-left: 4px;">╨Э╨╡ ╤В╤Г╤А╨▒╤Г╨▓╨░╤В╨╕</label>
+                        
+                        <div id="custom-dnd-time-container" style="background: #FFFFFF; border: 1px solid rgba(128,128,128,0.15); border-radius: 18px; overflow: hidden; transition: 0.2s;">
+                            <!-- Start row -->
+                            <div style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid rgba(128,128,128,0.08);">
+                                <span style="font-size: 14px; color: var(--matte-dark-grey); opacity: 0.8; min-width: 63px;">╨Я╨╛╤З╨░╤В╨╛╨║</span>
+                                <input type="range" id="custom-dnd-start" class="time-slider" min="0" max="95" step="1" value="88" 
+                                    oninput="window.updateDndTimeDisplay(this, 'lbl-dnd-start')" style="flex-grow: 1; accent-color: var(--system-accent);">
+                                <span id="lbl-dnd-start" style="font-size: 14px; font-weight: 750; color: var(--system-accent); font-family: 'Inter', sans-serif; min-width: 45px; text-align: right; font-variant-numeric: tabular-nums;">22:00</span>
+                            </div>
+                            <!-- End row -->
+                            <div style="display: flex; align-items: center; gap: 12px; padding: 10px 16px;">
+                                <span style="font-size: 14px; color: var(--matte-dark-grey); opacity: 0.8; min-width: 63px;">╨Ъ╤Ц╨╜╨╡╤Ж╤М</span>
+                                <input type="range" id="custom-dnd-end" class="time-slider" min="0" max="95" step="1" value="32" 
+                                    oninput="window.updateDndTimeDisplay(this, 'lbl-dnd-end')" style="flex-grow: 1; accent-color: var(--system-accent);">
+                                <span id="lbl-dnd-end" style="font-size: 14px; font-weight: 750; color: var(--system-accent); font-family: 'Inter', sans-serif; min-width: 45px; text-align: right; font-variant-numeric: tabular-nums;">08:00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="hide-in-minimal" style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                <button onclick="window.saveCustomPushSetup()" class="premium-action-btn"
+                    style="width: 100%; padding: 14px; background: var(--system-accent); color: #ffffff; border: none; border-radius: 18px; font-weight: 700; font-size: 16px; cursor: pointer; font-family: 'Inter', sans-serif;">╨Ч╨▒╨╡╤А╨╡╨│╤В╨╕ ╨╜╨░╨╗╨░╤И╤В╤Г╨▓╨░╨╜╨╜╤П</button>
+                <div id="btn-custom-deactivate-container" style="display: none;">
+                    <button onclick="window.deactivateCustomPushCard()" 
+                        style="width: 100%; padding: 12px; background: transparent; color: #FF3B30; border: none; border-radius: 16px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.2s; font-family: 'Inter', sans-serif; opacity: 0.8;">╨Ю╤З╨╕╤Б╤В╨╕╤В╨╕ ╨╜╨░╨╗╨░╤И╤В╤Г╨▓╨░╨╜╨╜╤П</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="push-wizard-overlay" class="overlay" style="display: none;">
+        <div id="push-wizard-sheet" class="glass-card bottom-sheet" style="padding: 24px 20px;">
+            <div class="sheet-handle"></div>
+            <div style="text-align: center; margin-bottom: 24px;">
+                <div
+                    style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 12px; background: rgba(128,128,128,0.1); margin-bottom: 12px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                </div>
+                <h2 class="headline" id="wizard-title" style="margin: 0; font-size: 20px;">╨Э╨░╨╗╨░╤И╤В╤Г╨╣╨╝╨╛ ╤Б╨┐╨╛╨▓╤Ц╤Й╨╡╨╜╨╜╤П</h2>
+                <p class="body-neutral" id="wizard-subtitle" style="margin: 4px 0 0 0; font-size: 14px;">╨Ъ╤А╨╛╨║ 1 ╨╖ 3</p>
+            </div>
+            <div id="wizard-content" style="min-height: 220px;">
+                <!-- Step 1: Queue & Location Name -->
+                <div id="wizard-step-1" class="wizard-step active-step">
+                    <p style="font-weight: 600; margin-bottom: 8px;">╨Э╨░╨╖╨▓╨░ ╨╗╨╛╨║╨░╤Ж╤Ц╤Ч:</p>
+                    <input type="text" id="wizard-location-name" maxlength="20" placeholder="╨╜╨░╨┐╤А. ╨Ф╤Ц╨╝, ╨а╨╛╨▒╨╛╤В╨░..."
+                        style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid rgba(128,128,128,0.2); background: rgba(255,255,255,0.05); color: var(--system-text); margin-bottom: 4px; outline: none; font-family: inherit;">
+                    <div id="wizard-location-counter" style="font-size: 11px; text-align: right; color: var(--system-text-muted); padding-right: 4px; margin-bottom: 16px; font-weight: 700;">0/20</div>
+
+                    <p style="font-weight: 600; margin-bottom: 12px;">╨Ю╨▒╨╡╤А╤Ц╤В╤М ╨▓╨░╤И╤Г ╤З╨╡╤А╨│╤Г:</p>
+                    <div class="group-grid" id="wizard-group-grid"
+                        style="grid-template-columns: repeat(4, 1fr); gap: 8px;"></div>
+                </div>
+
+                <!-- Step 2: Notify Time -->
+                <div id="wizard-step-2" class="wizard-step" style="display: none;">
+                    <p style="font-weight: 600; margin-bottom: 16px; text-align: center;">╨Ч╨░ ╤Б╨║╤Ц╨╗╤М╨║╨╕ ╤Е╨▓╨╕╨╗╨╕╨╜ ╨┐╨╛╨┐╨╡╤А╨╡╨┤╨╕╤В╨╕?
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <label class="glass-card"
+                            style="display: flex; align-items: center; justify-content: space-between; padding: 16px; cursor: pointer; border-radius: 16px;">
+                            <span>╨╖╨░ 5 ╤Е╨▓╨╕╨╗╨╕╨╜</span>
+                            <input type="radio" name="notify_time" value="5" checked>
+                        </label>
+                        <label class="glass-card"
+                            style="display: flex; align-items: center; justify-content: space-between; padding: 16px; cursor: pointer; border-radius: 16px;">
+                            <span>╨╖╨░ 10 ╤Е╨▓╨╕╨╗╨╕╨╜</span>
+                            <input type="radio" name="notify_time" value="10">
+                        </label>
+                        <label class="glass-card"
+                            style="display: flex; align-items: center; justify-content: space-between; padding: 16px; cursor: pointer; border-radius: 16px;">
+                            <span>╨╖╨░ 15 ╤Е╨▓╨╕╨╗╨╕╨╜</span>
+                            <input type="radio" name="notify_time" value="15">
+                        </label>
+                    </div>
+                </div>
+                <p style="font-weight: 600; margin-bottom: 12px;">╨Ъ╨╛╨╗╨╕ ╨▓╨░╤Б ╨┐╨╛╨┐╨╡╤А╨╡╨┤╨╕╤В╨╕ ╨┐╤А╨╛ ╨▓╨╕╨╝╨║╨╜╨╡╨╜╨╜╤П?</p>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <label class="glass-card"
+                        style="display: flex; align-items: center; gap: 12px; padding: 16px; cursor: pointer; border: 1px solid var(--system-accent);">
+                        <input type="radio" name="notify_time" value="15" checked
+                            style="accent-color: var(--system-accent);">
+                        <span style="font-weight: 500;">╨Ч╨░ 15 ╤Е╨▓╨╕╨╗╨╕╨╜</span>
+                    </label>
+                    <label class="glass-card"
+                        style="display: flex; align-items: center; gap: 12px; padding: 16px; cursor: pointer;">
+                        <input type="radio" name="notify_time" value="5" style="accent-color: var(--system-accent);">
+                        <span style="font-weight: 500;">╨Ч╨░ 5 ╤Е╨▓╨╕╨╗╨╕╨╜</span>
+                    </label>
+                </div>
+            </div>
+            <div id="wizard-step-3" class="wizard-step" style="display: none;">
+                <p style="font-weight: 600; margin-bottom: 16px;">╨б╨┐╨╛╨▓╤Ц╤Й╨░╤В╨╕, ╨║╨╛╨╗╨╕ ╤Б╨▓╤Ц╤В╨╗╨╛ ╨╖'╤П╨▓╨╕╨╗╨╛╤Б╤П?</p>
+                <div class="glass-card"
+                    style="display: flex; justify-content: space-between; align-items: center; padding: 16px;">
+                    <span style="font-weight: 500;">╨Ъ╨╛╨╗╨╕ ╤Ф ╤Б╨▓╤Ц╤В╨╗╨╛</span>
+                    <label class="ios-toggle"><input type="checkbox" id="wizard-power-on" checked><span
+                            class="slider"></span></label>
+                </div>
+            </div>
+        </div>
+        <div style="display: flex; gap: 12px; margin-top: 24px;">
+            <button id="btn-wizard-back" class="glass-card"
+                style="flex: 1; padding: 16px; display: none; font-weight: 600; text-align: center; border: 1px solid rgba(128,128,128,0.2); cursor: pointer; background: transparent;">╨Э╨░╨╖╨░╨┤</button>
+            <button id="btn-wizard-next" class="action-btn"
+                style="flex: 2; padding: 16px; font-size: 16px; border-radius: 16px;">╨Ф╨░╨╗╤Ц</button>
+        </div>
+    </div>
+    </div>
+
+    <!-- Queue Picker Overlay (already improved) -->
+    <div id="queue-picker-overlay" class="overlay" onclick="if(event.target===this) closeQueuePicker()">
+        <div class="picker-container fade-in-up">
+            <div class="picker-header">
+                <h2 class="picker-title">╨Ю╨▒╨╡╤А╤Ц╤В╤М ╤З╨╡╤А╨│╤Г</h2>
+                <div class="picker-close" onclick="closeQueuePicker()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+            </div>
+
+            <div id="picker-grid" class="group-grid">
+            </div>
+        </div>
+    </div>
+
+    <!-- Location Name Picker Overlay (V6.0 Premium) -->
+    <div id="location-picker-overlay" class="overlay" onclick="if(event.target===this) closeLocationPicker()">
+        <div class="picker-container">
+            <div class="picker-header" style="margin-bottom: 20px;">
+                <h2 class="picker-title">╨Э╨░╨╖╨▓╨░ ╨╗╨╛╨║╨░╤Ж╤Ц╤Ч</h2>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="saveLocationName()" class="confirm-btn"
+                        style="background: rgba(52, 199, 89, 0.1); border: none; width: 32px; height: 32px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #34C759; transition: all 0.2s;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </button>
+                    <div class="picker-close" onclick="closeLocationPicker()"
+                        style="background: rgba(128, 128, 128, 0.08); border: none; width: 32px; height: 32px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--system-text); opacity: 1;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="3.5">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <input type="text" id="picker-location-input" maxlength="20" placeholder="╨Э╨░╨┐╤А╨╕╨║╨╗╨░╨┤: ╨Ф╤Ц╨╝"
+                    style="width: 100%; height: 50px; background: rgba(128,128,128,0.06); border: 1.5px solid rgba(128,128,128,0.1); border-radius: 16px; padding: 0 16px; font-size: 16px; font-weight: 700; color: var(--system-text); outline: none; transition: border-color 0.3s; margin-bottom: 4px;">
+                <div id="picker-location-counter" style="font-size: 11px; text-align: right; color: var(--system-text-muted); padding-right: 8px; font-weight: 700;">0/20</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notify Time Picker Overlay (New) -->
+    <div id="notify-time-picker-overlay" class="overlay" onclick="if(event.target===this) closeNotifyTimePicker()">
+        <div class="picker-container fade-in-up">
+            <div class="picker-header" style="margin-bottom: 20px;">
+                <h2 class="picker-title">╨з╨░╤Б ╤Б╨┐╨╛╨▓╤Ц╤Й╨╡╨╜╨╜╤П</h2>
+                <div class="picker-close" onclick="closeNotifyTimePicker()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+            </div>
+
+            <div id="notify-time-options" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <button id="time-btn-5" onclick="selectNotifyTime(5)" class="picker-btn"
+                    style="height: 46px; border-radius: 14px; font-weight: 800; font-size: 16px;">5 ╤Е╨▓</button>
+                <button id="time-btn-15" onclick="selectNotifyTime(15)" class="picker-btn"
+                    style="height: 46px; border-radius: 14px; font-weight: 800; font-size: 16px;">15 ╤Е╨▓</button>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- DND Settings Overlay -->
+    <div id="dnd-settings-overlay" class="overlay" onclick="if(event.target===this) closeDNDSettings()">
+        <div class="picker-container fade-in-up">
+            <div class="picker-header" style="margin-bottom: 20px;">
+                <h2 class="picker-title">╨Э╨╡ ╤В╤Г╤А╨▒╤Г╨▓╨░╤В╨╕</h2>
+                <div class="picker-close" onclick="closeDNDSettings()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="background: rgba(128,128,128,0.05); padding: 12px; border-radius: 16px;">
+                    <p style="font-size: 13px; opacity: 0.6; margin: 0 0 8px 0; font-weight: 600;">╨Я╨╛╤З╨░╤В╨╛╨║:</p>
+                    <input type="time" id="dnd-start-time" value="22:00"
+                        style="width: 100%; padding: 10px; border-radius: 12px; border: 1px solid rgba(128,128,128,0.1); background: rgba(255,255,255,0.05); color: var(--system-text); font-family: inherit; font-size: 16px; outline: none; font-weight: 600;">
+                </div>
+                <div style="background: rgba(128,128,128,0.05); padding: 12px; border-radius: 16px;">
+                    <p style="font-size: 13px; opacity: 0.6; margin: 0 0 8px 0; font-weight: 600;">╨Ъ╤Ц╨╜╨╡╤Ж╤М:</p>
+                    <input type="time" id="dnd-end-time" value="08:00"
+                        style="width: 100%; padding: 10px; border-radius: 12px; border: 1px solid rgba(128,128,128,0.1); background: rgba(255,255,255,0.05); color: var(--system-text); font-family: inherit; font-size: 16px; outline: none; font-weight: 600;">
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button onclick="saveDNDSettings()" class="premium-action-btn"
+                    style="flex: 1; padding: 14px; background: linear-gradient(135deg, #FF9500, #FFCC00); color: white; border: none; border-radius: 16px; font-weight: 800; font-size: 15px; cursor: pointer; box-shadow: 0 8px 20px rgba(255,149,0,0.2);">╨Ч╨▒╨╡╤А╨╡╨│╤В╨╕</button>
+            </div>
+        </div>
+    </div>

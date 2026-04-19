@@ -11,33 +11,12 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;600;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=4.3.5">
-    <link rel="stylesheet" href="css/home.css?v=4.3.5">
-    <link rel="stylesheet" href="css/tech-ui.css?v=4.3.5">
-    <link rel="stylesheet" href="css/selector.css?v=4.3.5">
-    <style>
-        /* Inline fail-safe styles for v1.0.10 */
-        .home-bottom-controls {
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-            margin-top: 20px !important;
-            width: 100% !important;
-            gap: 12px !important;
-        }
+    <link rel="stylesheet" href="style.css?v=1.5.4">
+    <link rel="stylesheet" href="css/home.css?v=1.5.4">
+    <link rel="stylesheet" href="css/tech-ui.css?v=1.5.4">
+    <link rel="stylesheet" href="css/selector.css?v=1.5.4">
+    <link rel="stylesheet" href="css/sssk-modern.css?v=1.5.4">
 
-        .home-bottom-controls .scrubber-preview {
-            height: 52px !important;
-            display: flex !important;
-            align-items: center !important;
-            margin: 0 !important;
-            border-radius: 14px !important;
-        }
-
-        .controls-spacer {
-            flex: 1 !important;
-        }
-    </style>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#D77727">
     <link rel="icon" type="image/svg+xml" href="assets/app-icon.svg">
@@ -121,14 +100,6 @@
                         <span id="capsule-date-main" class="dash-date-num">--.--.----</span>
                     </div>
 
-                    <!-- Center: Status Segment (Interactive) -->
-                    <div id="dash-segment-status" class="dash-segment dash-status">
-                        <div id="capsule-status-container" class="dash-status-icon-box"></div>
-                        <span id="capsule-status-text" class="dash-status-time">
-                            <span class="dash-status-label">до</span>
-                            <span class="dash-status-value">00:00</span>
-                        </span>
-                    </div>
 
                     <!-- Right: Clock Segment (Interactive) -->
                     <div id="dash-segment-clock" class="dash-segment dash-clock">
@@ -247,10 +218,9 @@
             </div>
         </div>
     </div>
-    <script src="js/modules/svitlo-timeline-block.js"></script>
-    <script src="js/pages/home-tablo.js?v=1.0.0"></script>
-    <script src="js/tech-ui.js"></script>
-    <script src="js/pages/home.js?v=4.3.5" type="module"></script>
+    <script src="js/modules/svitlo-timeline-block.js?v=1.5.4"></script>
+    <script src="js/tech-ui.js?v=1.5.4"></script>
+    <script src="js/pages/home.js?v=1.5.4" type="module"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
