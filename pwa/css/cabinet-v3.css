@@ -115,13 +115,13 @@ body {
 
 .v3-card {
     background: var(--v3-bg-card);
-    border: 1px solid var(--v3-border-light);
-    border-radius: 16px;
+    border-radius: 12px;
     padding: 14px 18px;
+    margin: 0 20px 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     position: relative;
     overflow: hidden;
     transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s;
@@ -228,7 +228,8 @@ body {
     flex-direction: column;
     background: var(--v3-bg-card);
     border-radius: 16px;
-    /* Removed global border for borderless look */
+    /* Margin 20px for perfect sync with Home page */
+    margin: 0 20px;
     overflow: hidden;
 }
 
