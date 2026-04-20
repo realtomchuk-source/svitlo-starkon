@@ -4,24 +4,32 @@
 */
 
 :root {
-    --v3-bg-page: #F9FAFB;
-    --v3-bg-card: #FFFFFF;
-    --v3-bg-muted: #F3F4F6;
-    --v3-accent: #EE7221;
+    --v3-accent: #FF9500;
+    --v3-accent-dynamic: var(--v3-accent);
     --v3-text-primary: #111827;
-    --v3-text-secondary: #374151;
-    --v3-text-muted: #6B7280;
-    --v3-border-light: #E5E7EB;
+    --v3-text-secondary: #4B5563;
+    --v3-text-muted: #9CA3AF;
+    --v3-bg-card: #FFFFFF;
+    --v3-border-light: rgba(0, 0, 0, 0.05);
+    --v3-radius: 20px;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --v3-text-primary: #F9FAFB;
+        --v3-text-secondary: #D1D5DB;
+        --v3-text-muted: #6B7280;
+        --v3-bg-card: #1C1C1E;
+        --v3-border-light: rgba(255, 255, 255, 0.1);
+    }
 }
 
 body {
-    background-color: var(--v3-bg-page);
+    background-color: var(--system-bg-light);
 }
 
 .cabinet-container-v3 {
-    max-width: 450px;
-    margin: 0 auto;
-    padding: 20px 0 120px 0;
+    padding: 12px 0 100px 0; /* Reduced top/bottom padding for compactness */
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     letter-spacing: -0.01em;
     color: var(--v3-text-primary);
@@ -37,18 +45,20 @@ body {
    SECTIONS
 ------------------- */
 .v3-section {
-    margin-bottom: 20px;
+    margin-bottom: 16px; /* Optimized vertical gap (Green Arrow) */
 }
 
 .v3-section-title {
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 10px;
-    color: var(--v3-text-secondary);
-    padding: 0 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 20px 6px 16px; /* Aligned to the red line (card outer edge) */
+    padding: 0;
     display: flex;
     align-items: center;
-    opacity: 0.8;
+    color: var(--v3-text-muted);
+    opacity: 0.5;
 }
 
 /* -------------------
@@ -58,38 +68,97 @@ body {
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 0 20px;
+    margin: 0 20px;
+    padding: 18px 20px 18px 20px; /* Restoring natural padding with larger avatar */
+    background: var(--glass-bg-light);
+    position: relative; /* For absolute positioning of the gear icon */
+    backdrop-filter: blur(var(--blur-hero));
+    -webkit-backdrop-filter: blur(var(--blur-hero));
+    border-radius: 20px;
+    border: 1px solid var(--glass-border-light);
+    box-shadow: var(--shadow-hero);
 }
 
 .v3-avatar {
-    width: 60px;
-    height: 60px;
+    width: 54px; /* Increased back for better balance */
+    height: 54px;
     border-radius: 50%;
-    background: var(--v3-bg-muted);
-    border: 1px solid var(--v3-border-light);
+    background: var(--system-gray-neutral);
+    border: 1px solid var(--glass-border-light);
     object-fit: cover;
     display: flex;
     align-items: center;
     justify-content: center;
+    filter: blur(0.5px) brightness(0.95); /* Subtle matte effect */
 }
 
 .v3-profile-info {
+    flex: 1;
     display: flex;
     flex-direction: column;
+    min-width: 0; /* Prevents squashing */
     gap: 2px;
 }
 
+.v3-profile-main-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
 .v3-profile-name {
-    font-size: 20px;
+    font-size: 18px; /* Slightly reduced for hierarchy as requested */
     font-weight: 700;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.015em;
     color: var(--v3-text-primary);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .v3-profile-status {
     font-size: 14px;
     font-weight: 500;
     color: var(--v3-text-secondary);
+    opacity: 0.9;
+}
+
+.v3-profile-meta {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--v3-text-muted);
+    opacity: 0.55;
+    margin-top: 1px;
+}
+
+.v3-profile-block .v3-profile-action {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: transparent;
+    color: var(--v3-text-muted);
+    cursor: pointer;
+    transition: 0.2s;
+    opacity: 0.6;
+    z-index: 10;
+}
+
+.v3-profile-action:active {
+    background: rgba(0, 0, 0, 0.08);
+    transform: scale(0.9);
+}
+
+.v3-profile-action svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2.2;
 }
 
 .v3-profile-cta {
@@ -110,34 +179,41 @@ body {
 .v3-cards-container {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px; /* Compacted gap */
 }
 
 .v3-card {
-    background: var(--v3-bg-card);
-    border-radius: 12px;
-    padding: 14px 18px;
-    margin: 0 20px 10px 20px;
+    background: var(--glass-bg-light);
+    backdrop-filter: blur(var(--blur-card));
+    -webkit-backdrop-filter: blur(var(--blur-card));
+    border-radius: 20px;
+    padding: 12px 18px; /* Compacted padding */
+    margin: 0 16px; /* Slightly reduced horizontal margin for overall balance */
+    width: auto !important;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    flex-direction: column;
+    gap: 10px; /* Space between the two rows inside the card */
+    justify-content: center;
+    align-items: stretch;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--glass-border-light);
     position: relative;
     overflow: hidden;
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s;
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s, box-shadow 0.2s;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
 }
 
 .v3-card:active {
-    transform: scale(0.98);
-    background-color: var(--v3-bg-muted);
+    transform: scale(0.97);
+    background-color: rgba(0, 0, 0, 0.02);
 }
 
 /* Ripple effect */
 .ripple {
     position: relative;
     overflow: hidden;
+    width: 100%;
 }
 
 .v3-ripple {
@@ -156,8 +232,14 @@ body {
     }
 }
 
-.v3-card.active {
-    border: 1.5px solid var(--v3-accent);
+.v3-card.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 12px;
+    bottom: 12px;
+    width: 4px; /* Slightly thicker for better visibility with deep padding */
+    border-radius: 0 4px 4px 0;
 }
 
 .v3-card.inactive {
@@ -168,6 +250,7 @@ body {
     border: 1.5px dashed var(--v3-border-light);
     background: transparent;
     justify-content: center;
+    align-items: flex-start; /* Keep 'add' text on the left axis */
 }
 
 .v3-card-left {
@@ -224,30 +307,39 @@ body {
    INLINE SETTINGS
 ------------------- */
 .v3-inline-list {
-    display: flex;
-    flex-direction: column;
-    background: var(--v3-bg-card);
-    border-radius: 16px;
-    /* Margin 20px for perfect sync with Home page */
-    margin: 0 20px;
+    background: var(--glass-bg-light);
+    backdrop-filter: blur(var(--blur-light));
+    -webkit-backdrop-filter: blur(var(--blur-light));
+    border-radius: 20px;
+    margin: 0 20px !important;
+    width: auto !important;
     overflow: hidden;
+    box-shadow: var(--shadow-flat);
+    border: 1px solid var(--glass-border-light);
 }
 
 .v3-inline-list.v3-transparent {
-    background: transparent;
-    border-radius: 0;
+    background: var(--glass-bg-light); /* Standardizing on glass for all settings blocks */
+    backdrop-filter: blur(var(--blur-card));
+    -webkit-backdrop-filter: blur(var(--blur-card));
+    border-radius: 20px;
+    border: 1px solid var(--glass-border-light);
 }
 
 .v3-inline-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 16px;
-    /* border-bottom removed, replaced with pseudo below */
+    padding: 10px 20px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.1s;
     user-select: none;
     position: relative;
+}
+
+.v3-inline-item:active {
+    transform: scale(0.98);
+    background-color: rgba(0, 0, 0, 0.02);
 }
 
 .v3-inline-left {
@@ -270,15 +362,15 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 12px;
+    margin-right: 12px; /* Fixed 12px gap for alignment logic */
     flex-shrink: 0;
 }
 
 .v3-icon-box svg {
-    width: 18px;
-    height: 18px;
-    stroke: var(--v3-accent);
-    stroke-width: 2;
+    width: 20px;
+    height: 20px;
+    stroke: var(--v3-accent-dynamic); /* Using dynamic accent for visibility */
+    stroke-width: 2.2; /* Thicker stroke */
     fill: none;
 }
 
@@ -288,7 +380,8 @@ body {
 }
 
 .v3-icon-box.v3-icon-gray svg {
-    stroke: var(--v3-text-muted);
+    stroke: #555; /* Darker for better visibility against light gray backdrop */
+    stroke-width: 2.2; /* Slightly thicker line */
 }
 
 .v3-inline-item::after {
@@ -296,10 +389,10 @@ body {
     position: absolute;
     bottom: 0;
     right: 0;
-    left: 16px; /* Offset separator from left edge */
+    left: 40px; /* Aligned with new text axis */
     height: 1px;
     background-color: var(--v3-border-light);
-    opacity: 0.6;
+    opacity: 0.8; /* Slightly more visible separator */
 }
 
 .v3-inline-item:last-child::after {
@@ -350,15 +443,15 @@ body {
 .v3-toggle {
     width: 44px;
     height: 24px;
-    background: var(--v3-border-light);
-    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.1); /* More visible background for Off state */
+    border-radius: 14px;
     position: relative;
     cursor: pointer;
     transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .v3-toggle.on {
-    background: #34C759;
+    background: var(--v3-accent);
 }
 
 .v3-toggle::after {
@@ -394,6 +487,31 @@ body {
     pointer-events: none;
     transition: opacity 0.3s ease;
     cursor: pointer; /* Fixes iOS Safari ignoring clicks on divs */
+}
+
+body {
+    background: linear-gradient(180deg, #F0F2F8 0%, #FFFFFF 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+.cabinet-container-v3 {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 10px 0; /* Compacted top/bottom padding */
+}
+
+/* Updated Section Titles to Uppercase & 40px Alignment */
+.v3-section-title, .cabinet-section-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--v3-text-muted);
+    margin-bottom: 6px; /* Tighter gap to content */
+    padding-left: 16px; /* Aligned to the red line (card outer edge) */
+    font-weight: 600;
+    opacity: 0.8;
 }
 
 .v3-bottom-sheet-overlay.active {
@@ -572,6 +690,110 @@ details > summary::-webkit-details-marker {
     opacity: 0.8;
 }
 
+/* =========================
+   CABINET — LOWER SECTION 
+   (Soft Container & Light List)
+   ========================= */
+
+.cabinet-section {
+    margin-top: 16px; /* Compacted section gap */
+}
+
+.soft-container {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 8px;
+    margin: 0 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.03);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.soft-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px; /* Tighter vertical padding */
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.soft-item:active {
+    transform: scale(0.97);
+    background: rgba(0,0,0,0.05);
+}
+
+.soft-item + .soft-item {
+    margin-top: 4px;
+}
+
+.soft-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.soft-icon, .light-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--v3-text-secondary);
+    opacity: 0.7;
+    flex-shrink: 0;
+    stroke-width: 1.5px;
+}
+
+.soft-label {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--v3-text-primary);
+}
+
+.soft-value {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--v3-accent);
+}
+
+.soft-chevron, .light-chevron {
+    margin-left: 8px;
+    font-size: 18px;
+    color: var(--v3-text-muted);
+    opacity: 0.5;
+}
+
+/* LIGHT LIST (Secondary) */
+.light-list {
+    margin: 8px 16px 0 16px;
+}
+
+.light-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px; /* Tighter vertical padding */
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.light-item:active {
+    transform: scale(0.97);
+    background: rgba(0,0,0,0.03);
+}
+
+.light-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.light-label {
+    font-size: 15px;
+    color: var(--v3-text-secondary);
+}
+
 /* -------------------
    TOAST NOTIFICATION
 ------------------- */
@@ -616,3 +838,63 @@ details > summary::-webkit-details-marker {
 .v3-anim-bounce {
     animation: v3-bounce 0.3s ease-in-out;
 }
+
+/* -------------------
+   STATUS & ACCENTS (V5.1)
+------------------- */
+
+/* Status Off Override */
+body.status-off {
+    --v3-accent-dynamic: #8E8E93; /* System Gray for "No Power" state */
+}
+
+.sync-active {
+    color: var(--v3-accent-dynamic); /* Switched to brand orange as requested */
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap; /* Prevents text splitting */
+}
+
+.status-dot-mini {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.v3-card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.v3-card-left-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.v3-card-notify-info {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--v3-accent-dynamic);
+    transition: color 0.3s ease;
+}
+
+.v3-status-dot-main {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--v3-accent-dynamic);
+    flex-shrink: 0;
+    transition: background-color 0.3s ease;
+}
+
+.v3-status-dot-main.grey {
+    background: var(--system-text-neutral);
+}
+

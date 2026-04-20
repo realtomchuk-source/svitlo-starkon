@@ -1,3 +1,9 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 :root {
 
     /* Base Palette */
@@ -45,18 +51,27 @@
 
 
     /* Volume Shadows (Industrial Standard) */
-
     --volume-shadow: 0 8px 32px rgba(0, 0, 0, 0.24);
-
+    --volume-shadow-light: 0 12px 40px rgba(0, 0, 0, 0.08);
     --volume-shadow-glow: 0 0 15px rgba(238, 114, 33, 0.1);
 
+    /* Shadow Hierarchy */
+    --shadow-hero: 0 8px 24px rgba(0, 0, 0, 0.08); /* Integrated shadow instead of floating */
+    --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.06);
+    --shadow-flat: none;
 
+    /* Blur Hierarchy */
+    --blur-hero: 24px;
+    --blur-card: 16px;
+    --blur-light: 8px;
+
+    /* Semantic Accents */
+    --v3-accent-dynamic: var(--system-accent);
 
     /* Layout Spacing */
-
     --block-spacing: 12px;
-
 }
+
 
 
 
@@ -139,43 +154,32 @@
 
 
 body {
-
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, sans-serif;
-
     line-height: 1.4;
-
     overflow-x: hidden;
-
     padding-bottom: 80px;
-
     background-color: #FAFAFA !important; /* Unified clean Apple-style background */
-
     position: relative;
+    margin: 0;
+    padding: 0;
+}
 
+#app {
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+    position: relative;
+    min-height: 100vh;
 }
 
 
 
 .content-area, .content {
-
-    max-width: 450px !important;
-
-    margin: 0 auto !important;
-
+    max-width: 450px;
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
     padding: 16px 0 0 0; 
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 12px;
-
-    min-height: 80vh;
-
-    justify-content: flex-start;
-
-    overflow: hidden !important; /* Prevent horizontal scroll leak */
-
 }
 
 
@@ -762,7 +766,7 @@ body {
 
     position: fixed;
 
-    bottom: 24px; /* More "breathing" space from bottom */
+    bottom: 0; /* Standard tab bar alignment */
 
     left: 50%;
 
@@ -770,7 +774,7 @@ body {
 
     width: calc(100% - 40px);
 
-    max-width: 450px; /* Unified Standard Grid */
+    max-width: 410px !important; /* Matches content width (450 - 20 - 20) for vertical alignment */
 
     display: flex;
 
