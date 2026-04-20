@@ -8,35 +8,10 @@ let currentBottomSheetMode = null; // 'setup' | 'startQueue' | 'feedback'
 // ========================================================
 // РОЗРОБНИЦЬКИЙ РЕЖИМ (DEV MODE)
 // ========================================================
-const DEV_MOCK_USER = true; 
-// ========================================================
-
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        if (DEV_MOCK_USER) {
-            console.warn("DEV_MOCK_USER увімкнено! Використовуються фейкові дані користувана.");
-            userService = {
-                getUserData: () => ({
-                    user: { 
-                        email: "test.dev@sssk.ua", 
-                        created_at: "2024-02-15T12:00:00Z",
-                        user_metadata: { full_name: "Олексій (DEV)" } 
-                    },
-                    profile: { full_name: "User8429" }
-                }),
-                getPushSubscriptions: () => {
-                    const saved = localStorage.getItem('sssk_subscriptions');
-                    return saved ? JSON.parse(saved) : [{ active: true, locationName: "Дім (DEV)", group: "2.1", notifyTime: 15, dnd: { active: true, start: "23:00", end: "07:00" } }, null];
-                },
-                updatePushSubscriptions: async (subs) => {
-                    console.log("Mock saved to DB", subs);
-                },
-                init: async () => true
-            };
-        } else {
-            userService = new UserService(window.supabase);
-            await userService.init();
-        }
+        userService = new UserService();
+        await userService.init();
         
         window.v3UserService = userService; 
         initV3();
@@ -102,13 +77,13 @@ function renderProfile() {
 
     if (isGuest()) {
         profileSlot.innerHTML = `
-            <div class="v3-profile-block ripple" onclick="window.signInWithGoogle()">
+            <div class="v3-profile-block">
                 <div class="v3-avatar">
                      <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" style="opacity: 0.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                 </div>
                 <div class="v3-profile-info">
-                    <span class="v3-profile-name">Гість</span>
-                    <span class="v3-profile-status">Натисніть, щоб увійти</span>
+                    <span class="v3-profile-name">Автономний профіль</span>
+                    <span class="v3-profile-status">Дані зберігаються локально</span>
                 </div>
             </div>
         `;
@@ -231,13 +206,8 @@ function renderSettings() {
     
     const sqSub = document.getElementById('v3-sq-subtitle');
     const tmSub = document.getElementById('v3-tomorrow-subtitle');
-    if (isGuest()) {
-        if (sqSub) { sqSub.style.display = 'block'; sqSub.innerText = 'Доступно після входу'; }
-        if (tmSub) { tmSub.style.display = 'block'; tmSub.innerText = 'Доступно після входу'; }
-    } else {
-        if (sqSub) sqSub.style.display = 'none';
-        if (tmSub) tmSub.style.display = 'none';
-    }
+    if (sqSub) sqSub.style.display = 'none';
+    if (tmSub) tmSub.style.display = 'none';
 }
 
 window.v3OpenBottomSheet = (contentHtml, title = "Налаштування") => {
@@ -251,10 +221,7 @@ window.v3CloseBottomSheet = () => {
 };
 
 window.v3OpenStartQueue = () => {
-    if (isGuest()) {
-        window.v3ShowToast("Ця функція доступна лише авторизованим користувачам");
-        return;
-    }
+    // Feature unlocked for local mode
     
     const currentVal = localStorage.getItem('startQueue') || '1.1';
     let gridHtml = '<div class="sq-grid" style="grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 10px;">';
@@ -288,10 +255,7 @@ function valueToTime(val) {
 }
 
 window.v3OpenSetup = (index) => {
-    if (isGuest()) {
-        window.v3ShowToast("Увійдіть, щоб створювати сповіщення");
-        return;
-    }
+    // Feature unlocked for local mode
 
     const sub = subscriptions[index] || {};
     const loc = sub.locationName || `Локація ${index + 1}`;
@@ -429,7 +393,7 @@ window.v3ClearSetup = (index) => {
 };
 
 window.v3ToggleTomorrow = () => {
-    if (isGuest()) { window.v3ShowToast("Увійдіть для доступу"); return; }
+    // Feature unlocked for local mode
     const current = localStorage.getItem('sssk_tomorrow_push') === 'true';
     localStorage.setItem('sssk_tomorrow_push', !current);
     renderSettings();

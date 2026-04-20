@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('Cabinet V2 Module Initialized');
 
     try {
-        userService = new UserService(window.supabase);
+        userService = new UserService();
         await userService.init();
         window.v2UserService = userService; // Make globally accessible
         analytics = new AnalyticsEngine(userService);
@@ -57,41 +57,17 @@ async function updateAuthStateV2() {
 
     const { user, profile } = userService.getUserData();
 
-    if (user) {
-        const avatarUrl = user.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user.email}&background=E5E7EB&color=111827`;
-        const userNickname = profile?.full_name || user.user_metadata?.full_name || user.email.split('@')[0];
-        
-        profileSlot.innerHTML = `
-            <div class="v2-profile-block">
-                <img class="v2-avatar" src="${avatarUrl}" alt="Avatar" onclick="window.v2ChangeAvatarAlert()" style="cursor: pointer;">
-                <div>
-                    <div class="v2-profile-name">${userNickname}</div>
-                    <div class="v2-profile-edit" onclick="window.v2ChangeAvatarAlert()" style="cursor: pointer;">Змінити фото</div>
-                </div>
+    profileSlot.innerHTML = `
+        <div class="v2-profile-block">
+            <div class="v2-avatar-placeholder">
+                <i class="fas fa-microchip"></i>
             </div>
-        `;
-    } else {
-        profileSlot.innerHTML = `
-            <div class="v2-profile-block">
-                <div class="v2-avatar-placeholder">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="v2-profile-guest">
-                    <div class="v2-auth-buttons">
-                        <button class="v2-button-auth" onclick="window.signInWithGoogle()">
-                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="14" height="14">
-                            Google
-                        </button>
-                        <button class="v2-button-auth telegram">
-                            <i class="fab fa-telegram"></i>
-                            Telegram
-                        </button>
-                    </div>
-                    <div class="v2-guest-caption" style="margin-top: 2px;">Ви не увійшли</div>
-                </div>
+            <div class="v2-profile-info">
+                <div class="v2-profile-name">Автономний профіль</div>
+                <div class="v2-guest-caption" style="margin-top: 2px; opacity: 0.6;">Локальне збереження даних</div>
             </div>
-        `;
-    }
+        </div>
+    `;
 }
 
 function renderSlotsV2() {

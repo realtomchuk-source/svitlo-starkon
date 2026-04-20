@@ -23,7 +23,7 @@
     align-items: center;
     gap: 15px;
     padding: 12px;
-    background: rgba(0,0,0,0.03);
+    background: rgba(0, 0, 0, 0.03);
     border-radius: 16px;
 }
 
@@ -60,7 +60,8 @@
     font-family: "JetBrains Mono", "IBM Plex Mono", monospace !important;
     font-size: 15px;
     font-weight: 600;
-    color: #00FF85 !important; /* Neon Green */
+    color: #00FF85 !important;
+    /* Neon Green */
     letter-spacing: 0.02em;
     display: flex;
     align-items: center;
@@ -90,7 +91,7 @@
     padding: 6px 14px 6px 6px;
     border-radius: 14px;
     cursor: pointer;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     gap: 12px;
     position: relative;
@@ -112,9 +113,17 @@
 }
 
 @keyframes shimmer-btn {
-    0% { left: -60%; }
-    20% { left: 140%; }
-    100% { left: 140%; }
+    0% {
+        left: -60%;
+    }
+
+    20% {
+        left: 140%;
+    }
+
+    100% {
+        left: 140%;
+    }
 }
 
 .home-queue-btn:active {
@@ -135,9 +144,17 @@
 }
 
 @keyframes pulse-orange {
-    0% { box-shadow: 0 0 10px rgba(255, 149, 0, 0.3); }
-    50% { box-shadow: 0 0 22px rgba(255, 149, 0, 0.6); }
-    100% { box-shadow: 0 0 10px rgba(255, 149, 0, 0.3); }
+    0% {
+        box-shadow: 0 0 10px rgba(255, 149, 0, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 22px rgba(255, 149, 0, 0.6);
+    }
+
+    100% {
+        box-shadow: 0 0 10px rgba(255, 149, 0, 0.3);
+    }
 }
 
 .queue-btn-number {
@@ -145,7 +162,7 @@
     font-weight: 900;
     color: white;
     line-height: 1;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     letter-spacing: -0.5px;
 }
 
@@ -175,21 +192,22 @@
     align-items: center;
     position: relative;
     overflow: hidden;
-    
+
     /* Soft Depth: much lighter than the main clock */
-    box-shadow: 
-        inset 0 1px 3px rgba(0,0,0,0.06),
-        0 1px 0 rgba(255,255,255,0.1);
-    
+    box-shadow:
+        inset 0 1px 3px rgba(0, 0, 0, 0.06),
+        0 1px 0 rgba(255, 255, 255, 0.1);
+
     backdrop-filter: blur(2px) brightness(1.05);
 }
 
 /* PRIMARY INSTRUMENT: Main Clock stays dark, bold, and heavy */
 .main-clock-box {
-    background: rgba(0, 0, 0, 0.45) !important; /* Darker base for LCD depth */
+    background: rgba(0, 0, 0, 0.45) !important;
+    /* Darker base for LCD depth */
     border: 1px solid rgba(255, 255, 255, 0.35) !important;
-    box-shadow: 
-        inset 0 2px 8px rgba(0,0,0,0.8),
+    box-shadow:
+        inset 0 2px 8px rgba(0, 0, 0, 0.8),
         0 0 15px rgba(255, 255, 255, 0.08) !important;
     backdrop-filter: brightness(0.8) !important;
 }
@@ -197,20 +215,22 @@
 .main-clock-box::after {
     content: "";
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 50%;
-    background: linear-gradient(
-        rgba(255, 255, 255, 0.18) 0%, 
-        rgba(255, 255, 255, 0.08) 50%,
-        transparent 51%
-    );
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(rgba(255, 255, 255, 0.18) 0%,
+            rgba(255, 255, 255, 0.08) 50%,
+            transparent 51%);
     pointer-events: none;
 }
 
 .tablo-right-group {
     display: flex;
     align-items: center;
-    gap: 6px; 
-    margin-left: auto; /* Push the entire group to the right edge */
+    gap: 6px;
+    margin-left: auto;
+    /* Push the entire group to the right edge */
 }
 
 /* --- TYPOGRAPHY --- */
@@ -218,7 +238,8 @@
 
 .tablo-hero-clock {
     font-family: 'Tektur', 'Inter', sans-serif !important;
-    font-size: 22px; /* Decreased to match year height */
+    font-size: 22px;
+    /* Decreased to match year height */
     font-weight: 700;
     line-height: 1;
     color: #FFFFFF;
@@ -238,80 +259,86 @@
 .tablo-date-split {
     display: flex;
     align-items: center;
-    gap: 4px; /* Tiny gap between date blocks */
+    gap: 4px;
+    /* Tiny gap between date blocks */
     margin-right: -4px;
 }
 
 .date-square {
     /* Premium Material: Subtle vertical gradient instead of flat white */
     background: linear-gradient(180deg, #FFFFFF 0%, #F0F2F5 100%);
-    
-    border-radius: 6px; /* Slightly more rounded for premium feel */
+
+    border-radius: 6px;
+    /* Slightly more rounded for premium feel */
     padding: 0 8px;
-    height: 36px; /* Perfectly aligned with clock box */
-    
+    height: 36px;
+    /* Perfectly aligned with clock box */
+
     font-family: 'Tektur', 'Inter', sans-serif;
-    font-size: 24px; 
+    font-size: 24px;
     font-weight: 850;
     line-height: 1;
     letter-spacing: 0.02em;
     font-variant-numeric: tabular-nums;
-    
+
     display: flex;
     justify-content: center;
     align-items: center;
-    
+
     /* Industrial Depth: Stronger inset shadow for "recessed" look + subtle outer highlight */
-    box-shadow: 
-        inset 0 3px 6px rgba(0,0,0,0.14), 
-        inset 0 1px 2px rgba(0,0,0,0.1),
-        0 1px 0 rgba(255,255,255,0.4);
-    
-    border: 1px solid rgba(0,0,0,0.05);
-    
+    box-shadow:
+        inset 0 3px 6px rgba(0, 0, 0, 0.14),
+        inset 0 1px 2px rgba(0, 0, 0, 0.1),
+        0 1px 0 rgba(255, 255, 255, 0.4);
+
+    border: 1px solid rgba(0, 0, 0, 0.05);
+
     /* Default state for digits: Subtle Stencil look */
-    text-shadow: 
-        0.5px 0.5px 0 rgba(0,0,0,0.05),
-        -0.5px -0.5px 0 rgba(255,255,255,0.6);
-    
+    text-shadow:
+        0.5px 0.5px 0 rgba(0, 0, 0, 0.05),
+        -0.5px -0.5px 0 rgba(255, 255, 255, 0.6);
+
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Neon Glow for Date (Synced with Clock) */
 .neon-glow-date {
     /* Unified Active Look: Switches to dark background to match the clock */
-    background: #1A1D23; 
+    background: #1A1D23;
     color: #bbcf00;
-    
+
     border: 1px solid rgba(187, 207, 0, 0.25);
-    
+
     /* Dark Theme Inset Depth */
-    box-shadow: 
-        inset 0 2px 5px rgba(0,0,0,0.8),
+    box-shadow:
+        inset 0 2px 5px rgba(0, 0, 0, 0.8),
         0 0 10px rgba(187, 207, 0, 0.15);
-    
+
     /* High Contrast Neon Digits */
-    text-shadow: 
-        1px 1px 0 rgba(0,0,0,0.2),
-        -1px -1px 0 rgba(0,0,0,0.2),
-        0 0 8px #bbcf00, 
+    text-shadow:
+        1px 1px 0 rgba(0, 0, 0, 0.2),
+        -1px -1px 0 rgba(0, 0, 0, 0.2),
+        0 0 8px #bbcf00,
         0 0 15px rgba(187, 207, 0, 0.3);
 }
 
 /* Sync with different foundation states when active (Now) */
 .dashboard-tablo.tablo-on .neon-glow-date,
 .dashboard-tablo.tablo-off .neon-glow-date {
-    background: #1A1D23 !important; /* Forces dark background regardless of foundation */
+    background: #1A1D23 !important;
+    /* Forces dark background regardless of foundation */
     color: #bbcf00 !important;
 }
 
 /* Dynamic Text Color mirroring Foundation */
 .dashboard-tablo.tablo-on .date-square {
-    color: #374151; /* Matte Dark Grey */
+    color: #374151;
+    /* Matte Dark Grey */
 }
 
 .dashboard-tablo.tablo-off .date-square {
-    color: #ee7221; /* Matte Orange */
+    color: #ee7221;
+    /* Matte Orange */
 }
 
 .tablo-month-txt {
@@ -331,8 +358,9 @@
 .tablo-divider {
     font-size: 32px;
     font-weight: 200;
-    color: rgba(255,255,255,0.2);
-    margin: 0; /* Removed manual margins to let gap control it */
+    color: rgba(255, 255, 255, 0.2);
+    margin: 0;
+    /* Removed manual margins to let gap control it */
     opacity: 0.5;
 }
 
@@ -343,16 +371,19 @@
 }
 
 .tablo-status-icon {
-    height: 32px; /* Large bulb as requested */
+    height: 32px;
+    /* Large bulb as requested */
     width: auto;
     filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.3));
-    margin-right: 0; /* Removed margin to follow gap */
+    margin-right: 0;
+    /* Removed margin to follow gap */
     vertical-align: middle;
 }
 
 /* Container for Small ДО + Large Time (Horizontal Align) */
 .until-clock-display {
-    gap: 6px; /* Space between 'до' and the time digits */
+    gap: 6px;
+    /* Space between 'до' and the time digits */
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
@@ -366,18 +397,23 @@
 .tablo-until-label,
 .tablo-until-prefix {
     font-family: 'Tektur', sans-serif !important;
-    font-size: 10px; /* Even smaller to look like label */
+    font-size: 10px;
+    /* Even smaller to look like label */
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.6); /* Reduced opacity for secondary look */
+    color: rgba(255, 255, 255, 0.6);
+    /* Reduced opacity for secondary look */
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .tablo-until-time {
     font-family: 'Tektur', sans-serif !important;
-    font-size: 20px; /* Slightly smaller than real clock */
-    font-weight: 700; /* Less bold than real clock */
-    color: rgba(255, 255, 255, 0.85); /* Slightly muted white */
+    font-size: 20px;
+    /* Slightly smaller than real clock */
+    font-weight: 700;
+    /* Less bold than real clock */
+    color: rgba(255, 255, 255, 0.85);
+    /* Slightly muted white */
     line-height: 1;
     letter-spacing: 0.05em;
     font-variant-numeric: tabular-nums;
@@ -399,709 +435,798 @@
 /* --- HERO SECTION REFINEMENTS --- */
 .hero-countdown {
 
-/* --- QUEUE PICKER OVERLAY (Cabinet Style) --- */
-#home-queue-picker-overlay {
-    position: fixed !important;
-    inset: 0 !important;
-    background: rgba(0, 0, 0, 0.5) !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
-    display: none;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 20px !important;
-    z-index: 9999 !important;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-#home-queue-picker-overlay.active {
-    display: flex !important;
-    opacity: 1 !important;
-}
-
-#home-queue-picker-overlay .picker-container {
-    width: 90% !important;
-    max-width: 360px !important;
-    background: rgba(235, 235, 235, 0.9) !important;
-    backdrop-filter: blur(25px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.45) !important;
-    border-radius: 28px !important;
-    padding: 24px !important;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3) !important;
-    transform: translateY(20px) !important;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
-    color: #1d1d1f !important;
-}
-
-#home-queue-picker-overlay.active .picker-container {
-    transform: translateY(0) !important;
-}
-
-.picker-header {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    margin-bottom: 24px !important;
-    padding: 0 4px !important;
-}
-
-.picker-title {
-    margin: 0 !important;
-    font-weight: 800 !important;
-    font-size: 19px !important;
-    letter-spacing: -0.5px !important;
-    color: #1d1d1f !important;
-}
-
-.picker-close {
-    cursor: pointer !important;
-    width: 30px !important;
-    height: 30px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    background: rgba(0, 0, 0, 0.06) !important;
-    border-radius: 50% !important;
-    transition: 0.2s !important;
-    color: #1d1d1f !important;
-}
-
-.picker-close:hover {
-    background: rgba(0, 0, 0, 0.1) !important;
-    transform: scale(1.05) !important;
-}
-
-.group-grid {
-    display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 10px !important;
-}
-
-.group-btn {
-    background: rgba(0, 0, 0, 0.05) !important;
-    border: 1px solid rgba(0, 0, 0, 0.06) !important;
-    border-radius: 14px !important;
-    height: 48px !important;
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 8px !important;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    position: relative !important;
-    cursor: pointer !important;
-    padding: 0 10px !important;
-}
-
-.group-btn:hover {
-    background: rgba(0, 0, 0, 0.08) !important;
-}
-
-.group-btn.active {
-    background: #FF9500 !important;
-    border-color: #FF9500 !important;
-    box-shadow: 0 4px 15px rgba(255, 149, 0, 0.3) !important;
-}
-
-.group-num {
-    font-size: 15px !important;
-    font-weight: 700 !important;
-    color: #1d1d1f !important;
-    letter-spacing: -0.2px !important;
-}
-
-.group-btn.active .group-num {
-    color: white !important;
-}
-
-.status-dot {
-    width: 6px !important;
-    height: 6px !important;
-    border-radius: 50% !important;
-    background: #FF9500 !important;
-    flex-shrink: 0 !important;
-}
-
-.status-dot.off {
-    background: #1d1d1f !important;
-    opacity: 0.2 !important;
-}
-
-.group-btn.active .status-dot {
-    background: white !important;
-    box-shadow: 0 0 6px white !important;
-}
-
-/* --- TECHNOLOGICAL QUEUE WHEEL CONTROLLER --- */
-.queue-control-strip {
-    display: flex;
-    align-items: center;
-    /* Multilayer background: Dark padding area + Metallic border-box frame */
-    background: 
-        linear-gradient(#1A1D21, #1A1D21) padding-box, 
-        linear-gradient(135deg, #abb2b9 0%, #2d3436 40%, #ffffff 50%, #2d3436 60%, #abb2b9 100%) border-box;
-    border: 3px solid transparent; /* The frame thickness */
-    border-radius: 12px;
-    margin: 8px 0 10px 0;
-    padding: 12px 6px; /* Reduced from 18px to close side gaps */
-    gap: 20px;
-    position: relative;
-    overflow: visible; /* ALLOW LENS TO OVERLAP FRAME */
-    box-shadow: 
-        0 8px 25px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-
-    /* 1.1.11: Fix "Appears then Disappears" glitch on reload */
-    animation-fill-mode: both !important;
-}
-
-/* Inner Thin Green Line (Now adjusted to new border) */
-.queue-control-strip::after {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0; 
-    border-radius: 9px;
-    border: 1px solid rgba(187, 207, 0, 0.6); /* Thin green line */
-    box-shadow: inset 0 0 10px rgba(187, 207, 0, 0.1);
-    pointer-events: none;
-    z-index: 15; /* Above frame background, below content */
-}
-
-/* (Removed ::before block as it's now in the main background) */
-
-/* (Removed duplicate panel-rivet block, now consolidated further down) */
-
-/* --- THE WHEEL --- */
-.queue-control-center {
-    flex: 1; /* Expand to full width */
-    position: relative;
-    height: 72px; 
-    display: block; 
-    width: 100%;
-    z-index: 10; /* Lower than lens (20) */
-    overflow: visible !important; /* Allow lens/mounts to show if nested (safety fallback) */
-
-    /* 1.1.9: Industrial 3D Perspective Staging */
-    perspective: 1200px;
-    perspective-origin: center;
-}
-
-/* Notches are now defined inside .wheel-item to stay strictly under the numbers */
-.queue-control-center::before,
-.queue-control-center::after {
-    display: none; /* Removed global background notches */
-}
-/* --- REALISTIC MONOLITHIC 'O' SCRUBBER HANDLE --- */
-.scrubber-industrial-handle {
-    position: absolute;
-    top: 50%;
-    left: 10px; 
-    width: 10px; 
-    height: 92px;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: 25;
-    transition: left 0.1s linear;
-}
-
-/* SHARP SATURATED LINE (SHINES THROUGH THE HOLE) */
-.scrubber-line {
-    position: absolute;
-    left: 4px;
-    width: 2px;
-    top: 6px; bottom: 6px;
-    background: #bbcf00; 
-    opacity: 0;
-    z-index: 10; /* BEHIND THE METAL BUT VISIBLE THROUGH MASK */
-    transition: opacity 0.2s ease;
-}
-
-/* THE MONOLITHIC METAL BODY */
-.scrubber-body {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    z-index: 20;
-    border-radius: 6px;
-    
-    /* REFINED INDUSTRIAL METALLIC BODY: Subtle balance of shadow and luster */
-    background: linear-gradient(120deg, 
-        #636e72 0%, 
-        #b2bec3 20%, 
-        #ffffff 48%, 
-        #ffffff 52%, 
-        #b2bec3 80%, 
-        #636e72 100%
-    );
-    
-    box-shadow: 
-        0 4px 12px rgba(0,0,0,0.6),
-        inset 0 0 1px rgba(255,255,255,0.3);
-
-    /* TRULY MONOLITHIC 'O' CUTOUT VIA MASKING */
-    -webkit-mask-image: 
-        linear-gradient(black, black), 
-        linear-gradient(black, black);
-    -webkit-mask-size: 100% 100%, 2px calc(100% - 12px);
-    -webkit-mask-position: center, center;
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-composite: source-out; 
-    mask-image: 
-        linear-gradient(black, black), 
-        linear-gradient(black, black);
-    mask-size: 100% 100%, 2px calc(100% - 12px);
-    mask-position: center, center;
-    mask-repeat: no-repeat;
-    mask-composite: exclude;
-}
-
-/* Real Time Activation: Zero Blur, Hard Saturated Line */
-.scrubber-industrial-handle.at-real-time .scrubber-line {
-    opacity: 1;
-    /* Explicitly ensuring NO glow/blur */
-    filter: none !important;
-    box-shadow: none !important;
-}
-
-/* Hide native range thumb but keep it functional */
-.timeline-scrubber::-webkit-slider-thumb {
-    opacity: 0 !important;
-    width: 44px !important;
-    height: 72px !important;
-    cursor: grab;
-}
-.timeline-scrubber::-moz-range-thumb {
-    opacity: 0 !important;
-    width: 44px !important;
-    height: 72px !important;
-    cursor: grab;
-}
-
-
-/* Left/Right mask for cylindrical fade */
-.drum-fade-mask-left,
-.drum-fade-mask-right {
-    position: absolute;
-    top: 0; bottom: 0; width: 25%; z-index: 4;
-    pointer-events: none;
-}
-.drum-fade-mask-left {
-    left: 0;
-    background: linear-gradient(to right, #0D0F12 0%, transparent 100%);
-    pointer-events: none;
-}
-.drum-fade-mask-right {
-    right: 0;
-    background: linear-gradient(to left, #0D0F12 50%, transparent 100%);
-    pointer-events: none;
-    z-index: 40;
-}
-
-.drum-fade-mask-left {
-    left: 0;
-    background: linear-gradient(to right, #0D0F12 50%, transparent 100%);
-    pointer-events: none;
-    z-index: 40;
-}
-
-/* Label under the drum frame */
-.tech-label-under-drum {
-    margin-top: 12px;
-    text-align: center;
-    font-size: 11px;
-    font-weight: 900;
-    color: rgba(187, 207, 0, 0.9);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    font-family: 'Outfit', sans-serif;
-    text-shadow: 0 0 10px rgba(187, 207, 0, 0.4);
-    width: 100%;
-}
-
-.panel-rivet {
-    position: absolute;
-    width: 10px; /* Enhanced for detail */
-    height: 10px;
-    background: linear-gradient(135deg, #abb2b9 0%, #5d6d7e 50%, #2c3e50 100%);
-    border-radius: 50%;
-    z-index: 55;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 
-        0 2px 4px rgba(0, 0, 0, 0.4),
-        inset 0 1px 1px rgba(255, 255, 255, 0.3);
-}
-
-/* Screw Head Slot (Flathead Style) */
-.panel-rivet::after {
-    content: "";
-    width: 60%;
-    height: 1px;
-    background: rgba(0, 0, 0, 0.5);
-    transform: rotate(45deg);
-    border-radius: 1px;
-}
-
-.panel-rivet.top-left { top: 6px; left: 6px; }
-.panel-rivet.top-right { top: 6px; right: 6px; }
-.panel-rivet.bottom-left { bottom: 6px; left: 6px; }
-.panel-rivet.bottom-right { bottom: 6px; right: 6px; }
-
-.queue-wheel-picker {
-    position: relative !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 72px; /* Match center height */
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
-    scroll-behavior: auto; 
-    -webkit-overflow-scrolling: touch;
-    display: flex;
-    align-items: center;
-    border-radius: 40px;
-    /* --- 1.2.11: TRUE 3D CYLINDER SCENE --- */
-    --wheel-item-width: 80px;
-    --wheel-radius: 188px; /* For 15 items: (80/2) / tan(360/15/2) */
-    
-    perspective: 1200px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: visible !important;
-}
-
-.wheel-track {
-    position: relative;
-    width: var(--wheel-item-width);
-    height: 72px;
-    transform-style: preserve-3d;
-    transition: transform 0.1s linear; /* Smooth but precise */
-    will-change: transform;
-}
-
-.wheel-item {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: var(--wheel-item-width);
-    height: 72px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 26px; 
-    font-weight: 800;
-    color: #fff;
-    backface-visibility: hidden;
-    transform-style: preserve-3d;
-    cursor: pointer;
-    user-select: none;
-    transition: color 0.3s ease;
-    will-change: transform, opacity;
-}
-
-.wheel-item.is-tick {
-    font-size: 0 !important; /* No text for ticks */
-    pointer-events: none;
-}
-
-/* 1.2.8: RIGID MECHANICAL NOTCHES (Under every number) */
-.wheel-item::before {
-    content: "";
-    position: absolute;
-    top: 4px; left: 50%; width: 2px; height: 7px;
-    background: rgba(255,255,255,0.7); 
-    transform: translateX(-50%) translateZ(8px); /* Extreme Projection to clear any outer frames */
-    opacity: 0.8;
-    box-shadow: 0 0 6px rgba(255,255,255,0.4);
-    z-index: 100;
-}
-
-.wheel-item::after {
-    content: "";
-    position: absolute;
-    bottom: 10px; left: 50%; width: 2px; height: 9px;
-    background: #bbcf00; 
-    transform: translateX(-50%) translateZ(8px); /* Projection matching top notch */
-    opacity: 1;
-    box-shadow: 0 0 10px rgba(187, 207, 0, 0.8);
-    z-index: 100;
-}
-
-.wheel-item.is-tick::before,
-.wheel-item.is-tick::after {
-    width: 1px;
-    height: 5px;
-    opacity: 0.3;
-}
-
-
-.wheel-item.is-active {
-    color: #FF7A00 !important;
-    font-size: 34px !important;
-    font-weight: 950 !important;
-    text-shadow: 
-        0 0 12px rgba(255, 255, 255, 0.9), /* High-Vis White Glow as requested */
-        0 0 25px rgba(255, 255, 255, 0.5);
-    z-index: 200;
-    opacity: 1 !important;
-}
-
-/* Legacy neighbor classes removed - handled by dynamic 3D calculation in JS */
-
-.wheel-marker-line {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 1px;
-    height: 100%;
-    background: #bbcf00; /* Unified Lime Gold marker */
-    z-index: 5;
-    pointer-events: none;
-    opacity: 0.8;
-    /* Laser focus beam glow matched to Lime Gold */
-    box-shadow: 
-        0 0 10px #bbcf00,
-        0 0 25px rgba(187, 207, 0, 0.4);
-}
-
-/* REFINED: Industrial Lens Assembly (Transparent Glass + Metallic Rim) */
-.drum-selection-lens {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    /* --- 1.2.2: INCREASED LENS SIZE (102px to reach borders) --- */
-    width: 102px;
-    height: 102px;
-    border-radius: 50%;
-    z-index: 100 !important; /* Top layer above the track */
-    pointer-events: none;
-    display: block !important;
-    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
-    
-    /* Transparent Center for Number Visibility */
-    background: radial-gradient(circle at center, 
-        rgba(187, 207, 0, 0.05) 0%, 
-        transparent 70%
-    );
-    
-    border: 1px solid rgba(255, 255, 255, 0.1); 
-    
-    box-shadow: 
-        0 0 30px rgba(187, 207, 0, 0.2),
-        0 8px 16px rgba(0,0,0,0.5);
-}
-
-/* 1.1.0: Removed the vertical green line as per mechanical design update */
-.wheel-marker-line {
-    display: none;
-}
-
-/* Machined Chrome Outer Rim (5px Ring) */
-.drum-selection-lens::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    border-radius: 50%;
-    padding: 5px; /* Border thickness */
-    background: linear-gradient(135deg, #abb2b9 0%, #2d3436 40%, #ffffff 50%, #2d3436 60%, #abb2b9 100%);
-    -webkit-mask: 
-        linear-gradient(#fff 0 0) content-box, 
-        linear-gradient(#fff 0 0);
-    mask: 
-        linear-gradient(#fff 0 0) content-box, 
-        linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-    z-index: 101; /* Above lens body */
-}
-
-/* Inner Green Glow & Specular Highlight */
-.drum-selection-lens::after {
-    content: "";
-    position: absolute;
-    top: 5px; left: 5px; right: 5px; bottom: 5px;
-    border-radius: 50%;
-    border: 1.5px solid #bbcf00; /* Green inner rim */
-    box-shadow: inset 0 0 8px rgba(187, 207, 0, 0.4);
-    pointer-events: none;
-    z-index: 102; /* Top-most lens layer */
-}
-
-/* --- Neighbor Spreading Logic removed (3D projection handles spacing) --- */
-
-/* Industrial Mechanical Mounts (Brackets) */
-.lens-mount-bracket {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 22px;
-    height: 8px;
-    background: linear-gradient(to right, #2c3e50, #7f8c8d, #2c3e50);
-    border: 1px solid #1a1a1a;
-    border-radius: 2px;
-    z-index: 110; /* Above the lens body */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-}
-
-.lens-mount-top { top: -2px; }
-.lens-mount-bottom { bottom: -2px; }
-
-/* Rivet inside the bracket */
-.lens-mount-bracket::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 3px;
-    height: 3px;
-    background: #000;
-    border-radius: 50%;
-    box-shadow: 0 0.5px 1px rgba(255,255,255,0.2);
-}
-
-/* Small Lugs for brackets */
-.lens-mount-top {
-    top: -8px; /* Positioned at 12 o'clock outside lens */
-}
-
-.lens-mount-bottom {
-    bottom: -8px; /* Positioned at 6 o'clock outside lens */
-}
-
-/* --- LARGE ACTIVE DISPLAY (FIXED RIGHT) --- */
-.queue-control-display {
-    display: none; /* Legacy display hidden */
-}
-
-.active-queue-tablo {
-    width: 120px; 
-    height: 90px; /* Enhanced for Hero position */
-    background: #14171A;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    
-    /* Industrial Bezel (Double Border) */
-    border: 1px solid #2D3748; 
-    box-shadow: 
-        inset 0 4px 15px rgba(0,0,0,0.9),
-        0 0 25px rgba(238, 114, 33, 0.25), /* Outer Glow */
-        0 0 0 1px rgba(0,0,0,0.4);
-}
-
-/* Specific centering for Hero card */
-.hero-anchor-tablo {
-    margin: 4px auto 0 auto;
-}
-
-.tablo-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: -1px;
-    position: relative;
-    z-index: 5;
-}
-
-.tech-label-tablo {
-    font-size: 11px; /* Unified size to match drum label */
-    font-weight: 900;
-    color: #bbcf00; /* Unified Lime Gold for both labels */
-    opacity: 0.8;
-    letter-spacing: 0.1em;
-    text-shadow: 0 0 5px rgba(187, 207, 0, 0.3);
-}
-
-/* Status: Power ON (Vibrant Orange & Glowing Val) */
-.active-queue-tablo.status-on {
-    border-color: #ee7221;
-    background: #1A1D21; 
-    box-shadow: 
-        inset 0 2px 8px rgba(0,0,0,0.8),
-        0 0 15px rgba(238, 114, 33, 0.2);
-}
-
-.active-queue-tablo.status-on #active-queue-val {
-    color: #FFFFFF !important; /* Pure White as requested */
-    text-shadow: 
-        0 0 8px rgba(255, 255, 255, 0.8), /* Inner White Glow */
-        0 0 15px rgba(238, 114, 33, 0.9), /* Outer Orange Brand Glow */
-        0 0 30px rgba(238, 114, 33, 0.5);
-}
-
-/* Status: Power OFF (Muted Grey) */
-.active-queue-tablo.status-off {
-    border-color: #4A5568;
-    background: #0D0F12; 
-    opacity: 0.8;
-}
-
-.active-queue-tablo.status-off #active-queue-val {
-    color: #FFFFFF !important; /* Pure White as requested */
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-}
-
-/* LED Gloss Effect */
-.active-queue-tablo::after {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 45%;
-    background: linear-gradient(rgba(255,255,255,0.05) 0%, transparent 100%);
-    pointer-events: none;
-}
-
-#active-queue-val {
-    font-family: "Tektur", sans-serif !important;
-    font-size: 40px; /* Dominant digital look */
-    font-weight: 950;
-    line-height: 1;
-    margin-bottom: 2px;
-    transition: color 0.4s ease;
-}
-
-.queue-display-hint {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.4);
-    letter-spacing: 0.1em;
-    max-width: 60px;
-    line-height: 1.1;
-    text-align: left;
-}
-
-/* Hide legacy button */
-.home-queue-btn { display: none !important; }
-
-/* Industrial Label Below Frame */
-.tech-label-under-drum {
-    width: 100%;
-    text-align: center;
-    font-family: 'Tektur', sans-serif;
-    font-size: 11px;
-    font-weight: 800;
-    text-transform: uppercase;
-    color: rgba(187, 207, 0, 0.95); /* High contrast Neon Green */
-    letter-spacing: 0.15em;
-    margin-top: 5px;
-    margin-bottom: 24px;
-    text-shadow: 0 0 12px rgba(187, 207, 0, 0.4);
-    opacity: 0.9;
-    z-index: 30;
-    pointer-events: none;
+    /* --- QUEUE PICKER OVERLAY (Cabinet Style) --- */
+    #home-queue-picker-overlay {
+        position: fixed !important;
+        inset: 0 !important;
+        background: rgba(0, 0, 0, 0.5) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        display: none;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 20px !important;
+        z-index: 9999 !important;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    #home-queue-picker-overlay.active {
+        display: flex !important;
+        opacity: 1 !important;
+    }
+
+    #home-queue-picker-overlay .picker-container {
+        width: 90% !important;
+        max-width: 360px !important;
+        background: rgba(235, 235, 235, 0.9) !important;
+        backdrop-filter: blur(25px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.45) !important;
+        border-radius: 28px !important;
+        padding: 24px !important;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3) !important;
+        transform: translateY(20px) !important;
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+        color: #1d1d1f !important;
+    }
+
+    #home-queue-picker-overlay.active .picker-container {
+        transform: translateY(0) !important;
+    }
+
+    .picker-header {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        margin-bottom: 24px !important;
+        padding: 0 4px !important;
+    }
+
+    .picker-title {
+        margin: 0 !important;
+        font-weight: 800 !important;
+        font-size: 19px !important;
+        letter-spacing: -0.5px !important;
+        color: #1d1d1f !important;
+    }
+
+    .picker-close {
+        cursor: pointer !important;
+        width: 30px !important;
+        height: 30px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: rgba(0, 0, 0, 0.06) !important;
+        border-radius: 50% !important;
+        transition: 0.2s !important;
+        color: #1d1d1f !important;
+    }
+
+    .picker-close:hover {
+        background: rgba(0, 0, 0, 0.1) !important;
+        transform: scale(1.05) !important;
+    }
+
+    .group-grid {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 10px !important;
+    }
+
+    .group-btn {
+        background: rgba(0, 0, 0, 0.05) !important;
+        border: 1px solid rgba(0, 0, 0, 0.06) !important;
+        border-radius: 14px !important;
+        height: 48px !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        position: relative !important;
+        cursor: pointer !important;
+        padding: 0 10px !important;
+    }
+
+    .group-btn:hover {
+        background: rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .group-btn.active {
+        background: #FF9500 !important;
+        border-color: #FF9500 !important;
+        box-shadow: 0 4px 15px rgba(255, 149, 0, 0.3) !important;
+    }
+
+    .group-num {
+        font-size: 15px !important;
+        font-weight: 700 !important;
+        color: #1d1d1f !important;
+        letter-spacing: -0.2px !important;
+    }
+
+    .group-btn.active .group-num {
+        color: white !important;
+    }
+
+    .status-dot {
+        width: 6px !important;
+        height: 6px !important;
+        border-radius: 50% !important;
+        background: #FF9500 !important;
+        flex-shrink: 0 !important;
+    }
+
+    .status-dot.off {
+        background: #1d1d1f !important;
+        opacity: 0.2 !important;
+    }
+
+    .group-btn.active .status-dot {
+        background: white !important;
+        box-shadow: 0 0 6px white !important;
+    }
+
+    /* --- TECHNOLOGICAL QUEUE WHEEL CONTROLLER --- */
+    .queue-control-strip {
+        display: flex;
+        align-items: center;
+        /* Multilayer background: Dark padding area + Metallic border-box frame */
+        background:
+            linear-gradient(#1A1D21, #1A1D21) padding-box,
+            linear-gradient(135deg, #abb2b9 0%, #2d3436 40%, #ffffff 50%, #2d3436 60%, #abb2b9 100%) border-box;
+        border: 1px solid transparent;
+        /* The frame thickness (reduced to match hero-card) */
+        border-radius: 12px;
+        margin: 8px 0 10px 0;
+        padding: 12px 6px;
+        /* Reduced from 18px to close side gaps */
+        gap: 20px;
+        position: relative;
+        overflow: visible;
+        /* ALLOW LENS TO OVERLAP FRAME */
+        box-shadow:
+            0 8px 25px rgba(0, 0, 0, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+        /* 1.1.11: Fix "Appears then Disappears" glitch on reload */
+        animation-fill-mode: both !important;
+    }
+
+    /* Inner Thin Green Line (Now adjusted to new border) */
+    .queue-control-strip::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 11px;
+        /* Adjusted for thinner border */
+        border: 1px solid rgba(187, 207, 0, 0.3);
+        /* Lightened green line to match lighter feel */
+        box-shadow: inset 0 0 10px rgba(187, 207, 0, 0.1);
+        pointer-events: none;
+        z-index: 15;
+        /* Above frame background, below content */
+    }
+
+    /* (Removed ::before block as it's now in the main background) */
+
+    /* (Removed duplicate panel-rivet block, now consolidated further down) */
+
+    /* --- THE WHEEL --- */
+    .queue-control-center {
+        flex: 1;
+        /* Expand to full width */
+        position: relative;
+        height: 72px;
+        display: block;
+        width: 100%;
+        z-index: 10;
+        /* Lower than lens (20) */
+        overflow: visible !important;
+        /* Allow lens/mounts to show if nested (safety fallback) */
+
+        /* 1.1.9: Industrial 3D Perspective Staging */
+        perspective: 1200px;
+        perspective-origin: center;
+    }
+
+    /* Notches are now defined inside .wheel-item to stay strictly under the numbers */
+    .queue-control-center::before,
+    .queue-control-center::after {
+        display: none;
+        /* Removed global background notches */
+    }
+
+    /* --- REALISTIC MONOLITHIC 'O' SCRUBBER HANDLE --- */
+    .scrubber-industrial-handle {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        width: 10px;
+        height: 92px;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 25;
+        transition: left 0.1s linear;
+    }
+
+    /* SHARP SATURATED LINE (SHINES THROUGH THE HOLE) */
+    .scrubber-line {
+        position: absolute;
+        left: 4px;
+        width: 2px;
+        top: 6px;
+        bottom: 6px;
+        background: #bbcf00;
+        opacity: 0;
+        z-index: 10;
+        /* BEHIND THE METAL BUT VISIBLE THROUGH MASK */
+        transition: opacity 0.2s ease;
+    }
+
+    /* THE MONOLITHIC METAL BODY */
+    .scrubber-body {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 20;
+        border-radius: 6px;
+
+        /* REFINED INDUSTRIAL METALLIC BODY: Subtle balance of shadow and luster */
+        background: linear-gradient(120deg,
+                #636e72 0%,
+                #b2bec3 20%,
+                #ffffff 48%,
+                #ffffff 52%,
+                #b2bec3 80%,
+                #636e72 100%);
+
+        box-shadow:
+            0 4px 12px rgba(0, 0, 0, 0.6),
+            inset 0 0 1px rgba(255, 255, 255, 0.3);
+
+        /* TRULY MONOLITHIC 'O' CUTOUT VIA MASKING */
+        -webkit-mask-image:
+            linear-gradient(black, black),
+            linear-gradient(black, black);
+        -webkit-mask-size: 100% 100%, 2px calc(100% - 12px);
+        -webkit-mask-position: center, center;
+        -webkit-mask-repeat: no-repeat;
+        -webkit-mask-composite: source-out;
+        mask-image:
+            linear-gradient(black, black),
+            linear-gradient(black, black);
+        mask-size: 100% 100%, 2px calc(100% - 12px);
+        mask-position: center, center;
+        mask-repeat: no-repeat;
+        mask-composite: exclude;
+    }
+
+    /* Real Time Activation: Zero Blur, Hard Saturated Line */
+    .scrubber-industrial-handle.at-real-time .scrubber-line {
+        opacity: 1;
+        /* Explicitly ensuring NO glow/blur */
+        filter: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Hide native range thumb but keep it functional */
+    .timeline-scrubber::-webkit-slider-thumb {
+        opacity: 0 !important;
+        width: 44px !important;
+        height: 72px !important;
+        cursor: grab;
+    }
+
+    .timeline-scrubber::-moz-range-thumb {
+        opacity: 0 !important;
+        width: 44px !important;
+        height: 72px !important;
+        cursor: grab;
+    }
+
+
+    /* Left/Right mask for cylindrical fade */
+    .drum-fade-mask-left,
+    .drum-fade-mask-right {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 25%;
+        z-index: 4;
+        pointer-events: none;
+    }
+
+    .drum-fade-mask-left {
+        left: 0;
+        background: linear-gradient(to right, #0D0F12 0%, transparent 100%);
+        pointer-events: none;
+    }
+
+    .drum-fade-mask-right {
+        right: 0;
+        background: linear-gradient(to left, #0D0F12 50%, transparent 100%);
+        pointer-events: none;
+        z-index: 40;
+    }
+
+    .drum-fade-mask-left {
+        left: 0;
+        background: linear-gradient(to right, #0D0F12 50%, transparent 100%);
+        pointer-events: none;
+        z-index: 40;
+    }
+
+    /* Label under the drum frame */
+    .tech-label-under-drum {
+        margin-top: 12px;
+        text-align: center;
+        font-size: 11px;
+        font-weight: 900;
+        color: rgba(187, 207, 0, 0.9);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        font-family: 'Outfit', sans-serif;
+        text-shadow: 0 0 10px rgba(187, 207, 0, 0.4);
+        width: 100%;
+    }
+
+    .panel-rivet {
+        position: absolute;
+        width: 10px;
+        /* Enhanced for detail */
+        height: 10px;
+        background: linear-gradient(135deg, #abb2b9 0%, #5d6d7e 50%, #2c3e50 100%);
+        border-radius: 50%;
+        z-index: 55;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow:
+            0 2px 4px rgba(0, 0, 0, 0.4),
+            inset 0 1px 1px rgba(255, 255, 255, 0.3);
+    }
+
+    /* Screw Head Slot (Flathead Style) */
+    .panel-rivet::after {
+        content: "";
+        width: 60%;
+        height: 1px;
+        background: rgba(0, 0, 0, 0.5);
+        transform: rotate(45deg);
+        border-radius: 1px;
+    }
+
+    .panel-rivet.top-left {
+        top: 6px;
+        left: 6px;
+    }
+
+    .panel-rivet.top-right {
+        top: 6px;
+        right: 6px;
+    }
+
+    .panel-rivet.bottom-left {
+        bottom: 6px;
+        left: 6px;
+    }
+
+    .panel-rivet.bottom-right {
+        bottom: 6px;
+        right: 6px;
+    }
+
+    .queue-wheel-picker {
+        position: relative !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 72px;
+        /* Match center height */
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+        scroll-behavior: auto;
+        -webkit-overflow-scrolling: touch;
+        display: flex;
+        align-items: center;
+        border-radius: 40px;
+        /* --- 1.2.11: TRUE 3D CYLINDER SCENE --- */
+        --wheel-item-width: 80px;
+        --wheel-radius: 188px;
+        /* For 15 items: (80/2) / tan(360/15/2) */
+
+        perspective: 1200px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: visible !important;
+    }
+
+    .wheel-track {
+        position: relative;
+        width: var(--wheel-item-width);
+        height: 72px;
+        transform-style: preserve-3d;
+        transition: transform 0.1s linear;
+        /* Smooth but precise */
+        will-change: transform;
+    }
+
+    .wheel-item {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: var(--wheel-item-width);
+        height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        font-weight: 800;
+        color: #fff;
+        backface-visibility: hidden;
+        transform-style: preserve-3d;
+        cursor: pointer;
+        user-select: none;
+        transition: color 0.3s ease;
+        will-change: transform, opacity;
+    }
+
+    .wheel-item.is-tick {
+        font-size: 0 !important;
+        /* No text for ticks */
+        pointer-events: none;
+    }
+
+    /* 1.2.8: RIGID MECHANICAL NOTCHES (Under every number) */
+    .wheel-item::before {
+        content: "";
+        position: absolute;
+        top: 4px;
+        left: 50%;
+        width: 2px;
+        height: 7px;
+        background: rgba(255, 255, 255, 0.7);
+        transform: translateX(-50%) translateZ(8px);
+        /* Extreme Projection to clear any outer frames */
+        opacity: 0.8;
+        box-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+        z-index: 100;
+    }
+
+    .wheel-item::after {
+        content: "";
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        width: 2px;
+        height: 9px;
+        background: #bbcf00;
+        transform: translateX(-50%) translateZ(8px);
+        /* Projection matching top notch */
+        opacity: 1;
+        box-shadow: 0 0 10px rgba(187, 207, 0, 0.8);
+        z-index: 100;
+    }
+
+    .wheel-item.is-tick::before,
+    .wheel-item.is-tick::after {
+        width: 1px;
+        height: 5px;
+        opacity: 0.3;
+    }
+
+
+    .wheel-item.is-active {
+        color: #FF7A00 !important;
+        font-size: 34px !important;
+        font-weight: 950 !important;
+        text-shadow:
+            0 0 12px rgba(255, 255, 255, 0.9),
+            /* High-Vis White Glow as requested */
+            0 0 25px rgba(255, 255, 255, 0.5);
+        z-index: 200;
+        opacity: 1 !important;
+    }
+
+    /* Legacy neighbor classes removed - handled by dynamic 3D calculation in JS */
+
+    .wheel-marker-line {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 1px;
+        height: 100%;
+        background: #bbcf00;
+        /* Unified Lime Gold marker */
+        z-index: 5;
+        pointer-events: none;
+        opacity: 0.8;
+        /* Laser focus beam glow matched to Lime Gold */
+        box-shadow:
+            0 0 10px #bbcf00,
+            0 0 25px rgba(187, 207, 0, 0.4);
+    }
+
+    /* REFINED: Industrial Lens Assembly (Transparent Glass + Metallic Rim) */
+    .drum-selection-lens {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        /* --- 1.2.2: INCREASED LENS SIZE (102px to reach borders) --- */
+        width: 102px;
+        height: 102px;
+        border-radius: 50%;
+        z-index: 100 !important;
+        /* Top layer above the track */
+        pointer-events: none;
+        display: block !important;
+        background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+
+        /* Transparent Center for Number Visibility */
+        background: radial-gradient(circle at center,
+                rgba(187, 207, 0, 0.05) 0%,
+                transparent 70%);
+
+        border: 1px solid rgba(255, 255, 255, 0.1);
+
+        box-shadow:
+            0 0 30px rgba(187, 207, 0, 0.2),
+            0 8px 16px rgba(0, 0, 0, 0.5);
+    }
+
+    /* 1.1.0: Removed the vertical green line as per mechanical design update */
+    .wheel-marker-line {
+        display: none;
+    }
+
+    /* Machined Chrome Outer Rim (5px Ring) */
+    .drum-selection-lens::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 50%;
+        padding: 5px;
+        /* Border thickness */
+        background: linear-gradient(135deg, #abb2b9 0%, #2d3436 40%, #ffffff 50%, #2d3436 60%, #abb2b9 100%);
+        -webkit-mask:
+            linear-gradient(#fff 0 0) content-box,
+            linear-gradient(#fff 0 0);
+        mask:
+            linear-gradient(#fff 0 0) content-box,
+            linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        z-index: 101;
+        /* Above lens body */
+    }
+
+    /* Inner Green Glow & Specular Highlight */
+    .drum-selection-lens::after {
+        content: "";
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        right: 5px;
+        bottom: 5px;
+        border-radius: 50%;
+        border: 1.5px solid #bbcf00;
+        /* Green inner rim */
+        box-shadow: inset 0 0 8px rgba(187, 207, 0, 0.4);
+        pointer-events: none;
+        z-index: 102;
+        /* Top-most lens layer */
+    }
+
+    /* --- Neighbor Spreading Logic removed (3D projection handles spacing) --- */
+
+    /* Industrial Mechanical Mounts (Brackets) */
+    .lens-mount-bracket {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 22px;
+        height: 8px;
+        background: linear-gradient(to right, #2c3e50, #7f8c8d, #2c3e50);
+        border: 1px solid #1a1a1a;
+        border-radius: 2px;
+        z-index: 110;
+        /* Above the lens body */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .lens-mount-top {
+        top: -2px;
+    }
+
+    .lens-mount-bottom {
+        bottom: -2px;
+    }
+
+    /* Rivet inside the bracket */
+    .lens-mount-bracket::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 3px;
+        height: 3px;
+        background: #000;
+        border-radius: 50%;
+        box-shadow: 0 0.5px 1px rgba(255, 255, 255, 0.2);
+    }
+
+    /* Small Lugs for brackets */
+    .lens-mount-top {
+        top: -8px;
+        /* Positioned at 12 o'clock outside lens */
+    }
+
+    .lens-mount-bottom {
+        bottom: -8px;
+        /* Positioned at 6 o'clock outside lens */
+    }
+
+    /* --- LARGE ACTIVE DISPLAY (FIXED RIGHT) --- */
+    .queue-control-display {
+        display: none;
+        /* Legacy display hidden */
+    }
+
+    .active-queue-tablo {
+        width: 120px;
+        height: 90px;
+        /* Enhanced for Hero position */
+        background: #14171A;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+        /* Industrial Bezel (Double Border) */
+        border: 1px solid #2D3748;
+        box-shadow:
+            inset 0 4px 15px rgba(0, 0, 0, 0.9),
+            0 0 25px rgba(238, 114, 33, 0.25),
+            /* Outer Glow */
+            0 0 0 1px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Specific centering for Hero card */
+    .hero-anchor-tablo {
+        margin: 4px auto 0 auto;
+    }
+
+    .tablo-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: -1px;
+        position: relative;
+        z-index: 5;
+    }
+
+    .tech-label-tablo {
+        font-size: 11px;
+        /* Unified size to match drum label */
+        font-weight: 900;
+        color: #bbcf00;
+        /* Unified Lime Gold for both labels */
+        opacity: 0.8;
+        letter-spacing: 0.1em;
+        text-shadow: 0 0 5px rgba(187, 207, 0, 0.3);
+    }
+
+    /* Status: Power ON (Vibrant Orange & Glowing Val) */
+    .active-queue-tablo.status-on {
+        border-color: #ee7221;
+        background: #1A1D21;
+        box-shadow:
+            inset 0 2px 8px rgba(0, 0, 0, 0.8),
+            0 0 15px rgba(238, 114, 33, 0.2);
+    }
+
+    .active-queue-tablo.status-on #active-queue-val {
+        color: #FFFFFF !important;
+        /* Pure White as requested */
+        text-shadow:
+            0 0 8px rgba(255, 255, 255, 0.8),
+            /* Inner White Glow */
+            0 0 15px rgba(238, 114, 33, 0.9),
+            /* Outer Orange Brand Glow */
+            0 0 30px rgba(238, 114, 33, 0.5);
+    }
+
+    /* Status: Power OFF (Muted Grey) */
+    .active-queue-tablo.status-off {
+        border-color: #4A5568;
+        background: #0D0F12;
+        opacity: 0.8;
+    }
+
+    .active-queue-tablo.status-off #active-queue-val {
+        color: #FFFFFF !important;
+        /* Pure White as requested */
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+
+    /* LED Gloss Effect */
+    .active-queue-tablo::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 45%;
+        background: linear-gradient(rgba(255, 255, 255, 0.05) 0%, transparent 100%);
+        pointer-events: none;
+    }
+
+    #active-queue-val {
+        font-family: "Tektur", sans-serif !important;
+        font-size: 40px;
+        /* Dominant digital look */
+        font-weight: 950;
+        line-height: 1;
+        margin-bottom: 2px;
+        transition: color 0.4s ease;
+    }
+
+    .queue-display-hint {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.4);
+        letter-spacing: 0.1em;
+        max-width: 60px;
+        line-height: 1.1;
+        text-align: left;
+    }
+
+    /* Hide legacy button */
+    .home-queue-btn {
+        display: none !important;
+    }
+
+    /* Industrial Label Below Frame */
+    .tech-label-under-drum {
+        width: 100%;
+        text-align: center;
+        font-family: 'Tektur', sans-serif;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: rgba(187, 207, 0, 0.95);
+        /* High contrast Neon Green */
+        letter-spacing: 0.15em;
+        margin-top: 5px;
+        margin-bottom: 24px;
+        text-shadow: 0 0 12px rgba(187, 207, 0, 0.4);
+        opacity: 0.9;
+        z-index: 30;
+        pointer-events: none;
+    }
 }

@@ -9,22 +9,9 @@ export class AnalyticsEngine {
     }
 
     async logEvent(action, metadata = {}) {
-        const { user } = this.userService.getUserData();
-        if (!user) return; // Only log for registered users as per plan
-
-        try {
-            const { error } = await this.userService.supabase
-                .from('engagement_logs')
-                .insert({
-                    user_id: user.id,
-                    event_name: action,
-                    metadata: metadata
-                });
-            
-            if (error) throw error;
-        } catch (err) {
-            console.warn('Analytics logging failed:', err.message);
-        }
+        // Supabase logging removed. 
+        // In the future, this can be moved to a local log or a new cloud service.
+        console.log(`[Analytics] Event: ${action}`, metadata);
     }
 
     // High-level tracking helpers

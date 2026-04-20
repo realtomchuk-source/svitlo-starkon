@@ -27,36 +27,11 @@ export class ReferralSystem {
     }
 
     async syncPendingReferral() {
-        const { user } = this.userService.getUserData();
+        // Supabase sync removed. 
+        // Referral tracking is currently limited to local detection.
         const pendingRef = localStorage.getItem('sssk_pending_ref');
-        
-        if (user && pendingRef && !localStorage.getItem('sssk_referral_synced')) {
-            try {
-                // Find inviter by ref code
-                const { data: inviter, error: invError } = await this.userService.supabase
-                    .from('user_profiles')
-                    .select('id')
-                    .eq('referral_code', pendingRef)
-                    .single();
-
-                if (inviter) {
-                    const { error: refError } = await this.userService.supabase
-                        .from('referrals')
-                        .insert({
-                            inviter_id: inviter.id,
-                            invited_id: user.id,
-                            status: 'registered'
-                        });
-
-                    if (!refError) {
-                        localStorage.setItem('sssk_referral_synced', 'true');
-                        localStorage.removeItem('sssk_pending_ref');
-                        console.log('Referral successfully linked!');
-                    }
-                }
-            } catch (err) {
-                console.error('Error syncing referral:', err);
-            }
+        if (pendingRef) {
+            console.log(`[Referral] Detected pending referral: ${pendingRef}. Cloud sync is disabled.`);
         }
     }
 }

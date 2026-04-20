@@ -738,10 +738,14 @@ details > summary::-webkit-details-marker {
 .soft-icon, .light-icon {
     width: 20px;
     height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: var(--v3-text-secondary);
     opacity: 0.7;
     flex-shrink: 0;
     stroke-width: 1.5px;
+    margin-right: 0; /* Removing inconsistent margins */
 }
 
 .soft-label {
@@ -766,13 +770,14 @@ details > summary::-webkit-details-marker {
 /* LIGHT LIST (Secondary) */
 .light-list {
     margin: 8px 16px 0 16px;
+    padding: 8px 9px; /* Symmetric 9px padding to compensate for 1px border on both sides */
 }
 
 .light-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 12px; /* Tighter vertical padding */
+    padding: 10px 16px; /* Reset to 16px to match .soft-item now that container has padding */
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -787,6 +792,7 @@ details > summary::-webkit-details-marker {
     display: flex;
     align-items: center;
     gap: 12px;
+    flex: 1; /* Ensures fixed starting point for the content */
 }
 
 .light-label {

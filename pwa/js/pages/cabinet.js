@@ -12,14 +12,11 @@ let activeSlotIndex = null;
 let userService, referralSystem, analytics;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('Cabinet Session Started (V8.1 - Emergency Module Restoration)');
+    console.log('Cabinet Session Started (Legacy Subscriptions Mode)');
 
     try {
-        // Initialize Supabase if needed (assuming window.supabase is available from supabase-client.js)
-        if (typeof window.initSupabase === 'function') window.initSupabase();
-        
-        // Initialize Domain Services
-        userService = new UserService(window.supabase);
+        // Initialize Domain Services (Stubs or real provided by window.supabase)
+        userService = new UserService();
         await userService.init();
         
         referralSystem = new ReferralSystem(userService);
@@ -28,20 +25,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Track referral if present in URL
         referralSystem.trackReferral();
     } catch (error) {
-        console.error('Critical initialization error:', error);
+        console.error('Service initialization error:', error);
         // Ensure services exist even if init failed
         if (!userService) userService = new UserService(window.supabase);
         if (!referralSystem) referralSystem = new ReferralSystem(userService);
         if (!analytics) analytics = new AnalyticsEngine(userService);
     }
     
-    if (userService && !userService.isGuest()) {
+    if (userService) {
         await referralSystem.syncPendingReferral();
     }
 
     initStartConfig();
     renderCabinet();
-    initTomorrowPush(); // New: Tomorrow Push state
+    initTomorrowPush();
     initWizard();
     initFeedback();
     updateAuthState();
@@ -54,141 +51,28 @@ document.addEventListener('DOMContentLoaded', async () => {
    Auth & Profile Card Logic
    ========================================================================== */
 
-async function updateAuthState() {
-    const profileSlot = document.getElementById('profile-card-slot');
-    if (!profileSlot || !userService) return;
-
-    try {
-        const { user, profile } = userService.getUserData();
-        
-        if (user) {
-            const avatarUrl = user.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${user.email}&background=FF9500&color=fff`;
-            const userNickname = profile?.full_name || user.user_metadata?.full_name || user.email.split('@')[0];
-            const rank = profile?.rank || 'Новачок';
-            const points = profile?.points || 0;
-            
-            profileSlot.innerHTML = `
-                <div class="profile-card-premium" style="display: flex !important; flex-direction: row !important; align-items: center !important; padding: 12px !important; gap: 14px !important; overflow: hidden !important; height: 140px !important; min-height: 140px !important;">
-                    <!-- Pixel-Perfect Inset Square Avatar -->
-                    <div class="avatar-square-v10" style="width: 116px !important; height: 116px !important; border-radius: 20px !important; overflow: hidden !important; flex-shrink: 0 !important; box-shadow: 0 4px 25px rgba(0,0,0,0.18) !important; border: 1.5px solid rgba(255,149,0,0.25) !important;">
-                        <img src="${avatarUrl}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
-                    </div>
-                    <!-- Right Actions & Info Column -->
-                    <div style="flex: 1 !important; display: flex !important; flex-direction: column !important; justify-content: space-between !important; height: 116px !important; padding: 2px 0 !important;">
-                        <!-- Rank & Points Row -->
-                        <div style="display: flex !important; justify-content: space-between !important; align-items: flex-start !important; padding-right: 4px !important;">
-                            <div style="display: flex; flex-direction: column; gap: 2px;">
-                                <div class="badge-rank" style="background: rgba(255,149,0,0.15); color: var(--system-accent); font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; width: fit-content;">${rank}</div>
-                                <div style="font-size: 12px; font-weight: 800; color: white; opacity: 0.6; padding-left: 2px; font-family: 'Inter', sans-serif;">${points} балів</div>
-                            </div>
-                            <!-- Monochrome Logout Button -->
-                            <button onclick="signOut()" class="glass-square-auth-btn mono-logout" title="Вийти" style="width: 38px !important; height: 38px !important; border-radius: 12px !important; display: flex !important; align-items: center; justify-content: center; background: rgba(255,255,255,0.1) !important; border: 1.5px solid rgba(255,255,255,0.2) !important; cursor: pointer; padding: 0 !important; transition: all 0.2s ease;">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: grayscale(1) !important;">
-                                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="white"/>
-                                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="white"/>
-                                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="white"/>
-                                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.66l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="white"/>
-                                </svg>
-                            </button>
-                        </div>
-                        <!-- User Info Bottom -->
-                        <div style="margin-top: auto !important; padding-bottom: 2px !important;">
-                            <div style="font-family: 'Outfit', sans-serif !important; font-weight: 850 !important; color: var(--system-accent) !important; font-size: 24px !important; margin-bottom: 2px !important; letter-spacing: -0.8px !important; line-height: 1 !important;">${userNickname}</div>
-                            <div style="font-family: 'Inter', sans-serif !important; font-size: 13px !important; color: white !important; font-weight: 600 !important; opacity: 0.8 !important;">${user.email}</div>
-                        </div>
-                    </div>
+        // Display Local Autonomous Profile
+        profileSlot.innerHTML = `
+            <div class="profile-card-premium guest-active" style="display: flex !important; flex-direction: row !important; align-items: center !important; padding: 12px !important; gap: 14px !important; overflow: hidden !important; height: 140px !important; min-height: 140px !important;">
+                <div class="avatar-square-v10" style="width: 116px !important; height: 116px !important; border-radius: 20px !important; background: rgba(255,149,0,0.15) !important; display: flex !important; align-items: center; justify-content: center; flex-shrink: 0 !important; border: 1.5px solid rgba(255,149,0,0.3) !important;">
+                    <i class="fas fa-robot" style="font-size: 48px; color: var(--system-accent);"></i>
                 </div>
-            `;
-            renderTomorrowPushCard(); // New: ensure UI is correct
-        } else {
-            profileSlot.innerHTML = `
-                <div class="profile-card-premium guest-active" style="display: flex !important; flex-direction: row !important; align-items: center !important; padding: 12px !important; gap: 14px !important; overflow: hidden !important; height: 140px !important; min-height: 140px !important;">
-                    <!-- Avatar (Guest) -->
-                    <div class="avatar-square-v10" style="width: 116px !important; height: 116px !important; border-radius: 20px !important; background: rgba(255,149,0,0.15) !important; display: flex !important; align-items: center; justify-content: center; flex-shrink: 0 !important; border: 1.5px solid rgba(255,149,0,0.3) !important;">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="54" height="54" fill="#FF9500"><path d="M320 312C386.3 312 440 258.3 440 192C440 125.7 386.3 72 320 72C253.7 72 200 125.7 200 192C200 258.3 253.7 312 320 312zM290.3 368C191.8 368 112 447.8 112 546.3C112 562.7 125.3 576 141.7 576L498.3 576C514.7 576 528 562.7 528 546.3C528 447.8 448.2 368 349.7 368L290.3 368z"/></svg>
-                    </div>
-                    <!-- Right Column -->
-                    <div style="flex: 1 !important; display: flex !important; flex-direction: column !important; justify-content: space-between !important; height: 116px !important; padding: 2px 0 !important;">
-                        <div style="display: flex !important; gap: 8px !important; align-items: center !important; justify-content: flex-end !important; padding-right: 4px !important;">
-                            <!-- Telegram Button -->
-                            <button onclick="signInWithTelegram()" class="glass-square-auth-btn telegram" style="width: 50px !important; height: 50px !important; border-radius: 14px !important; display: flex !important; align-items: center; justify-content: center; background: rgba(0,136,204,0.1) !important; border: 1.5px solid rgba(0,136,204,0.2) !important; cursor: pointer; padding: 0 !important;">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0C5.347 0 0 5.347 0 11.944c0 6.596 5.347 11.944 11.944 11.944 6.596 0 11.944-5.348 11.944-11.944C23.888 5.347 18.54 0 11.944 0zm5.485 8.16l-1.896 8.937c-.143.64-.522.798-1.059.497l-2.89-2.13-1.394 1.341c-.154.154-.283.283-.58.283l.207-2.937 5.348-4.832c.233-.207-.05-.322-.361-.116l-6.61 4.162-2.846-.89c-.618-.194-.63-.618.129-.913l11.121-4.288c.515-.194.966.115.732.888z" fill="#0088cc"/></svg>
-                            </button>
-                            <!-- Google Button -->
-                            <button onclick="signInWithGoogle()" class="glass-square-auth-btn google" style="width: 50px !important; height: 50px !important; border-radius: 14px !important; display: flex !important; align-items: center; justify-content: center; background: rgba(255,255,255,0.95) !important; border: 1.5px solid rgba(128,128,128,0.1) !important; cursor: pointer; padding: 0 !important; box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;">
-                                <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.66l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-                            </button>
-                        </div>
-                        <div style="margin-top: auto !important; padding-bottom: 2px !important;">
-                            <div style="font-family: 'Outfit', sans-serif !important; font-weight: 850 !important; color: var(--system-accent) !important; font-size: 24px !important; margin-bottom: 2px !important; letter-spacing: -0.8px !important; line-height: 1 !important;">Гість</div>
-                            <div style="font-family: 'Inter', sans-serif !important; font-size: 13px !important; color: #0d0d0d !important; font-weight: 700 !important; opacity: 0.9 !important; letter-spacing: -0.2px !important;">Зареєструйтесь, щоб отримати повний функціонал</div>
-                        </div>
-                    </div>
+                <div style="flex: 1 !important; display: flex !important; flex-direction: column !important; justify-content: center !important; height: 116px !important; padding: 2px 0 !important;">
+                    <div style="font-family: 'Outfit', sans-serif !important; font-weight: 850 !important; color: var(--system-accent) !important; font-size: 24px !important; margin-bottom: 2px !important; letter-spacing: -0.8px !important; line-height: 1.2 !important;">Локальний режим</div>
+                    <div style="font-family: 'Inter', sans-serif !important; font-size: 13px !important; color: white !important; font-weight: 600 !important; opacity: 0.8 !important;">Дані зберігаються лише на цьому пристрої</div>
                 </div>
-            `;
-            renderTomorrowPushCard();
-        }
+            </div>
+        `;
+        renderTomorrowPushCard();
     } catch (e) {
         console.error("Auth update error:", e);
     }
 }
 
 async function renderLeaderboard() {
-    const section = document.getElementById('leaderboard-section');
     const list = document.getElementById('leaderboard-list');
-    if (!section || !list || !userService) return;
-
-    if (userService.isGuest()) {
-        section.style.display = 'block'; // Show as teaser
-        list.innerHTML = `
-            <div style="padding: 10px; text-align: center;">
-                <p style="margin: 0; font-size: 12px; opacity: 0.6; color: var(--system-text);">Авторизуйтесь, щоб змагатися з іншими Світляками та бачити лідерів!</p>
-            </div>
-        `;
-        return;
-    }
-
-    section.style.display = 'block';
-
-    try {
-        const { data, error } = await userService.supabase
-            .from('user_profiles')
-            .select('full_name, points, rank, avatar_url')
-            .order('points', { ascending: false })
-            .limit(5);
-
-        if (error) throw error;
-
-        if (!data || data.length === 0) {
-            list.innerHTML = '<div style="font-size: 12px; text-align: center; opacity: 0.5; padding: 10px;">Будьте першим у списку!</div>';
-            return;
-        }
-
-        list.innerHTML = data.map((entry, index) => {
-            const isTop1 = index === 0;
-            const avatar = entry.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(entry.full_name || 'U')}&background=333&color=fff`;
-            
-            return `
-                <div style="display: flex; align-items: center; gap: 12px; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 14px; border: 1px solid ${isTop1 ? 'rgba(255,149,0,0.2)' : 'rgba(255,255,255,0.05)'}; transition: transform 0.2s;">
-                    <div style="font-size: 15px; font-weight: 900; color: ${isTop1 ? '#FF9500' : 'rgba(255,255,255,0.5)'}; width: 22px; text-align: center;">${index + 1}</div>
-                    <div style="width: 36px; height: 36px; border-radius: 9px; overflow: hidden; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1);">
-                        <img src="${avatar}" style="width: 100%; height: 100%; object-fit: cover;">
-                    </div>
-                    <div style="flex: 1; min-width: 0;">
-                        <div style="font-size: 13.5px; font-weight: 800; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${entry.full_name || 'Таємничий герой'}</div>
-                        <div style="font-size: 11px; font-weight: 600; color: #FF9500; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.3px;">${entry.rank}</div>
-                    </div>
-                    <div style="text-align: right; min-width: 50px;">
-                        <div style="font-size: 13px; font-weight: 900; color: white;">${entry.points}</div>
-                        <div style="font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase;">балів</div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    } catch (err) {
-        console.warn('Leaderboard load failed:', err);
-        list.innerHTML = '<div style="font-size: 12px; text-align: center; opacity: 0.4; padding: 10px;">Оновлюємо дані...</div>';
-    }
+    if (!list) return;
+    list.innerHTML = '<div style="font-size: 12px; text-align: center; opacity: 0.5; padding: 10px;">Локальний режим: таблиця лідерів тимчасово недоступна.</div>';
 }
 
 /* ==========================================================================
