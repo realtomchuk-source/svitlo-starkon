@@ -2371,5 +2371,16 @@
     "message": "Очікування публікації графіка на 21.04",
     "queues": {},
     "change_desc": "Створено заготовку (очікуємо 21.04)"
+  },
+  {
+    "timestamp": "2026-04-21T20:02:04.450176+03:00",
+    "target_date": "22.04",
+    "source": "system",
+    "type": "schedule",
+    "processed": false,
+    "is_placeholder": true,
+    "message": "Очікування публікації графіка на 22.04",
+    "queues": {},
+    "change_desc": "Створено заготовку (очікуємо 22.04)"
   }
 ]
