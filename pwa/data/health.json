@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-04-24T23:05:46.157235+03:00",
+  "timestamp": "2026-04-25T00:01:59.719705+03:00",
   "status": "ok",
-  "mode": "AGGRESSIVE",
+  "mode": "IDLE",
   "message": "Очікування наступного запуску",
   "version": "2.1-Adaptive"
 }
