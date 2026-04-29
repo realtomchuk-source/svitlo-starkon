@@ -2371,5 +2371,82 @@
     "message": "Очікування публікації графіка на 21.04",
     "queues": {},
     "change_desc": "Створено заготовку (очікуємо 21.04)"
+  },
+  {
+    "timestamp": "2026-04-21T20:02:04.450176+03:00",
+    "target_date": "22.04",
+    "source": "system",
+    "type": "schedule",
+    "processed": false,
+    "is_placeholder": true,
+    "message": "Очікування публікації графіка на 22.04",
+    "queues": {},
+    "change_desc": "Створено заготовку (очікуємо 22.04)"
+  },
+  {
+    "timestamp": "2026-04-22T19:44:27.714054+03:00",
+    "target_date": "23.04",
+    "source": "system",
+    "type": "schedule",
+    "processed": false,
+    "is_placeholder": true,
+    "message": "Очікування публікації графіка на 23.04",
+    "queues": {},
+    "change_desc": "Створено заготовку (очікуємо 23.04)"
+  },
+  {
+    "timestamp": "2026-04-24T19:11:55.453600+03:00",
+    "target_date": "25.04",
+    "source": "system",
+    "type": "schedule",
+    "processed": false,
+    "is_placeholder": true,
+    "message": "Очікування публікації графіка на 25.04",
+    "queues": {},
+    "change_desc": "Створено заготовку (очікуємо 25.04)"
+  },
+  {
+    "timestamp": "2026-04-25T19:30:07.482015+03:00",
+    "target_date": "26.04",
+    "source": "system",
+    "type": "schedule",
+    "processed": false,
+    "is_placeholder": true,
+    "message": "Очікування публікації графіка на 26.04",
+    "queues": {},
+    "change_desc": "Створено заготовку (очікуємо 26.04)"
+  },
+  {
+    "timestamp": "2026-04-26T19:30:53.535287+03:00",
+    "target_date": "27.04",
+    "source": "system",
+    "type": "schedule",
+    "processed": false,
+    "is_placeholder": true,
+    "message": "Очікування публікації графіка на 27.04",
+    "queues": {},
+    "change_desc": "Створено заготовку (очікуємо 27.04)"
+  },
+  {
+    "timestamp": "2026-04-27T19:12:33.504137+03:00",
+    "target_date": "28.04",
+    "source": "system",
+    "type": "schedule",
+    "processed": false,
+    "is_placeholder": true,
+    "message": "Очікування публікації графіка на 28.04",
+    "queues": {},
+    "change_desc": "Створено заготовку (очікуємо 28.04)"
+  },
+  {
+    "timestamp": "2026-04-28T20:25:54.214450+03:00",
+    "target_date": "29.04",
+    "source": "system",
+    "type": "schedule",
+    "processed": false,
+    "is_placeholder": true,
+    "message": "Очікування публікації графіка на 29.04",
+    "queues": {},
+    "change_desc": "Створено заготовку (очікуємо 29.04)"
   }
 ]
