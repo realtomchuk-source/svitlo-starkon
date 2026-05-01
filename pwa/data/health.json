@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-05-01T18:16:41.581107+03:00",
+  "timestamp": "2026-05-01T19:15:34.405748+03:00",
   "status": "ok",
-  "mode": "DAY",
+  "mode": "AGGRESSIVE",
   "message": "Цикл завершено успішно",
   "version": "2.1-Adaptive"
 }
