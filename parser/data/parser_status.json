@@ -4,15 +4,15 @@
   "today_error": "name 'TODAY_JSON_PATH' is not defined",
   "today_mode": "schedule",
   "today_date": "12.04",
-  "last_sync": "2026-05-11T02:12:39.855444+03:00",
+  "last_sync": "2026-05-11T07:37:47.786765+03:00",
   "today": {
     "date": "11.05",
     "state": "no_outages_fallback",
-    "updated": "11.05.2026 02:12"
+    "updated": "11.05.2026 07:37"
   },
   "tomorrow": {
     "date": "12.05",
     "state": "pending",
-    "updated": "11.05.2026 02:12"
+    "updated": "11.05.2026 07:37"
   }
 }
