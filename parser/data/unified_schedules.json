@@ -2591,5 +2591,16 @@
     "message": "Очікування публікації графіка на 12.05",
     "queues": {},
     "change_desc": "Створено заготовку (очікуємо 12.05)"
+  },
+  {
+    "timestamp": "2026-05-12T20:33:47.415145+03:00",
+    "target_date": "13.05",
+    "source": "system",
+    "type": "schedule",
+    "processed": false,
+    "is_placeholder": true,
+    "message": "Очікування публікації графіка на 13.05",
+    "queues": {},
+    "change_desc": "Створено заготовку (очікуємо 13.05)"
   }
 ]
