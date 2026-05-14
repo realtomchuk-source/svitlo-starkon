@@ -1,20 +1,5 @@
 [
   {
-    "timestamp": "2026-04-11T19:02:40.103230+03:00",
-    "target_date": "12.04",
-    "source": "system",
-    "change_desc": "Створено заготовку (очікуємо 12.04)",
-    "is_update": false,
-    "processed": false,
-    "queues": {},
-    "mode": "schedule",
-    "date": "",
-    "date_full": "",
-    "message": "Очікування публікації графіка на 12.04",
-    "announcements": [],
-    "queues_raw": {}
-  },
-  {
     "timestamp": "2026-04-11T19:02:50.722720+03:00",
     "target_date": "11.04",
     "source": "site",
@@ -1214,6 +1199,21 @@
     "date": "",
     "date_full": "",
     "message": "Очікування публікації графіка на 14.05",
+    "announcements": [],
+    "queues_raw": {}
+  },
+  {
+    "timestamp": "2026-05-14T19:28:41.333795+03:00",
+    "target_date": "15.05",
+    "source": "system",
+    "change_desc": "Створено заготовку (очікуємо 15.05)",
+    "is_update": false,
+    "processed": false,
+    "queues": {},
+    "mode": "schedule",
+    "date": "",
+    "date_full": "",
+    "message": "Очікування публікації графіка на 15.05",
     "announcements": [],
     "queues_raw": {}
   }
