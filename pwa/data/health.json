@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-05-30T17:42:45.343625+03:00",
-  "status": "ok",
-  "mode": "DAY",
-  "message": "Цикл завершено успішно",
-  "version": "2.1-Adaptive"
+  "timestamp": "2026-05-30T17:58:00.000000+03:00",
+  "status": "suspended",
+  "mode": "FREEZE",
+  "message": "Проект заморожено. Моніторинг призупинено для збереження ресурсів.",
+  "version": "2.1-Suspended"
 }

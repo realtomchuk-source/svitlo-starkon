@@ -1,18 +1,18 @@
 {
-  "last_today_generated": "2026-04-12T10:55:40.045874+03:00",
-  "last_today_validation": "ok",
-  "today_error": "name 'TODAY_JSON_PATH' is not defined",
-  "today_mode": "schedule",
-  "today_date": "12.04",
-  "last_sync": "2026-05-30T17:42:45.342818+03:00",
+  "last_today_generated": "2026-05-30T17:58:00.000000+03:00",
+  "last_today_validation": "suspended",
+  "today_error": null,
+  "today_mode": "suspended",
+  "today_date": "Призупинено",
+  "last_sync": "2026-05-30T17:58:00.000000+03:00",
   "today": {
-    "date": "30.05",
-    "state": "no_outages_fallback",
-    "updated": "30.05.2026 17:42"
+    "date": "Призупинено",
+    "state": "suspended",
+    "updated": "30.05.2026 17:58"
   },
   "tomorrow": {
-    "date": "31.05",
-    "state": "pending",
-    "updated": "30.05.2026 17:42"
+    "date": "Призупинено",
+    "state": "suspended",
+    "updated": "30.05.2026 17:58"
   }
 }

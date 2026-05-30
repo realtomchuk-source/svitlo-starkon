@@ -1,10 +1,10 @@
 {
-  "date": "31.05",
-  "updated_at": "2026-05-30T17:42:45.341995+03:00",
-  "status": "pending",
+  "date": "Призупинено",
+  "updated_at": "2026-05-30T17:58:00.000000+03:00",
+  "status": "suspended",
   "meta": {
-    "generated_at": "30.05.2026 17:42",
-    "state": "pending",
-    "target_date": "31.05"
+    "generated_at": "30.05.2026 17:58",
+    "state": "suspended",
+    "target_date": "Призупинено"
   }
 }
